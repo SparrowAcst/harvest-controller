@@ -38,10 +38,12 @@ const getEvents = async (req, res) => {
 		let count = await mongodb.aggregate({
 			db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
-			pipeline: options.eventData.filter.concat([
-		        { $count: 'count'},
-		        { $project: {_id: 0} }
-		    ])
+			pipeline: options.excludeFilter
+						.concat(options.eventData.filter)
+						.concat([
+					        { $count: 'count'},
+					        { $project: {_id: 0} }
+					    ])
 		}) 
 
 		count = (count[0]) ? count[0].count || 0 : 0
@@ -53,26 +55,28 @@ const getEvents = async (req, res) => {
 	    const data = await mongodb.aggregate({
 	    	db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
-			pipeline: [
-	          {
-	            '$project': {
-	              '_id': 0
-	            }
-	          }, 
-	          { 
-	            $sort: {
-	                "Body Position": 1,
-	                "Body Spot": 1,
-	                "model": 1
-	            } 
-	          },
-	          {
-	            '$skip': options.eventData.skip
-	          }, 
-	          {
-	            '$limit': options.eventData.limit
-	          }
-	        ]
+			pipeline: options.excludeFilter
+						.concat(options.eventData.filter)
+						.concat([
+				          {
+				            '$project': {
+				              '_id': 0
+				            }
+				          }, 
+				          { 
+				            $sort: {
+				                "Body Position": 1,
+				                "Body Spot": 1,
+				                "model": 1
+				            } 
+				          },
+				          {
+				            '$skip': options.eventData.skip
+				          }, 
+				          {
+				            '$limit': options.eventData.limit
+				          }
+				        ])
 	    })
 
 	    res.send({
@@ -173,27 +177,29 @@ const getStat = async (req, res) => {
 		const stat = await mongodb.aggregate({
 			db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
-			pipeline: options.eventData.filter.concat(
-		        [
-		          {
-		            '$match': {
-		              'Examination ID': options.id
-		            }
-		          }, {
-		            '$group': {
-		              '_id': '$TODO', 
-		              'value': {
-		                '$count': {}
-		              }
-		            }
-		          }, {
-		            '$project': {
-		              'name': '$_id', 
-		              'value': 1, 
-		              '_id': 0
-		            }
-		          }
-		        ]) 
+			pipeline: options.excludeFilter
+						.concat(options.eventData.filter)
+						.concat(
+					        [
+					          {
+					            '$match': {
+					              'Examination ID': options.id
+					            }
+					          }, {
+					            '$group': {
+					              '_id': '$TODO', 
+					              'value': {
+					                '$count': {}
+					              }
+					            }
+					          }, {
+					            '$project': {
+					              'name': '$_id', 
+					              'value': 1, 
+					              '_id': 0
+					            }
+					          }
+					        ]) 
 		})
 
 

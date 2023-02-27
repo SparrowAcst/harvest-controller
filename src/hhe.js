@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, minBy} = require("lodash")
 
 
 const getDatasetList = async (req, res) => {
@@ -33,136 +33,277 @@ const getTasks = async (req, res) => {
 	try {
 
 		let options = req.body.options
-		options.pipeline = 
-		    [
-		      {
-		        '$sort': {
-		          'updated at': -1
-		        }
-		      },        
-		      {
-		        '$group': {
-		          '_id': {
-		            'Examination ID': '$Examination ID', 
-		            'TODO': '$TODO'
-		          }, 
-		          'count': {
-		            '$count': {}
-		          }, 
-		          '1st expert': {
-		            '$addToSet': '$1st expert'
-		          }, 
-		          '2nd expert': {
-		            '$addToSet': '$2nd expert'
-		          }, 
-		          'CMO': {
-		            '$addToSet': '$CMO'
-		          }, 
-		          'lastUpdate': {
-		            '$push': {
-		              'updated at': '$updated at', 
-		              'updated by': '$updated by'
-		            }
-		          }
-		        }
-		      }, {
-		        '$project': {
-		          'Examination ID': '$_id.Examination ID', 
-		          'TODO': '$_id.TODO', 
-		          'count': 1, 
-		          '1st expert': 1, 
-		          '2nd expert': 1, 
-		          'CMO': 1, 
-		          'lastUpdate': {
-		            '$arrayElemAt': [
-		              '$lastUpdate', 0
-		            ]
-		          }
-		        }
-		      }, {
-		        '$group': {
-		          '_id': {
-		            'Examination ID': '$Examination ID'
-		          }, 
-		          'stat': {
-		            '$addToSet': {
-		              'TODO': '$TODO', 
-		              'count': '$count'
-		            }
-		          }, 
-		          '1st expert': {
-		            '$addToSet': '$1st expert'
-		          }, 
-		          '2nd expert': {
-		            '$addToSet': '$2nd expert'
-		          }, 
-		          'CMO': {
-		            '$addToSet': '$CMO'
-		          }, 
-		          'lastUpdate': {
-		            '$addToSet': '$lastUpdate'
-		          }
-		        }
-		      }, {
-		        '$project': {
-		          'Examination ID': '$_id.Examination ID', 
-		          'stat': 1, 
-		          '1st expert': {
-		            '$reduce': {
-		              'input': '$1st expert', 
-		              'initialValue': [], 
-		              'in': {
-		                '$setUnion': [
-		                  '$$value', '$$this'
-		                ]
-		              }
-		            }
-		          }, 
-		          '2nd expert': {
-		            '$reduce': {
-		              'input': '$2nd expert', 
-		              'initialValue': [], 
-		              'in': {
-		                '$setUnion': [
-		                  '$$value', '$$this'
-		                ]
-		              }
-		            }
-		          }, 
-		          'CMO': {
-		            '$reduce': {
-		              'input': '$CMO', 
-		              'initialValue': [], 
-		              'in': {
-		                '$setUnion': [
-		                  '$$value', '$$this'
-		                ]
-		              }
-		            }
-		          }, 
-		          '_id': 0, 
-		          'lastUpdate': 1
-		        }
-		      }, {
-		        '$project': {
-		          'Examination ID': 1, 
-		          'stat': 1, 
-		          '1st expert': 1, 
-		          '2nd expert': 1, 
-		          'CMO': 1, 
-		          '_id': 0, 
-		          'updated at': '$lastUpdate.updated at', 
-		          'updated by': '$lastUpdate.updated by'
-		        }
-		      }, {
-		        '$sort': {
-		          'updated at': -1,    
-		        //   'Examination ID': 1, 
-		        //   'updated by': 1, 
+		
+				options.pipeline = [
+			  {
+			    '$sort': {
+			      'Examination ID': 1
+			    }
+			  }, {
+			    '$group': {
+			      '_id': {
+			        'Examination ID': '$Examination ID', 
+			        'TODO': '$TODO'
+			      }, 
+			      'count': {
+			        '$count': {}
+			      }, 
+			      '1st expert': {
+			        '$addToSet': '$1st expert'
+			      }, 
+			      '2nd expert': {
+			        '$addToSet': '$2nd expert'
+			      }, 
+			      'CMO': {
+			        '$addToSet': '$CMO'
+			      }, 
+			      'updates': {
+			        '$push': {
+			          'updated at': '$updated at', 
+			          'updated by': '$updated by'
+			        }
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': '$_id.Examination ID', 
+			      'TODO': '$_id.TODO', 
+			      'count': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      'updates': 1
+			    }
+			  }, {
+			    '$group': {
+			      '_id': {
+			        'Examination ID': '$Examination ID'
+			      }, 
+			      'stat': {
+			        '$addToSet': {
+			          'TODO': '$TODO', 
+			          'count': '$count'
+			        }
+			      }, 
+			      '1st expert': {
+			        '$addToSet': '$1st expert'
+			      }, 
+			      '2nd expert': {
+			        '$addToSet': '$2nd expert'
+			      }, 
+			      'CMO': {
+			        '$addToSet': '$CMO'
+			      }, 
+			      'updates': {
+			        '$addToSet': '$updates'
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': '$_id.Examination ID', 
+			      'stat': 1, 
+			      '1st expert': {
+			        '$reduce': {
+			          'input': '$1st expert', 
+			          'initialValue': [], 
+			          'in': {
+			            '$setUnion': [
+			              '$$value', '$$this'
+			            ]
+			          }
+			        }
+			      }, 
+			      '2nd expert': {
+			        '$reduce': {
+			          'input': '$2nd expert', 
+			          'initialValue': [], 
+			          'in': {
+			            '$setUnion': [
+			              '$$value', '$$this'
+			            ]
+			          }
+			        }
+			      }, 
+			      'CMO': {
+			        '$reduce': {
+			          'input': '$CMO', 
+			          'initialValue': [], 
+			          'in': {
+			            '$setUnion': [
+			              '$$value', '$$this'
+			            ]
+			          }
+			        }
+			      }, 
+			      '_id': 0, 
+			      'updates': {
+			        '$arrayElemAt': [
+			          '$updates', 0
+			        ]
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': 1, 
+			      'stat': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      '_id': 0, 
+			      'updates': 1
+			    }
+			  }, {
+			    '$sort': {
+			      'Examination ID': 1
+			    }
+			  }
+			]
+
+
+		// options.pipeline = 
+		//     [
+		//       {
+		//         '$sort': {
+		// 		  'Examination ID': 1
+		// 		}
+		//       },        
+		//       {
+		//         '$group': {
+		//           '_id': {
+		//             'Examination ID': '$Examination ID', 
+		//             'TODO': '$TODO'
+		//           }, 
+		//           'count': {
+		//             '$count': {}
+		//           }, 
+		//           '1st expert': {
+		//             '$addToSet': '$1st expert'
+		//           }, 
+		//           '2nd expert': {
+		//             '$addToSet': '$2nd expert'
+		//           }, 
+		//           'CMO': {
+		//             '$addToSet': '$CMO'
+		//           }, 
+		//           'lastUpdate': {
+		//             '$push': {
+		//               'updated at': '$updated at', 
+		//               'updated by': '$updated by'
+		//             }
+		//           }
+		//         }
+		//       }, {
+		//         '$project': {
+		//           'Examination ID': '$_id.Examination ID', 
+		//           'TODO': '$_id.TODO', 
+		//           'count': 1, 
+		//           '1st expert': 1, 
+		//           '2nd expert': 1, 
+		//           'CMO': 1, 
+		//           'lastUpdate': {
+		            
+		//           	$reduce: {
+		// 	          input: "$lastUpdate",
+		// 	          initialValue: 0,
+		// 	          in: {
+		// 	            $cond: [
+		// 	              {$gte: [ "$$this.updated at","$$value"]},
+		// 	              "$$this.updated at",
+		// 	              "$$value"
+		// 	            ]
+		// 	          }
+		// 	        }
+
+		//             // '$arrayElemAt': [
+		//             //   '$lastUpdate', 0
+		//             // ]
+
+		//           }
+		//         }
+		//       }, {
+		//         '$group': {
+		//           '_id': {
+		//             'Examination ID': '$Examination ID'
+		//           }, 
+		//           'stat': {
+		//             '$addToSet': {
+		//               'TODO': '$TODO', 
+		//               'count': '$count'
+		//             }
+		//           }, 
+		//           '1st expert': {
+		//             '$addToSet': '$1st expert'
+		//           }, 
+		//           '2nd expert': {
+		//             '$addToSet': '$2nd expert'
+		//           }, 
+		//           'CMO': {
+		//             '$addToSet': '$CMO'
+		//           }, 
+		//           'lastUpdate': {
+		//             '$addToSet': '$lastUpdate'
+		//           }
+		//         }
+		//       }, {
+		//         '$project': {
+		//           'Examination ID': '$_id.Examination ID', 
+		//           'stat': 1, 
+		//           '1st expert': {
+		//             '$reduce': {
+		//               'input': '$1st expert', 
+		//               'initialValue': [], 
+		//               'in': {
+		//                 '$setUnion': [
+		//                   '$$value', '$$this'
+		//                 ]
+		//               }
+		//             }
+		//           }, 
+		//           '2nd expert': {
+		//             '$reduce': {
+		//               'input': '$2nd expert', 
+		//               'initialValue': [], 
+		//               'in': {
+		//                 '$setUnion': [
+		//                   '$$value', '$$this'
+		//                 ]
+		//               }
+		//             }
+		//           }, 
+		//           'CMO': {
+		//             '$reduce': {
+		//               'input': '$CMO', 
+		//               'initialValue': [], 
+		//               'in': {
+		//                 '$setUnion': [
+		//                   '$$value', '$$this'
+		//                 ]
+		//               }
+		//             }
+		//           }, 
+		//           '_id': 0, 
+		//           'lastUpdate': 1
+		//         }
+		//       }, {
+		//         '$project': {
+		//           'Examination ID': 1, 
+		//           'stat': 1, 
+		//           '1st expert': 1, 
+		//           '2nd expert': 1, 
+		//           'CMO': 1, 
+		//           '_id': 0, 
+		//           'updated at': '$lastUpdate.updated at', 
+		//           'updated by': '$lastUpdate.updated by'
+		//         }
+		//       }, {
+		//         '$sort': {
+		//           // 'updated at': -1,    
+		//           'Examination ID': 1, 
+		//         //   'updated by': 1, 
 		          
-		        }
-		      }
-		    ]
+		//         }
+		//       }
+		//     ]
 
 		options.userFilter = (options.me)
         ? [
@@ -199,7 +340,8 @@ const getTasks = async (req, res) => {
 
 	    let count  = await mongodb.aggregate(extend({}, options, {
 	    	collection: `${options.db.name}.${options.db.labelingCollection}`,
-	    	pipeline: options.eventData.filter
+	    	pipeline: 	options.excludeFilter
+	    				.concat(options.eventData.filter)
 		                .concat(options.userFilter)
 		                .concat(options.pipeline)
 		                .concat(options.countPipeline)
@@ -214,7 +356,8 @@ const getTasks = async (req, res) => {
 
     	const data = await mongodb.aggregate(extend({}, options, {
     		collection: `${options.db.name}.${options.db.labelingCollection}`,
-	    	pipeline: options.eventData.filter
+	    	pipeline: options.excludeFilter
+	    				.concat(options.eventData.filter)
 		                .concat(options.userFilter)
 		                .concat(options.pipeline)
 		                .concat(options.pageFilter) 
@@ -231,6 +374,9 @@ const getTasks = async (req, res) => {
 	                stat: d.stat,
 	                total: d.Recordings
 	            }
+
+	            d = extend(d, minBy(d.updates, d => d["updated at"]))
+
 	            return d
 	        })
     	}
@@ -278,6 +424,8 @@ const getStat = async (req, res) => {
 	try {
 		
 		let options = req.body.options
+
+
 
 		options.pipeline = [
 	        {
@@ -366,8 +514,9 @@ const getStat = async (req, res) => {
 
 		options = extend( {}, options, {
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
-			pipeline: options.eventData.filter
-			            .concat(options.userFilter)
+			pipeline: options.excludeFilter
+	    				.concat(options.eventData.filter)
+		                .concat(options.userFilter)
 			            .concat(options.pipeline)
 		})
 
@@ -464,7 +613,6 @@ const getSyncStat = async (req, res) => {
 	        stat: result,
 	        options: options
 	    }
-	    console.log(result)
 
 	    res.send(result)
 
@@ -650,10 +798,10 @@ const updateTasks = async (req, res) => {
 	            r.TODO = resolveTodo(r)
 	            r["assigned to"] = resolveAssigment(r)
 	        }   
-	        
+	    	console.log(r["updated at"], r["updated by"], assignator)    
 	        return r    
 	    })
-    
+    	
 	    const commands = records.map( r => ({
 	        replaceOne:{
 	            filter:{
