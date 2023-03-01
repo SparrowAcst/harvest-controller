@@ -160,150 +160,6 @@ const getTasks = async (req, res) => {
 			]
 
 
-		// options.pipeline = 
-		//     [
-		//       {
-		//         '$sort': {
-		// 		  'Examination ID': 1
-		// 		}
-		//       },        
-		//       {
-		//         '$group': {
-		//           '_id': {
-		//             'Examination ID': '$Examination ID', 
-		//             'TODO': '$TODO'
-		//           }, 
-		//           'count': {
-		//             '$count': {}
-		//           }, 
-		//           '1st expert': {
-		//             '$addToSet': '$1st expert'
-		//           }, 
-		//           '2nd expert': {
-		//             '$addToSet': '$2nd expert'
-		//           }, 
-		//           'CMO': {
-		//             '$addToSet': '$CMO'
-		//           }, 
-		//           'lastUpdate': {
-		//             '$push': {
-		//               'updated at': '$updated at', 
-		//               'updated by': '$updated by'
-		//             }
-		//           }
-		//         }
-		//       }, {
-		//         '$project': {
-		//           'Examination ID': '$_id.Examination ID', 
-		//           'TODO': '$_id.TODO', 
-		//           'count': 1, 
-		//           '1st expert': 1, 
-		//           '2nd expert': 1, 
-		//           'CMO': 1, 
-		//           'lastUpdate': {
-		            
-		//           	$reduce: {
-		// 	          input: "$lastUpdate",
-		// 	          initialValue: 0,
-		// 	          in: {
-		// 	            $cond: [
-		// 	              {$gte: [ "$$this.updated at","$$value"]},
-		// 	              "$$this.updated at",
-		// 	              "$$value"
-		// 	            ]
-		// 	          }
-		// 	        }
-
-		//             // '$arrayElemAt': [
-		//             //   '$lastUpdate', 0
-		//             // ]
-
-		//           }
-		//         }
-		//       }, {
-		//         '$group': {
-		//           '_id': {
-		//             'Examination ID': '$Examination ID'
-		//           }, 
-		//           'stat': {
-		//             '$addToSet': {
-		//               'TODO': '$TODO', 
-		//               'count': '$count'
-		//             }
-		//           }, 
-		//           '1st expert': {
-		//             '$addToSet': '$1st expert'
-		//           }, 
-		//           '2nd expert': {
-		//             '$addToSet': '$2nd expert'
-		//           }, 
-		//           'CMO': {
-		//             '$addToSet': '$CMO'
-		//           }, 
-		//           'lastUpdate': {
-		//             '$addToSet': '$lastUpdate'
-		//           }
-		//         }
-		//       }, {
-		//         '$project': {
-		//           'Examination ID': '$_id.Examination ID', 
-		//           'stat': 1, 
-		//           '1st expert': {
-		//             '$reduce': {
-		//               'input': '$1st expert', 
-		//               'initialValue': [], 
-		//               'in': {
-		//                 '$setUnion': [
-		//                   '$$value', '$$this'
-		//                 ]
-		//               }
-		//             }
-		//           }, 
-		//           '2nd expert': {
-		//             '$reduce': {
-		//               'input': '$2nd expert', 
-		//               'initialValue': [], 
-		//               'in': {
-		//                 '$setUnion': [
-		//                   '$$value', '$$this'
-		//                 ]
-		//               }
-		//             }
-		//           }, 
-		//           'CMO': {
-		//             '$reduce': {
-		//               'input': '$CMO', 
-		//               'initialValue': [], 
-		//               'in': {
-		//                 '$setUnion': [
-		//                   '$$value', '$$this'
-		//                 ]
-		//               }
-		//             }
-		//           }, 
-		//           '_id': 0, 
-		//           'lastUpdate': 1
-		//         }
-		//       }, {
-		//         '$project': {
-		//           'Examination ID': 1, 
-		//           'stat': 1, 
-		//           '1st expert': 1, 
-		//           '2nd expert': 1, 
-		//           'CMO': 1, 
-		//           '_id': 0, 
-		//           'updated at': '$lastUpdate.updated at', 
-		//           'updated by': '$lastUpdate.updated by'
-		//         }
-		//       }, {
-		//         '$sort': {
-		//           // 'updated at': -1,    
-		//           'Examination ID': 1, 
-		//         //   'updated by': 1, 
-		          
-		//         }
-		//       }
-		//     ]
 
 		options.userFilter = (options.me)
         ? [
@@ -376,7 +232,7 @@ const getTasks = async (req, res) => {
 	            }
 
 	            d = extend(d, minBy(d.updates, d => d["updated at"]))
-
+	            delete d.updates
 	            return d
 	        })
     	}
@@ -661,8 +517,9 @@ const getSyncExaminations = async (req, res) => {
 			        ]
 			      }, 
 			      "updatedAt":"$updatedAt",
+			      "synchronizedAt":"$synchronizedAt",
 			      'state': '$state', 
-			      'validation': '$_validation'
+			      'validation': '$_validation',
 			    }
 			  }, {
 			      $sort:{
