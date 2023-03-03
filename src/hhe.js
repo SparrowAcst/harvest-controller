@@ -36,10 +36,6 @@ const getTasks = async (req, res) => {
 		
 				options.pipeline = [
 					  {
-					    '$match': {
-					      'Examination ID': 'POT0010'
-					    }
-					  }, {
 					    '$sort': {
 					      'Examination ID': 1
 					    }
