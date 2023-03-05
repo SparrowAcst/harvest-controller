@@ -22,6 +22,7 @@ router.post("/hhr/get-stat/", hhr.getStat)
 router.post("/hhr/get-events/", hhr.getEvents)
 router.post("/hhr/get-team/", hhr.getTeam)
 router.post("/hhr/get-forms/", hhr.getForms)
+router.post("/hhr/get-available-values/", hhr.getAvailableValues)
 
 
 ////////////////////////////////////////////////////////////////////////////

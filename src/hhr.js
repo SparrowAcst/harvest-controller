@@ -30,6 +30,69 @@ const getDatasetList = async (req, res) => {
 }
 
 
+
+const getAvailableValues = async (req, res) => {
+	try {
+		
+		let options = req.body.options
+
+		options = extend( {}, options, {
+			collection: `${options.db.name}.${options.db.labelingCollection}`,
+			pipeline: [
+			  {
+			    '$facet': {
+			      'device': [
+			        {
+			          '$group': {
+			            '_id': '$model'
+			          }
+			        }
+			      ], 
+			      'todo': [
+			        {
+			          '$group': {
+			            '_id': '$TODO'
+			          }
+			        }
+			      ], 
+			      'bodyPosition': [
+			        {
+			          '$group': {
+			            '_id': '$Body Position'
+			          }
+			        }
+			      ], 
+			      'bodySpot': [
+			        {
+			          '$group': {
+			            '_id': '$Body Spot'
+			          }
+			        }
+			      ]
+			    }
+			  }
+			]
+		})
+
+	
+		const result = await mongodb.aggregate(options)
+		res.send(result)
+
+	}
+
+	 catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
+}
+
+
+
+
+
+
 const getEvents = async (req, res) => {
 	try {
 		
@@ -39,6 +102,7 @@ const getEvents = async (req, res) => {
 			db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
 			pipeline: options.excludeFilter
+						.concat(options.valueFilter)
 						.concat(options.eventData.filter)
 						.concat([
 					        { $count: 'count'},
@@ -56,6 +120,7 @@ const getEvents = async (req, res) => {
 	    	db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
 			pipeline: options.excludeFilter
+						.concat(options.valueFilter)
 						.concat(options.eventData.filter)
 						.concat([
 				          {
@@ -178,6 +243,7 @@ const getStat = async (req, res) => {
 			db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
 			pipeline: options.excludeFilter
+						.concat(options.valueFilter)
 						.concat(options.eventData.filter)
 						.concat(
 					        [
@@ -333,5 +399,6 @@ module.exports = {
 	getTeam,
 	getGrants,
 	getStat,
-	getForms
+	getForms,
+	getAvailableValues
 }
