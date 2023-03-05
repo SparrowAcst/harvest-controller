@@ -10,6 +10,8 @@ router.post("/hhe/update-tasks/", hhe.updateTasks)
 router.post("/hhe/get-stat/", hhe.getStat)
 router.post("/hhe/get-sync-stat/", hhe.getSyncStat)
 router.post("/hhe/get-sync-examinations/", hhe.getSyncExaminations)
+router.post("/hhe/get-organizations/", hhe.getOrganizations)
+
 
 ////////////////////////////////////////////////////////////////////////////
 const hhr = require("./src/hhr")

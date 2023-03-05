@@ -286,6 +286,37 @@ const getGrants = async (req, res) => {
 	}
 }
 
+
+
+const getOrganizations = async (req, res) => {
+	try {
+		
+		let options = req.body.options
+
+		options = extend( {}, options, {
+			collection: `${options.db.name}.${options.db.organizationCollection}`,
+			pipeline: [   
+	            {
+	                $project:{ _id: 0 }
+	            }
+	        ] 
+		})
+
+		const result = await mongodb.aggregate(options)
+		res.send(result)
+
+	}
+
+	 catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
+}
+
+
+
 const getStat = async (req, res) => {
 	try {
 		
@@ -435,6 +466,7 @@ const getSyncStat = async (req, res) => {
 	                ]
 	              }, 
 	              "updatedAt":"$updatedAt",
+	              "synchronizedAt":"$synchronizedAt",
 	              'state': '$state', 
 	              'validation': '$_validation'
 	            }
@@ -703,5 +735,6 @@ module.exports = {
 	getStat,
 	getSyncStat,
 	getSyncExaminations,
-	updateTasks
+	updateTasks,
+	getOrganizations
 }
