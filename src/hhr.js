@@ -116,10 +116,7 @@ const getEvents = async (req, res) => {
 	        pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
 	    })
 
-	    const data = await mongodb.aggregate({
-	    	db: options.db,
-			collection: `${options.db.name}.${options.db.labelingCollection}`,
-			pipeline: options.excludeFilter
+	    options.pipeline = options.excludeFilter
 						.concat(options.valueFilter)
 						.concat(options.eventData.filter)
 						.concat([
@@ -129,11 +126,18 @@ const getEvents = async (req, res) => {
 				            }
 				          }, 
 				          { 
-				            $sort: {
-				                "Body Position": 1,
-				                "Body Spot": 1,
-				                "model": 1
-				            } 
+				            $sort: (options.latest) 
+				            	? 	{
+						                "updated at": -1,
+						                // "Body Position": 1,
+						                // "Body Spot": 1,
+						                // "model": 1
+					            	}
+					            : 	{
+						                "Body Position": 1,
+						                "Body Spot": 1,
+						                "model": 1
+					            	}	 
 				          },
 				          {
 				            '$skip': options.eventData.skip
@@ -142,8 +146,13 @@ const getEvents = async (req, res) => {
 				            '$limit': options.eventData.limit
 				          }
 				        ])
+	    
+	    const data = await mongodb.aggregate({
+	    	db: options.db,
+			collection: `${options.db.name}.${options.db.labelingCollection}`,
+			pipeline: options.pipeline 
 	    })
-
+ 
 	    res.send({
 	    	options,
 	    	collection: data
