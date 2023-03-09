@@ -44,4 +44,13 @@ router.post("/hhl/update-record/", hhl.updateRecord)
 
 ////////////////////////////////////////////////////////////////////////////
 
+const report = require("./src/report")
+router.post("/report/run-script/", report.runScript)
+router.post("/report/run-script/:type/", report.runScript)
+router.post("/report/get-metadata/", report.getMetadata)
+router.post("/report/get-collections/", report.getCollections)
+
+router.get("/report/test/", report.test)
+router.post("/report/test/", report.test)
+
 module.exports = router

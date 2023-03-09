@@ -8,6 +8,67 @@ const normalize = str => {
 	}
 }	
 
+
+const drop = async options => {
+	let client
+
+	try {
+		
+		const conf = normalize(options.collection)
+		client = await mongo.connect(options.db.url, {
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true
+		})
+	
+		await client
+				.db(conf.dbName)
+				.collection(conf.collectionName)
+				.drop()
+	
+	} catch (e) {
+
+		console.log(e.toString())
+		throw new Error(e)
+
+	} finally {
+	
+		if(client) client.close()
+	
+	}    
+} 
+
+const listCollections = async options => {
+	let client
+	try {
+		
+		const conf = normalize(options.db.name)
+		
+		client = await mongo.connect(options.db.url, {
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true
+		})
+		
+		const res =  await client
+	    				.db(conf.dbName)
+	    				.listCollections()
+	    				.toArray()
+		return res
+
+	} catch (e) {
+		
+		console.log(e.toString())
+		throw new Error(e)
+	
+	} finally {
+	
+		if(client) client.close()
+	
+	}
+
+}
+
+
+
 const aggregate = async options => {
 	let client
 	try {
@@ -31,6 +92,37 @@ const aggregate = async options => {
 		
 		console.log(e.toString())
 		throw new Error(e)
+	
+	} finally {
+	
+		if(client) client.close()
+	
+	}   
+}
+
+const aggregate_raw = async options => {
+	let client
+	try {
+		
+		const conf = normalize(options.collection)
+		const pipeline = options.pipeline || []
+	    
+		client = await mongo.connect(options.db.url, {
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true
+		})
+		
+		const res =  await client
+	    				.db(conf.dbName)
+	    				.collection(conf.collectionName)
+	    				.aggregate(pipeline)
+			   			.toArray()
+		return res
+
+	} catch (e) {
+		
+		console.log(e.toString())
+		throw new Error(e+JSON.stringify(options, null, " "))
 	
 	} finally {
 	
@@ -182,5 +274,8 @@ module.exports =  {
 	insertAll,
 	replaceOne,
 	updateOne,
-	bulkWrite	
+	bulkWrite,
+	listCollections, 
+	drop,
+	aggregate_raw	
 }

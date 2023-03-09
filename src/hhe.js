@@ -34,140 +34,353 @@ const getTasks = async (req, res) => {
 
 		let options = req.body.options
 		
-				options.pipeline = [
-					  {
-					    '$sort': {
-					      'Examination ID': 1
-					    }
-					  }, {
-					    '$group': {
-					      '_id': {
-					        'Examination ID': '$Examination ID', 
-					        'TODO': '$TODO'
-					      }, 
-					      'count': {
-					        '$count': {}
-					      }, 
-					      '1st expert': {
-					        '$addToSet': '$1st expert'
-					      }, 
-					      '2nd expert': {
-					        '$addToSet': '$2nd expert'
-					      }, 
-					      'CMO': {
-					        '$addToSet': '$CMO'
-					      }, 
-					      'updates': {
-					        '$push': {
-					          'updated at': '$updated at', 
-					          'updated by': '$updated by'
-					        }
-					      }
-					    }
-					  }, {
-					    '$project': {
-					      'Examination ID': '$_id.Examination ID', 
-					      'TODO': '$_id.TODO', 
-					      'count': 1, 
-					      '1st expert': 1, 
-					      '2nd expert': 1, 
-					      'CMO': 1, 
-					      'updates': 1
-					    }
-					  }, {
-					    '$group': {
-					      '_id': {
-					        'Examination ID': '$Examination ID'
-					      }, 
-					      'stat': {
-					        '$addToSet': {
-					          'TODO': '$TODO', 
-					          'count': '$count'
-					        }
-					      }, 
-					      '1st expert': {
-					        '$addToSet': '$1st expert'
-					      }, 
-					      '2nd expert': {
-					        '$addToSet': '$2nd expert'
-					      }, 
-					      'CMO': {
-					        '$addToSet': '$CMO'
-					      }, 
-					      'updates': {
-					        '$addToSet': '$updates'
-					      }
-					    }
-					  }, {
-					    '$project': {
-					      'Examination ID': '$_id.Examination ID', 
-					      'stat': 1, 
-					      '1st expert': {
-					        '$reduce': {
-					          'input': '$1st expert', 
-					          'initialValue': [], 
-					          'in': {
-					            '$setUnion': [
-					              '$$value', '$$this'
-					            ]
-					          }
-					        }
-					      }, 
-					      '2nd expert': {
-					        '$reduce': {
-					          'input': '$2nd expert', 
-					          'initialValue': [], 
-					          'in': {
-					            '$setUnion': [
-					              '$$value', '$$this'
-					            ]
-					          }
-					        }
-					      }, 
-					      'CMO': {
-					        '$reduce': {
-					          'input': '$CMO', 
-					          'initialValue': [], 
-					          'in': {
-					            '$setUnion': [
-					              '$$value', '$$this'
-					            ]
-					          }
-					        }
-					      }, 
-					      '_id': 0, 
-					      'updates': {
-					        '$arrayElemAt': [
-					          '$updates', 0
-					        ]
-					      }
-					    }
-					  }, {
-					    '$lookup': {
-					      'from': options.db.examinationCollection, 
-					      'localField': 'Examination ID', 
-					      'foreignField': 'patientId', 
-					      'as': 'examinationState'
-					    }
-					  }, {
-					    '$project': {
-					      'Examination ID': 1, 
-					      'state': {
-					        '$first': '$examinationState.state'
-					      }, 
-					      'stat': 1, 
-					      '1st expert': 1, 
-					      '2nd expert': 1, 
-					      'CMO': 1, 
-					      '_id': 0, 
-					      'updates': 1
-					    }
-					  }, {
-					    '$sort': {
-					      'Examination ID': 1
-					    }
-					  }
-					]
+		options.pipeline = [
+			  {
+			    '$group': {
+			      '_id': {
+			        'Examination ID': '$Examination ID', 
+			        'TODO': '$TODO'
+			      }, 
+			      'count': {
+			        '$count': {}
+			      }, 
+			      '1st expert': {
+			        '$addToSet': '$1st expert'
+			      }, 
+			      '2nd expert': {
+			        '$addToSet': '$2nd expert'
+			      }, 
+			      'CMO': {
+			        '$addToSet': '$CMO'
+			      }, 
+			      'updates': {
+			        '$push': {
+			          'updated at': '$updated at', 
+			          'updated by': '$updated by'
+			        }
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': '$_id.Examination ID', 
+			      'TODO': '$_id.TODO', 
+			      'count': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      'updates': 1, 
+			      'maxDate': {
+			        '$max': '$updates.updated at'
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': 1, 
+			      'TODO': 1, 
+			      'count': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      'update': {
+			        '$arrayElemAt': [
+			          {
+			            '$filter': {
+			              'input': '$updates', 
+			              'as': 'item', 
+			              'cond': {
+			                '$eq': [
+			                  '$maxDate', '$$item.updated at'
+			                ]
+			              }
+			            }
+			          }, 0
+			        ]
+			      }
+			    }
+			  }, {
+			    '$group': {
+			      '_id': {
+			        'Examination ID': '$Examination ID'
+			      }, 
+			      'stat': {
+			        '$addToSet': {
+			          'TODO': '$TODO', 
+			          'count': '$count'
+			        }
+			      }, 
+			      '1st expert': {
+			        '$addToSet': '$1st expert'
+			      }, 
+			      '2nd expert': {
+			        '$addToSet': '$2nd expert'
+			      }, 
+			      'CMO': {
+			        '$addToSet': '$CMO'
+			      }, 
+			      'updates': {
+			        '$addToSet': '$update'
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': '$_id.Examination ID', 
+			      'stat': 1, 
+			      '1st expert': {
+			        '$reduce': {
+			          'input': '$1st expert', 
+			          'initialValue': [], 
+			          'in': {
+			            '$setUnion': [
+			              '$$value', '$$this'
+			            ]
+			          }
+			        }
+			      }, 
+			      '2nd expert': {
+			        '$reduce': {
+			          'input': '$2nd expert', 
+			          'initialValue': [], 
+			          'in': {
+			            '$setUnion': [
+			              '$$value', '$$this'
+			            ]
+			          }
+			        }
+			      }, 
+			      'CMO': {
+			        '$reduce': {
+			          'input': '$CMO', 
+			          'initialValue': [], 
+			          'in': {
+			            '$setUnion': [
+			              '$$value', '$$this'
+			            ]
+			          }
+			        }
+			      }, 
+			      '_id': 0, 
+			      'updates': 1, 
+			      'maxDate': {
+			        '$max': '$updates.updated at'
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': 1, 
+			      'stat': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      'update': {
+			        '$arrayElemAt': [
+			          {
+			            '$filter': {
+			              'input': '$updates', 
+			              'as': 'item', 
+			              'cond': {
+			                '$eq': [
+			                  '$maxDate', '$$item.updated at'
+			                ]
+			              }
+			            }
+			          }, 0
+			        ]
+			      }
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': 1, 
+			      'stat': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      'updated at': '$update.updated at', 
+			      'updated by': '$update.updated by'
+			    }
+			  }, {
+			    '$lookup': {
+			      'from': options.db.examinationCollection, 
+			      'localField': 'Examination ID', 
+			      'foreignField': 'patientId', 
+			      'as': 'examinationState'
+			    }
+			  }, {
+			    '$project': {
+			      'Examination ID': 1, 
+			      'state': {
+			        '$first': '$examinationState.state'
+			      }, 
+			      'stat': 1, 
+			      '1st expert': 1, 
+			      '2nd expert': 1, 
+			      'CMO': 1, 
+			      '_id': 0, 
+			      'updated at': 1, 
+			      'updated by': 1
+			    }
+			  }, 
+			  {
+			    '$sort': 
+			    	(options.latest)
+			    		? 	{
+			    				"updated at": -1
+			    			}
+			    		:	
+						    {
+						      'Examination ID': 1
+						    }
+			  },
+			]	
+
+
+
+				// options.pipeline = [
+				// 	  {
+				// 	    '$sort': 
+				// 	    	(options.latest)
+				// 	    		? 	{
+				// 	    				"updated at": -1
+				// 	    			}
+				// 	    		:	
+				// 				    {
+				// 				      'Examination ID': 1
+				// 				    }
+				// 	  }, 
+				// 	  {
+				// 	    '$group': {
+				// 	      '_id': {
+				// 	        'Examination ID': '$Examination ID', 
+				// 	        'TODO': '$TODO'
+				// 	      }, 
+				// 	      'count': {
+				// 	        '$count': {}
+				// 	      }, 
+				// 	      '1st expert': {
+				// 	        '$addToSet': '$1st expert'
+				// 	      }, 
+				// 	      '2nd expert': {
+				// 	        '$addToSet': '$2nd expert'
+				// 	      }, 
+				// 	      'CMO': {
+				// 	        '$addToSet': '$CMO'
+				// 	      }, 
+				// 	      'updates': {
+				// 	        '$push': {
+				// 	          'updated at': '$updated at', 
+				// 	          'updated by': '$updated by'
+				// 	        }
+				// 	      }
+				// 	    }
+				// 	  }, {
+				// 	    '$project': {
+				// 	      'Examination ID': '$_id.Examination ID', 
+				// 	      'TODO': '$_id.TODO', 
+				// 	      'count': 1, 
+				// 	      '1st expert': 1, 
+				// 	      '2nd expert': 1, 
+				// 	      'CMO': 1, 
+				// 	      'updates': 1
+				// 	    }
+				// 	  }, {
+				// 	    '$group': {
+				// 	      '_id': {
+				// 	        'Examination ID': '$Examination ID'
+				// 	      }, 
+				// 	      'stat': {
+				// 	        '$addToSet': {
+				// 	          'TODO': '$TODO', 
+				// 	          'count': '$count'
+				// 	        }
+				// 	      }, 
+				// 	      '1st expert': {
+				// 	        '$addToSet': '$1st expert'
+				// 	      }, 
+				// 	      '2nd expert': {
+				// 	        '$addToSet': '$2nd expert'
+				// 	      }, 
+				// 	      'CMO': {
+				// 	        '$addToSet': '$CMO'
+				// 	      }, 
+				// 	      'updates': {
+				// 	        '$addToSet': '$updates'
+				// 	      }
+				// 	    }
+				// 	  }, {
+				// 	    '$project': {
+				// 	      'Examination ID': '$_id.Examination ID', 
+				// 	      'stat': 1, 
+				// 	      '1st expert': {
+				// 	        '$reduce': {
+				// 	          'input': '$1st expert', 
+				// 	          'initialValue': [], 
+				// 	          'in': {
+				// 	            '$setUnion': [
+				// 	              '$$value', '$$this'
+				// 	            ]
+				// 	          }
+				// 	        }
+				// 	      }, 
+				// 	      '2nd expert': {
+				// 	        '$reduce': {
+				// 	          'input': '$2nd expert', 
+				// 	          'initialValue': [], 
+				// 	          'in': {
+				// 	            '$setUnion': [
+				// 	              '$$value', '$$this'
+				// 	            ]
+				// 	          }
+				// 	        }
+				// 	      }, 
+				// 	      'CMO': {
+				// 	        '$reduce': {
+				// 	          'input': '$CMO', 
+				// 	          'initialValue': [], 
+				// 	          'in': {
+				// 	            '$setUnion': [
+				// 	              '$$value', '$$this'
+				// 	            ]
+				// 	          }
+				// 	        }
+				// 	      }, 
+				// 	      '_id': 0, 
+				// 	      'updates': {
+				// 	        '$arrayElemAt': [
+				// 	          '$updates', 0
+				// 	        ]
+				// 	      }
+				// 	    }
+				// 	  }, {
+				// 	    '$lookup': {
+				// 	      'from': options.db.examinationCollection, 
+				// 	      'localField': 'Examination ID', 
+				// 	      'foreignField': 'patientId', 
+				// 	      'as': 'examinationState'
+				// 	    }
+				// 	  }, {
+				// 	    '$project': {
+				// 	      'Examination ID': 1, 
+				// 	      'state': {
+				// 	        '$first': '$examinationState.state'
+				// 	      }, 
+				// 	      'stat': 1, 
+				// 	      '1st expert': 1, 
+				// 	      '2nd expert': 1, 
+				// 	      'CMO': 1, 
+				// 	      '_id': 0, 
+				// 	      'updates': 1
+				// 	    }
+				// 	  }, 
+				// 	  // {
+				// 	  //   '$sort': 	(options.latest)
+				// 	  //   		? 	{
+				// 	  //   				"updated at": -1
+				// 	  //   			}
+				// 	  //   		:	
+				// 			// 	    {
+				// 			// 	      'Examination ID': 1
+				// 			// 	    }
+				// 	  // }
+				// 	]
 
 
 
@@ -697,7 +910,7 @@ const updateTasks = async (req, res) => {
 	            r.TODO = resolveTodo(r)
 	            r["assigned to"] = resolveAssigment(r)
 	        }   
-	    	console.log(r["updated at"], r["updated by"], assignator)    
+	    	// console.log(r["updated at"], r["updated by"], assignator)    
 	        return r    
 	    })
     	
