@@ -929,6 +929,36 @@ const updateTasks = async (req, res) => {
 	    	commands
 	    })
 
+
+	    const events = records.map( r => {
+		     
+		     const id = uuid()
+
+		     return {
+		        replaceOne:{
+		            filter:{
+		                id
+		            },
+		            replacement: {
+		            	id, 
+						labelingId: r.id,
+						todo: r.TODO,
+						assignedBy: r["updated by"],
+						assignedTo: r["assigned to"],
+						date: r["updated at"]
+		            }
+		        
+		        }
+		    }    
+	    })
+
+	    await mongodb.bulkWrite({
+	    	db: options.db,
+	    	collection: `${options.db.name}.workflow-events`,
+	    	events
+	    })
+
+
 	    res.send(result)
 
 	} catch (e) {

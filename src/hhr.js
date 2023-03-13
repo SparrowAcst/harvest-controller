@@ -152,6 +152,7 @@ const getEvents = async (req, res) => {
 			collection: `${options.db.name}.${options.db.labelingCollection}`,
 			pipeline: options.pipeline 
 	    })
+
  
 	    res.send({
 	    	options,

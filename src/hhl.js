@@ -1,6 +1,7 @@
 const mongodb = require("./mongodb")
 const {extend, sortBy, uniq, flattenDeep, find} = require("lodash")
-const moment = require("moment") 
+const moment = require("moment")
+const uuid = require("uuid").v4 
 
 const getDatasetList = async (req, res) => {
 	try {
@@ -235,6 +236,26 @@ const updateRecord = async (req, res) => {
             },
             data: options.record
 		})
+
+		const event = {
+			id: uuid(), 
+			labelingId: options.record.id,
+			todo: options.record.TODO,
+			assignedBy: options.record["updated by"],
+			assignedTo: options.record["assigned to"],
+			date: options.record["updated at"] 
+		}
+
+		await mongodb.replaceOne({
+			db: options.db,
+			collection: `${options.db.name}.workflow-events`,
+			filter:{
+                id: event.id
+            },
+            data: event
+		})
+
+
 
 		res.send(result)
 
