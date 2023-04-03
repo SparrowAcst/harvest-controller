@@ -1,0 +1,127 @@
+- $query:
+    
+    - $from: harvest1
+    
+    - $match:
+        label: Age (Years)
+        operation: ">"                                                                                                             
+        value: 18,                                                                                                                
+    
+    - $match:
+        label: Age (Years)
+        operation: <                                                                                                             
+        value: 24,                                                                                                                
+    
+    - $out: a    
+
+
+- $query:
+    
+    - $from: harvest1
+    
+    - $match:
+        label: Ethnicity                                                                                                         
+        operation: $in                                                                                                           
+        value:                                                                                                                     
+          - White                                                                                                                      
+
+    - $out: b
+
+
+- $aggregate:
+
+    - $from: a
+
+    - $hist:
+        values:
+          - Age (Years)                                                                                                                
+          - Sex at Birth                                                                                                               
+          - Ethnicity 
+        into: hist1                                                                                                                    
+    
+    - $count:
+        values:
+          - Age (Years)                                                                                                                
+          - Sex at Birth                                                                                                               
+          - Ethnicity 
+        into: count1                                                                                                                    
+
+- $aggregate:
+
+    - $from: b
+
+    - $hist:
+        values:
+          - Age (Years)                                                                                                                
+          - Sex at Birth                                                                                                               
+          - Ethnicity 
+        into: hist2                                                                                                                    
+    
+    - $count:
+        values:
+          - Age (Years)                                                                                                                
+          - Sex at Birth                                                                                                               
+          - Ethnicity 
+        into: count2
+
+    - $custom:
+        transform: >
+          data => ({})
+        into: custom2  
+    
+    - $timeline:
+        date: 
+          value: date
+          trunc:
+            unit: day
+            binSize: 2
+        groupBy:
+          - aaaa
+          - bbbb 
+        into: tl1  
+
+
+- page:
+
+    - header:
+        title: Page title
+    
+    - section:
+        decoration:
+          justify: center
+        columns: 
+          - decoration: 
+              width: 6
+              justify: 
+            widgets:
+              -$text: >
+                  #Topic 1st level
+
+                  ##Topic 2nd level
+
+                  ###Topic 3th level
+
+                  paragraph paragraph paragraph paragraph paragraph paragraph
+
+                  **Total**: ${count2.Ethnicity} items  
+    - section:
+        columns: 
+          
+          - widgets:
+              - chart:
+                  from: hist2
+                  type: pie # bar, line, custom
+
+          - widgets:
+              - text: >
+                  ### Data in table
+
+    - $table:
+        from: hist2    
+        transform: >
+            context => {
+              return [{}]
+            }    
+    - $text: >
+        ### Data in table
+        

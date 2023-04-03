@@ -37,6 +37,12 @@ const runScript = async (req, res) => {
 //////////////////////        
         let resultTempCollectionName
 
+        console.log(JSON.stringify({
+            script,
+            context
+        }, null, " "))
+
+
         for(let index = 0; index < script.length; index++){
             let query = buildQuery(context, script[index])
             context = query.context

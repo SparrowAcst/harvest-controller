@@ -940,7 +940,8 @@ const updateTasks = async (req, res) => {
 		                id
 		            },
 		            replacement: {
-		            	id, 
+		            	id,
+		            	dataset: options.dataset, 
 						labelingId: r.id,
 						todo: r.TODO,
 						assignedBy: r["updated by"],

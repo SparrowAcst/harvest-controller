@@ -369,6 +369,21 @@ const operationMapper = {
 
 		return [res]
 	},
+	
+	$dateTrunc: (context, op) => {
+		let res = {
+			$set: {} 
+		}
+		res.set[op.$dateTrunc.label] = {
+			$dateTrunc:{
+				date: `$${op.$dateTrunc.date}`,
+				unit: op.$dateTrunc.unit,
+				binSize:op.$dateTrunc.binSize
+			}
+		}
+		
+		return [res]
+	},
 
 	
 
@@ -516,6 +531,84 @@ const operationMapper = {
 	    }
 	],
 
+	$timeline: (context, op) => {
+
+		let pipeline = []
+
+		let current = {
+			$sort:{}
+		}
+		current.$sort[op.$timeline.date] = 1
+		pipeline.push(current)
+
+		current = {
+			$group:{
+				_id: {},
+				count:{
+					$count:{}
+				}
+			}
+		}
+		current.$group._id[op.$timeline.date] = `$${op.$timeline.date}`
+		op.$timeline.groupBy.forEach(key => {
+			current.$group._id[key] = `$${key}`
+		})
+		pipeline.push(current)
+
+		current = {
+			$project:{
+				_id: 0,
+				value: "$count"
+			}
+		}
+		current.$project[op.$timeline.date] = `$${op.$timeline.date}`
+		op.$timeline.groupBy.forEach(key => {
+			current.$project._id[key] = `$${key}`
+		})
+		pipeline.push(current)
+
+		current = {
+			$sort:{}
+		}
+		current.$sort[op.$timeline.date] = 1
+		pipeline.push(current)
+
+		current = {
+			$group:{
+				_id: {},
+				data:{
+					$push:{
+						value: '$value'		
+					}
+				}
+			}
+		}
+		op.$timeline.groupBy.forEach(key => {
+			current.$group._id[key] = `$${key}`
+		})
+		current.$group.data.$push[op.$timeline.date] = `$${op.$timeline.date}`
+		pipeline.push(current)
+
+		current = {
+			$project:{
+				name:{
+					$concat:[]
+				},
+				data: "$data"
+			}
+		}
+
+		op.$timeline.groupBy.forEach(key => {
+			current.$project.name.$concat[key].push(`$_id.${key}`)
+			current.$project.name.$concat[key].push("/")
+		})
+
+		pipeline.push(current)
+
+		return pipeline
+
+	}
+
 
 }
 
@@ -530,12 +623,28 @@ const normalizeOperation = (context, operation) => {
 
 const buildPipeline = (context, query) => {
 	
+	const defOperations = [
+		"$union",
+		"$intersect",
+		"$minus",
+		"$unique",
+		"$match",
+		"$project",
+		"$hist",
+		"$sort",
+		"$limit",
+		"$sample",
+		"$count",
+		"$dateTrunc",
+		"$timeline"
+	]	
+	
+
 	let tempTable
 	let collection
 	let pipeline = []
 	let source
 	context.temp = context.temp || [] 
-
 
 	query.forEach( operation  => {
 		
@@ -557,61 +666,10 @@ const buildPipeline = (context, query) => {
 			return
 		}
 		
-		if( operation.$union ){
+		if( find(defOperations, o => operation[o]) ){
 			pipeline = pipeline.concat(normalizeOperation(context,operation))
 			return
 		}
-
-		if( operation.$intersect ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$minus ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$unique ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}		
-
-		if( operation.$match ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$project ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$hist ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$sort ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$limit ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$sample ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-
-		if( operation.$count ){
-			pipeline = pipeline.concat(normalizeOperation(context,operation))
-			return
-		}
-		
 
 		throw new Error(`Query Builder on:\n ${JSON.stringify(operation, null," ")}\n Statement not supported.`)
 

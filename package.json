@@ -18,9 +18,11 @@
   "homepage": "https://github.com/SparrowAcst/harvest-controller#readme",
   "dependencies": {
     "@geek/spinner": "^1.0.2",
+    "axios": "^1.3.4",
     "express": "^4.18.2",
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.0",
+    "googleapis": "^114.0.0",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

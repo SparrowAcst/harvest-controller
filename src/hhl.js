@@ -238,7 +238,8 @@ const updateRecord = async (req, res) => {
 		})
 
 		const event = {
-			id: uuid(), 
+			id: uuid(),
+			dataset: options.dataset, 
 			labelingId: options.record.id,
 			todo: options.record.TODO,
 			assignedBy: options.record["updated by"],

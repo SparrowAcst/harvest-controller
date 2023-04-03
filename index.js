@@ -31,6 +31,11 @@ const hhpf = require("./src/hhpf")
 router.post("/hhpf/get-dataset-list/", hhpf.getDatasetList)
 router.post("/hhpf/get-grants/", hhpf.getGrants)
 router.post("/hhpf/get-forms/", hhpf.getForms)
+router.get("/hhpf/get-file/", hhpf.getFile)
+router.get("/hhpf/get-file/:id", hhpf.getFile)
+router.get("/hhpf/file/", hhpf.getFile)
+router.get("/hhpf/file/:id", hhpf.getFile)
+
 
 ////////////////////////////////////////////////////////////////////////////
 const hhl = require("./src/hhl")
