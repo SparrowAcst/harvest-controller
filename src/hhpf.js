@@ -193,6 +193,7 @@ const getForms = async (req, res) => {
 	            patient: find(forms, f => f.formType == "patient"),
 	            ekg: find(forms, f => f.formType == "ekg"),
 	            echo: find(forms, f => f.formType == "echo"),
+	            attachements: find(forms, f => f.formType == "attachements")
 	        }
 	    } else {
 	        result = {}
