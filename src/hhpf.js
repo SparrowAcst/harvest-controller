@@ -2,44 +2,44 @@ const mongodb = require("./mongodb")
 const {extend, sortBy, uniq, flattenDeep, find} = require("lodash")
 const moment = require("moment") 
 
-const { google } = require("googleapis")
-const path = require("path")
+// const { google } = require("googleapis")
+// const path = require("path")
 
-const key = require(path.join(__dirname,"../../../sync-data/.config/key/gd/gd.key.json"))
+// const key = require(path.join(__dirname,"../../../sync-data/.config/key/gd/gd.key.json"))
 
-const jwtClient = new google.auth.JWT(
-  key.client_email,
-  null,
-  key.private_key,
-  ["https://www.googleapis.com/auth/drive"],
-  null
-);
+// const jwtClient = new google.auth.JWT(
+//   key.client_email,
+//   null,
+//   key.private_key,
+//   ["https://www.googleapis.com/auth/drive"],
+//   null
+// );
 
-const drive = google.drive({version: 'v3', auth: jwtClient});
+// const drive = google.drive({version: 'v3', auth: jwtClient});
 
 
-const getFile = async (req, response) => {
+// const getFile = async (req, response) => {
 	
-	let id = req.query.id || req.params.id
+// 	let id = req.query.id || req.params.id
 	
-	let metadata = await drive.files.get(
-	    { 
-	    	fileId: id,
-	    	fields: 'id, name, mimeType, md5Checksum, createdTime, modifiedTime, parents, size',
-	    }
-	)
+// 	let metadata = await drive.files.get(
+// 	    { 
+// 	    	fileId: id,
+// 	    	fields: 'id, name, mimeType, md5Checksum, createdTime, modifiedTime, parents, size',
+// 	    }
+// 	)
 	
-	let res = await drive.files.get(
-		{ fileId: id, alt: 'media' },
-		{ responseType: 'stream' }
-	)    	
+// 	let res = await drive.files.get(
+// 		{ fileId: id, alt: 'media' },
+// 		{ responseType: 'stream' }
+// 	)    	
 	
-	response.setHeader('Content-Length', metadata.data.size);
-	response.setHeader('Content-Type', metadata.data.mimeType);
-	response.setHeader('Content-Disposition', 'inline')
+// 	response.setHeader('Content-Length', metadata.data.size);
+// 	response.setHeader('Content-Type', metadata.data.mimeType);
+// 	response.setHeader('Content-Disposition', 'inline')
 
-	res.data.pipe(response)
-}
+// 	res.data.pipe(response)
+// }
 
 
 
@@ -213,5 +213,5 @@ module.exports = {
 	getDatasetList,
 	getGrants,
 	getForms,
-	getFile
+	// getFile
 }
