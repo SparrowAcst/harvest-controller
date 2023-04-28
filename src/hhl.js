@@ -306,17 +306,16 @@ const findCollection = async dataPath => {
 const updateSegmentation = async (req, res) => {
 	try {
 
-		let options = req.body
-		let dataPath = req.path
-		let segmentation = req.segmentation
+		let dataPath = req.body.path
+		let segmentation = req.body.segmentation
 
 		if(!dataPath) {
-			res.status(503).send("path required")
+			res.status(400).send(`"path" required in\n${JSON.stringify(req.body, null, " ")}`)
 			return
 		}
 
 		if(!segmentation) {
-			res.status(503).send("segmentation required")
+			res.status(400).send(`"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`)
 			return
 		}
 
