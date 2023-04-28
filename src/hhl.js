@@ -1,7 +1,14 @@
 const mongodb = require("./mongodb")
 const {extend, sortBy, uniq, flattenDeep, find} = require("lodash")
 const moment = require("moment")
-const uuid = require("uuid").v4 
+const uuid = require("uuid").v4
+const YAML = require("js-yaml")
+const fs = require("fs")
+const path = require("path")
+
+const CONFIG = YAML.load(fs.readFileSync(path.join(__dirname,`../../sync-data/.config/db/mongodb.conf.yml`)).toString().replace(/\t/gm, " "))
+
+
 
 const getDatasetList = async (req, res) => {
 	try {
@@ -266,6 +273,81 @@ const updateRecord = async (req, res) => {
 			requestBody: req.body
 		})
 	}
+}
+
+
+const findCollection = async dataPath => {
+	let datasets = await mongodb.aggregate({
+			db: CONFIG.db,
+			collection: `sparrow.dataset`,
+			pipeline: []
+	})
+	
+	let collections = datasets.map( d => d.settings.db.labelingCollection)
+	let res
+
+	for( let i=0; (i < collections.length) && !res; i++){
+		let f = await mongodb.aggregate({
+				db: CONFIG.db,
+				collection: `sparrow.${collections[i]}`,
+				pipeline: [{
+					$match:{
+						path: dataPath
+					}
+				}]
+		})
+		if(f.length > 0) res = collections[i]
+	}
+	
+	return res
+
+}
+
+const updateSegmentation = async (req, res) => {
+	try {
+
+		let options = req.body
+		let dataPath = req.path
+		let segmentation = req.segmentation
+
+		if(!dataPath) {
+			res.status(503).send("path required")
+			return
+		}
+
+		if(!segmentation) {
+			res.status(503).send("segmentation required")
+			return
+		}
+
+		let collection = await findCollection(dataPath)
+
+		if(!collection){
+			res.status(404).send(`path "${dataPath}" not found`)
+		}
+
+		
+		const result = await mongodb.updateOne({
+			db: CONFIG.db,
+			collection: `sparrow.${collection}`,
+			filter:{
+                path: dataPath
+            },
+
+            data: {
+            	segmentation
+            }
+		})
+
+
+		res.send(result)
+
+	} catch (e) {
+		res.status(503).send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
 }	
 	
 	
@@ -276,5 +358,6 @@ module.exports = {
 	getForms,
 	getRecord,
 	getMetadata,
-	updateRecord
+	updateRecord,
+	updateSegmentation
 }

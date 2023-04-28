@@ -46,6 +46,8 @@ router.post("/hhl/get-forms/", hhl.getForms)
 router.post("/hhl/get-record/", hhl.getRecord)
 router.post("/hhl/get-metadata/", hhl.getMetadata)
 router.post("/hhl/update-record/", hhl.updateRecord)
+router.post("/hhl/segmentation/", hhl.updateSegmentation)
+
 
 ////////////////////////////////////////////////////////////////////////////
 
