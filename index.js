@@ -26,6 +26,19 @@ router.post("/hhr/get-available-values/", hhr.getAvailableValues)
 
 
 ////////////////////////////////////////////////////////////////////////////
+const hhs = require("./src/hhs")
+
+router.post("/hhs/get-dataset-list/", hhs.getDatasetList)
+router.post("/hhs/get-grants/", hhs.getGrants)
+router.post("/hhs/get-stat/", hhs.getStat)
+router.post("/hhs/get-events/", hhs.getEvents)
+router.post("/hhs/get-team/", hhs.getTeam)
+router.post("/hhs/get-forms/", hhs.getForms)
+router.post("/hhs/get-available-values/", hhs.getAvailableValues)
+
+
+
+////////////////////////////////////////////////////////////////////////////
 const hhpf = require("./src/hhpf")
 
 router.post("/hhpf/get-dataset-list/", hhpf.getDatasetList)
