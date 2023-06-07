@@ -51,6 +51,18 @@ router.post("/hhpf/get-forms/", hhpf.getForms)
 
 
 ////////////////////////////////////////////////////////////////////////////
+const hhf = require("./src/hhf")
+
+router.post("/hhf/get-grants/", hhf.getGrants)
+router.post("/hhf/get-forms/", hhf.getForms)
+router.post("/hhf/update-forms/", hhf.updateForms)
+router.post("/hhf/sync-forms/", hhf.syncExaminations)
+router.post("/hhf/lock-forms/", hhf.lockForms)
+router.post("/hhf/unlock-forms/", hhf.unlockForms)
+
+
+
+////////////////////////////////////////////////////////////////////////////
 const hhl = require("./src/hhl")
 
 router.post("/hhl/get-dataset-list/", hhl.getDatasetList)
