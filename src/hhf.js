@@ -312,6 +312,48 @@ const updateForms = async (req, res) => {
 	}
 }
 
+
+const getExaminationList = async (req, res) => {
+
+	let options = req.body.options
+
+	let availableForms =  await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.forms`,
+			pipeline:  [
+	          {
+	            '$match': {
+	              'examination.state': "pending"
+	            }
+	          }, 
+	          {
+			    $project:
+			      {
+			        _id: 0,
+			        "Patient ID": "$examination.patientId",
+			        "Patient Form": "$completeness.Patient Form",
+			        "EKG Form": "$completeness.EKG Form",
+			        "Echo Form": "$completeness.Echo Form",
+			        "updated at": "$updated at",
+			        comment: "$comment",
+			        status: "$status",
+			        "updated by": "$updated by",
+			        "locked by": "$locked by",
+			        "locked at": "$locked at",
+			      },
+			  },
+			  {
+			    $sort:
+			      {
+			        "Patient ID": 1,
+			      },
+			  }
+	        ] 
+		})		
+
+		res.send(availableForms)
+}	
+
 const syncExaminations = async (req, res) => {
 
 	const controller = await require("../../sync-data/src/controller")({
@@ -523,6 +565,7 @@ module.exports = {
 	getForms,
 	updateForms,
 	syncExaminations,
+	getExaminationList,
 	lockForms,
 	unlockForms
 }

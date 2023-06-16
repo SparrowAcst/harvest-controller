@@ -55,6 +55,8 @@ const hhf = require("./src/hhf")
 
 router.post("/hhf/get-grants/", hhf.getGrants)
 router.post("/hhf/get-forms/", hhf.getForms)
+router.post("/hhf/get-list/", hhf.getExaminationList)
+
 router.post("/hhf/update-forms/", hhf.updateForms)
 router.post("/hhf/sync-forms/", hhf.syncExaminations)
 router.post("/hhf/lock-forms/", hhf.lockForms)
