@@ -214,6 +214,8 @@ const getRecord = async (req, res) => {
 		res.send(result[0])
 
 	} catch (e) {
+
+		let options = req.body.options
 		
 		await seglog({
 
