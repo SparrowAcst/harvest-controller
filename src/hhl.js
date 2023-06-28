@@ -336,17 +336,17 @@ const findCollection = async dataPath => {
 }
 
 const seglog = async data => {
-	data.id = uuid()
-	data.createdAt = new Date()
-	const result = await mongodb.updateOne({
-		db: CONFIG.db,
-		collection: "sparrow.seglog",
-		filter:{
-            id: data.id
-        },
+	// data.id = uuid()
+	// data.createdAt = new Date()
+	// const result = await mongodb.updateOne({
+	// 	db: CONFIG.db,
+	// 	collection: "sparrow.seglog",
+	// 	filter:{
+ //            id: data.id
+ //        },
 
-        data
-	})
+ //        data
+	// })
 
 }
 

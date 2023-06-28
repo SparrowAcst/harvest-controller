@@ -234,6 +234,7 @@ const lockForms = async (req, res) => {
 const unlockForms = async (req, res) => {
 	try {
 		let options = JSON.parse(req.body).options
+		console.log("unlock", options)
 
 		let data = await mongodb.aggregate({
 			db: options.db,
@@ -253,6 +254,7 @@ const unlockForms = async (req, res) => {
 		})
 
 		data = data[0]
+		console.log("data", data)
 		if(data){
 			
 			delete data["locked by"]
@@ -265,10 +267,12 @@ const unlockForms = async (req, res) => {
 	            },
 	            data
 			})
-
+			console.log("result", result)
 			res.send(result)
 		
 		} else {		
+			console.log(`Examination ${options.examinationID} not available for user ${options.user.email}`)
+				
 			res.send ({
 				error: `Examination ${options.examinationID} not available for user ${options.user.email}`
 			})
@@ -276,6 +280,8 @@ const unlockForms = async (req, res) => {
 
 
 	} catch (e) {
+		console.log("ERROR",e.toString())
+			
 		res.send({ 
 			error: e.toString(),
 			requestBody: req.body
