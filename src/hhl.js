@@ -6,6 +6,7 @@ const YAML = require("js-yaml")
 const fs = require("fs")
 const path = require("path")
 
+
 const CONFIG = YAML.load(fs.readFileSync(path.join(__dirname,`../../sync-data/.config/db/mongodb.conf.yml`)).toString().replace(/\t/gm, " "))
 
 
@@ -303,6 +304,22 @@ const findCollection = async dataPath => {
 
 }
 
+const seglog = async data => {
+	data.id = uuid()
+	data.createdAt = new Date()
+	const result = await mongodb.updateOne({
+		db: CONFIG.db,
+		collection: "seglog",
+		filter:{
+            id: data.id
+        },
+
+        data
+	})
+
+}
+
+
 const updateSegmentation = async (req, res) => {
 	try {
 
@@ -310,11 +327,31 @@ const updateSegmentation = async (req, res) => {
 		let segmentation = req.body.segmentation
 
 		if(!dataPath) {
+			
+			await seglog({
+
+				status: 400,
+				dataPath,
+				segmentation,
+				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`
+			
+			})
+			
 			res.status(400).send(`"path" required in\n${JSON.stringify(req.body, null, " ")}`)
 			return
 		}
 
 		if(!segmentation) {
+			
+			await seglog({
+
+				status: 400,
+				dataPath,
+				segmentation,
+				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`
+			
+			})
+
 			res.status(400).send(`"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`)
 			return
 		}
@@ -322,6 +359,16 @@ const updateSegmentation = async (req, res) => {
 		let collection = await findCollection(dataPath)
 
 		if(!collection){
+			
+			await seglog({
+
+				status: 404,
+				dataPath,
+				segmentation,
+				reason: `path "${dataPath}" not found`
+			
+			})
+
 			res.status(404).send(`path "${dataPath}" not found`)
 		}
 
@@ -338,10 +385,27 @@ const updateSegmentation = async (req, res) => {
             }
 		})
 
+		await seglog({
+
+			status: 200,
+			dataPath,
+			segmentation
+		
+		})
 
 		res.send(result)
 
 	} catch (e) {
+		
+		await seglog({
+
+			status: 503,
+			dataPath,
+			segmentation,
+			reason: e.toString()
+		
+		})
+
 		res.status(503).send({ 
 			error: e.toString(),
 			requestBody: req.body
