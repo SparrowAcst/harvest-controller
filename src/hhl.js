@@ -195,9 +195,38 @@ const getRecord = async (req, res) => {
 	        ]
 		})
 
+
+		await seglog({
+
+			status: 200,
+			user: options.user.name,
+			collection: options.db.labelingCollection,
+			recordID: options.recordId,
+			path: (result[0]) ? result[0].path : "N/A", 
+			request:"record",
+			action: options.action,
+			
+		
+		})
+
+
+
 		res.send(result[0])
 
 	} catch (e) {
+		
+		await seglog({
+
+			status: 503,
+			user: options.user.name,
+			collection: options.db.labelingCollection,
+			recordID: options.recordId,
+			request:"record",
+			action: options.action,
+			reason: e.toString()
+		
+		})
+
 		res.send({ 
 			error: e.toString(),
 			requestBody: req.body
@@ -332,7 +361,7 @@ const updateSegmentation = async (req, res) => {
 
 				status: 400,
 				dataPath,
-				segmentation,
+				request:"segmentation",
 				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`
 			
 			})
@@ -347,7 +376,7 @@ const updateSegmentation = async (req, res) => {
 
 				status: 400,
 				dataPath,
-				segmentation,
+				request:"segmentation",
 				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`
 			
 			})
@@ -364,7 +393,7 @@ const updateSegmentation = async (req, res) => {
 
 				status: 404,
 				dataPath,
-				segmentation,
+				request:"segmentation",
 				reason: `path "${dataPath}" not found`
 			
 			})
@@ -389,7 +418,7 @@ const updateSegmentation = async (req, res) => {
 
 			status: 200,
 			dataPath,
-			segmentation
+			request:"segmentation"
 		
 		})
 
@@ -401,7 +430,7 @@ const updateSegmentation = async (req, res) => {
 
 			status: 503,
 			dataPath,
-			segmentation,
+			request:"segmentation",
 			reason: e.toString()
 		
 		})
