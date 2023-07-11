@@ -44,7 +44,7 @@ const hhpf = require("./src/hhpf")
 router.post("/hhpf/get-dataset-list/", hhpf.getDatasetList)
 router.post("/hhpf/get-grants/", hhpf.getGrants)
 router.post("/hhpf/get-forms/", hhpf.getForms)
-// router.get("/hhpf/get-file/", hhpf.getFile)
+router.post("/hhpf/update-diagnosis/", hhpf.updateDiagnosisTags)
 // router.get("/hhpf/get-file/:id", hhpf.getFile)
 // router.get("/hhpf/file/", hhpf.getFile)
 // router.get("/hhpf/file/:id", hhpf.getFile)
@@ -74,6 +74,16 @@ router.post("/hhl/get-record/", hhl.getRecord)
 router.post("/hhl/get-metadata/", hhl.getMetadata)
 router.post("/hhl/update-record/", hhl.updateRecord)
 router.post("/hhl/segmentation/", hhl.updateSegmentation)
+
+////////////////////////////////////////////////////////////////////////////
+
+const hht = require("./src/hht")
+
+router.post("/hht/get-tags/", hht.getTags)
+router.post("/hht/update-tags/", hht.updateTags)
+
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////

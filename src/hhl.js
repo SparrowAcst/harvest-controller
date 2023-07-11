@@ -267,6 +267,22 @@ const updateRecord = async (req, res) => {
 
 		let options = req.body.options
 
+		const prev = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.labelingCollection}`,
+			pipeline: [   
+	            {
+	                $match: { id: options.record.id }
+	            },
+	            {
+	                $project:{ _id: 0 }
+	            }
+	                    
+	        ]
+		})
+
+		options.record.segmentation = prev[0].segmentation
+
 		const result = await mongodb.replaceOne({
 			db: options.db,
 			collection: `${options.db.name}.${options.db.labelingCollection}`,

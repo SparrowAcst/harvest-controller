@@ -1,5 +1,7 @@
 const mongo = require('mongodb').MongoClient
 
+
+
 const normalize = str => {
 	const d = str.split(".")
 	return {
@@ -157,6 +159,34 @@ const removeAll = async options => {
 		if(client) client.close()
 	
 	}    
+}
+
+
+const deleteMany = async options => {
+	let client
+
+	try {
+		
+		const conf = normalize(options.collection)
+		client = await mongo.connect(options.db.url, {
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true
+		})
+	
+		await client
+				.db(conf.dbName)
+				.collection(conf.collectionName)
+				.deleteMany(options.filter)
+	
+	} catch (e) {
+		console.log(e.toString())
+		throw new Error(e)
+
+	} finally {
+	
+		if(client) client.close()
+	
+	}    
 } 
 
 const insertAll = async options => {
@@ -277,5 +307,6 @@ module.exports =  {
 	bulkWrite,
 	listCollections, 
 	drop,
-	aggregate_raw	
+	aggregate_raw,
+	deleteMany	
 }

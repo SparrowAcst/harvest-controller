@@ -99,6 +99,32 @@ const getGrants = async (req, res) => {
 	}
 }
 
+
+const updateDiagnosisTags = async (req, res) => {
+	
+	try {
+	
+		let options = req.body.options
+		let result = await mongodb.updateOne({
+		 	db: options.db,
+		 	collection: `${options.db.name}.${options.db.formCollection}`,
+		 	filter: { id: options.formId },
+		 	data: { "data.en.diagnosisTags": options.diagnosisTags }
+		})
+		res.send(result)
+	
+	} catch (e) {
+	
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	
+	}	 
+
+}
+
+
 const getForms = async (req, res) => {
 	try {
 		
@@ -163,7 +189,7 @@ const getForms = async (req, res) => {
 	            let f = find(data.forms, d => d.type == type)
 	            if(f && f.data){
 	                let form  = f.data.en || f.data.uk || f.data
-	                if(form) return extend(form, { formType: type} )
+	                if(form) return extend(form, { formType: type, id:f.id} )
 	            }
 	        }).filter( f => f)
 	        
@@ -213,5 +239,6 @@ module.exports = {
 	getDatasetList,
 	getGrants,
 	getForms,
+	updateDiagnosisTags
 	// getFile
 }
