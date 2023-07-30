@@ -1,50 +1,8 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep, find, difference, isArray, maxBy, keys, first, isUndefined} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, find, difference, isArray, maxBy, keys, first, isUndefined, groupBy} = require("lodash")
 const moment = require("moment") 
 
-
-
-
-// const { google } = require("googleapis")
-// const path = require("path")
-
-// const key = require(path.join(__dirname,"../../../sync-data/.config/key/gd/gd.key.json"))
-
-// const jwtClient = new google.auth.JWT(
-//   key.client_email,
-//   null,
-//   key.private_key,
-//   ["https://www.googleapis.com/auth/drive"],
-//   null
-// );
-
-// const drive = google.drive({version: 'v3', auth: jwtClient});
-
-
-// const getFile = async (req, response) => {
-	
-// 	let id = req.query.id || req.params.id
-	
-// 	let metadata = await drive.files.get(
-// 	    { 
-// 	    	fileId: id,
-// 	    	fields: 'id, name, mimeType, md5Checksum, createdTime, modifiedTime, parents, size',
-// 	    }
-// 	)
-	
-// 	let res = await drive.files.get(
-// 		{ fileId: id, alt: 'media' },
-// 		{ responseType: 'stream' }
-// 	)    	
-	
-// 	response.setHeader('Content-Length', metadata.data.size);
-// 	response.setHeader('Content-Type', metadata.data.mimeType);
-// 	response.setHeader('Content-Disposition', 'inline')
-
-// 	res.data.pipe(response)
-// }
-
-
+const syncOneExamination = require("../../sync-data/src/actions/sync-one-examination")
 
 const getDatasetList = async (req, res) => {
 	try {
@@ -67,12 +25,51 @@ const getDatasetList = async (req, res) => {
 	} catch (e) {
 		res.send({ 
 			error: e.toString(),
+
 			requestBody: req.body
 		})
 	}	
 
 }
 
+
+const getRules = async (req, res) => {
+	try {
+		
+		let options = req.body.options
+
+		let prefix = options.examinationID.substr(0,3)
+		options = extend( {}, options, {
+			collection: `${options.db.name}.validation-rules`,
+			pipeline: [   
+	            {
+				    $match: {
+				        patientPrefix: prefix,
+				    }
+				},
+	            {
+	                $project:{ _id: 0 }
+	            }
+	        ] 
+		})
+	
+		let rules = await mongodb.aggregate(options)
+		rules = (rules[0]) ? rules[0] : {
+			recordings:[],
+			files:[]
+		}
+
+
+		res.send(rules)
+	 
+
+	 } catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
+}		
 
 const getGrants = async (req, res) => {
 	try {
@@ -156,7 +153,11 @@ const getForms = async (req, res) => {
 				data.readonly = false
 				res.send(data)
 			} else {
-				data.readonly = true
+
+				/////////////////////////////////////////////////
+				// data.readonly = true
+				/////////////////////////////////////////////////
+				
 				res.send(data)
 			}
 		} else {		
@@ -234,7 +235,7 @@ const lockForms = async (req, res) => {
 const unlockForms = async (req, res) => {
 	try {
 		let options = JSON.parse(req.body).options
-		console.log("unlock", options)
+		// console.log("unlock", options)
 
 		let data = await mongodb.aggregate({
 			db: options.db,
@@ -254,7 +255,7 @@ const unlockForms = async (req, res) => {
 		})
 
 		data = data[0]
-		console.log("data", data)
+		// console.log("data", data)
 		if(data){
 			
 			delete data["locked by"]
@@ -267,11 +268,11 @@ const unlockForms = async (req, res) => {
 	            },
 	            data
 			})
-			console.log("result", result)
+			// console.log("result", result)
 			res.send(result)
 		
 		} else {		
-			console.log(`Examination ${options.examinationID} not available for user ${options.user.email}`)
+			// console.log(`Examination ${options.examinationID} not available for user ${options.user.email}`)
 				
 			res.send ({
 				error: `Examination ${options.examinationID} not available for user ${options.user.email}`
@@ -340,12 +341,17 @@ const getExaminationList = async (req, res) => {
 			        "Patient Form": "$completeness.Patient Form",
 			        "EKG Form": "$completeness.EKG Form",
 			        "Echo Form": "$completeness.Echo Form",
+			        "Recordings": "$completeness.Recordings",
+			        "Files": "$completeness.Files",
+			        
 			        "updated at": "$updated at",
 			        comment: "$comment",
 			        status: "$status",
 			        "updated by": "$updated by",
 			        "locked by": "$locked by",
 			        "locked at": "$locked at",
+			        // "recordings":"$recordings",
+			        // "files":"$files"
 			      },
 			  },
 			  {
@@ -360,6 +366,58 @@ const getExaminationList = async (req, res) => {
 		res.send(availableForms)
 }	
 
+
+const syncAssets = async (req, res) => {
+
+		let options = req.body.options
+
+
+		let forms = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.collection.forms}`,
+			pipeline:  [
+	          {
+	            '$match': {
+	              'examination.patientId': options.examinationID
+	            }
+	          },
+	          {
+	            '$project': {
+	              '_id': 0
+	            }
+	          }
+	        ] 
+		})
+
+		if(!forms || !forms[0]) {
+			res.send({})
+			return
+		}
+
+		examination = forms[0].examination
+
+
+	const controller = await require("../../sync-data/src/controller")({
+	    console,
+	    firebaseService:{
+	      noprefetch: true
+	    }  
+	  })
+
+	// console.log(examination)
+	let assets = await controller.getFbAssets(examination.id)
+	
+	assets.files = assets.files.map( a => {
+		a.source = "Stethophone Data"
+		return a
+	})
+
+	res.send(assets)
+
+}
+
+
+
 const syncExaminations = async (req, res) => {
 
 	const controller = await require("../../sync-data/src/controller")({
@@ -371,11 +429,18 @@ const syncExaminations = async (req, res) => {
 
 	const fb = controller.firebaseService
 
+
+
+
 	const prepareForms = async examination => {
+		
 		examination = await controller.expandExaminations(...[examination])
 
 		examination = (isArray(examination)) ? examination[0] : examination
 		
+		// console.log("examination", examination.$extention.assets)
+
+
 		let formRecords = examination.$extention.forms.map( f => {
 		    let res = extend({}, f)
 		    res.examinationId = examination.id
@@ -401,6 +466,13 @@ const syncExaminations = async (req, res) => {
 	         "comment": examination.comment,
 	         "state": examination.state
 		  }
+
+		  // let recordings = groupBy(examination.$extention.assets.filter(d => d.type == 'recording'), d=> d.device)
+
+		  // form.recordings = keys(recordings).map( key => ({device: key, count: recordings[key].length}))
+		  
+		  // form.attachements = examination.$extention.assets.filter(d => d.type != 'recording')
+		  
 		  return form
 		  
 	}
@@ -491,11 +563,40 @@ const syncExaminations = async (req, res) => {
 
 		
 		if(forms.length > 0){
-			await mongodb.insertAll({
-				db: options.db,
-				collection: `${options.db.name}.forms`,
-				data: forms
-			})	
+
+			for(let i = 0; i < forms.length; i++){
+				let form = forms[i]
+				let f = await mongodb.aggregate({
+					db: options.db,
+					collection: `${options.db.name}.forms`,
+					pipeline:  [
+			          {
+			            '$match': {
+			              'examination.patientId': form.examination.patientId
+			            }
+			          }
+			        ] 
+				})
+
+				if( f.length == 0 ){
+					await mongodb.replaceOne({
+						db: options.db,
+						collection: `${options.db.name}.forms`,
+						filter: {'examination.patientId': form.examination.patientId},
+						data: form 
+					})
+				} else {
+					console.log(`Ignore create doublicate for ${form.examination.patientId}`)
+				}
+			}
+
+
+			// await mongodb.insertAll({
+			// 	db: options.db,
+			// 	collection: `${options.db.name}.forms`,
+			// 	data: forms
+			// })	
+		
 		}
 		
 		toBeLocked = examinations_mg.filter( e => toBeLocked.includes(e.patientId))
@@ -535,12 +636,18 @@ const syncExaminations = async (req, res) => {
 			        "Patient Form": "$completeness.Patient Form",
 			        "EKG Form": "$completeness.EKG Form",
 			        "Echo Form": "$completeness.Echo Form",
+			        "Recordings": "$completeness.Recordings",
+			        "Files": "$completeness.Files",
+			        
+			        
 			        "updated at": "$updated at",
 			        comment: "$comment",
 			        status: "$status",
 			        "updated by": "$updated by",
 			        "locked by": "$locked by",
 			        "locked at": "$locked at",
+			        // "recordings":"$recordings",
+			        // "files":"$attachements"
 			      },
 			  },
 			  {
@@ -565,6 +672,19 @@ const syncExaminations = async (req, res) => {
 
 } 
 
+
+const postSubmitOneExamination = async (req, res) => {
+	try {
+		
+		await syncOneExamination(req.body.settings)
+		res.status(200).send()
+
+	} catch (e) {
+		res.status(500).send(e.toString()+ e.stack)
+		console.log("postSubmitOneExamination", e.toString())
+	}
+}
+
 	
 module.exports = {
 	getGrants,
@@ -573,5 +693,8 @@ module.exports = {
 	syncExaminations,
 	getExaminationList,
 	lockForms,
-	unlockForms
+	unlockForms,
+	syncAssets,
+	getRules,
+	postSubmitOneExamination
 }

@@ -62,6 +62,11 @@ router.post("/hhf/sync-forms/", hhf.syncExaminations)
 router.post("/hhf/lock-forms/", hhf.lockForms)
 router.post("/hhf/unlock-forms/", hhf.unlockForms)
 
+router.post("/hhf/sync-assets/", hhf.syncAssets)
+
+router.post("/hhf/get-rules/", hhf.getRules)
+router.post("/hhf/submit/", hhf.postSubmitOneExamination)
+
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -96,5 +101,21 @@ router.post("/report/get-collections/", report.getCollections)
 
 router.get("/report/test/", report.test)
 router.post("/report/test/", report.test)
+
+////////////////////////////////////////////////////////////////////////////
+
+const uploader = require("./src/utils/multipart-upload/routes")
+router.get("/file/fileid", uploader.getFileId)
+router.get("/file/upload", uploader.getUpload)
+router.post("/file/upload", uploader.postUpload)
+router.post("/file/gd", uploader.postGd)
+router.get("/file/gd", uploader.getGd)
+router.post("/file/gd/folder", uploader.postGdCreateFolder)
+router.post("/file/gd/status", uploader.postGdStatus)
+
+router.post("/file/record/status", uploader.postUpdateRecordingStatus)
+router.post("/file/record", uploader.postUpdateRecording)
+
+// router.post("/file/:identifier", uploader.download)
 
 module.exports = router
