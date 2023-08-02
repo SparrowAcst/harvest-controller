@@ -34,22 +34,30 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
         }
     })
 
+    try {
+    
+        const targetDrive = await controller.googledriveService.create({
+            subject: backupConfig.subject
+        })
 
-    const targetDrive = await controller.googledriveService.create({
-        subject: backupConfig.subject
-    })
+        // await uploadToGD("./.tmp/uploads/angular.png", "TEST-UPLOADS", "images/angular.png")
 
-    // await uploadToGD("./.tmp/uploads/angular.png", "TEST-UPLOADS", "images/angular.png")
+        // console.log(`LOAD DIRS FOR TARGET DRIVE: ${backupConfig.location}/${homeDir}`)
+        await targetDrive.load(homeDir)
+        // console.log(`Upload FILE: ${fileSourcePath} into GD: ADE BACKUP/${homeDir}/${targetDir}`)
+        await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
 
-    // console.log(`LOAD DIRS FOR TARGET DRIVE: ${backupConfig.location}/${homeDir}`)
-    await targetDrive.load(homeDir)
-    // console.log(`Upload FILE: ${fileSourcePath} into GD: ADE BACKUP/${homeDir}/${targetDir}`)
-    await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
+        controller.close()
 
-    controller.close()
+        return targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
+    
+    } catch(e) {
 
-    return targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
+        controller.close()
 
+        return {error: e.toString()}
+    
+    }    
 }
 
 const getFileWriteStreamFromGD = async fileId => {
