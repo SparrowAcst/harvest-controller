@@ -132,6 +132,7 @@ const Resumable = class {
     let files = (await fsp.readdir(this.temporaryFolder)).filter(a => a.startsWith(template))
     files = sortBy(files, d => d.split(".")[1]*1)
     // console.log(files)
+    console.log("\n----- mergeUploads ----- into ", target, "\n" )
     const stream = fs.createWriteStream(target)
 
     for(const file of files){
@@ -212,7 +213,7 @@ const Resumable = class {
 
             var chunkFilename = this.getChunkFilename(requestMetadata.chunkNumber, requestMetadata.identifier);
             
-            // console.log("upload", chunkFilename)
+            console.log("\n----- upload -----", chunkFilename,"\n")
             
             let stream = await fs.createWriteStream(chunkFilename, {flags:'w'})
 

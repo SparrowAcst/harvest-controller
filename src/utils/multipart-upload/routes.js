@@ -178,9 +178,10 @@ const postGd = async (req, res) => {
           )  
           
           try {
+            console.log("\n----- UNLINK FILE -----",path.resolve(TARGET_DIR, options.source),"\n")
             await fsp.unlink(path.resolve(TARGET_DIR, options.source))
           } catch(e) {
-            // console.log("UNLINK FILE", e.toString())
+            console.log("\n----- UNLINK FILE -----", e.toString(),"\n")
             setTimeout(async () => {
               await fsp.unlink(path.resolve(TARGET_DIR, options.source))
             }, 10)

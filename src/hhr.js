@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep, find} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, find, last} = require("lodash")
 const moment = require("moment") 
 
 const getDatasetList = async (req, res) => {
@@ -353,6 +353,7 @@ const getForms = async (req, res) => {
 		data = data[0]
 
 	    if(data) {
+	        
 	        let formType = ["patient","echo","ekg"]
 	        let forms = formType.map( type => {
 	            let f = find(data.forms, d => d.type == type)
@@ -362,6 +363,40 @@ const getForms = async (req, res) => {
 	            }
 	        }).filter( f => f)
 	        
+	        let patientForm = find(forms, f => f.formType == "patient")
+
+	        if(patientForm){
+	        	if(patientForm.diagnosisTags){
+	        		if(patientForm.diagnosisTags.tags){
+	        			let tags = await mongodb.aggregate({
+							db: options.db,
+							collection: `${options.db.name}.tags`,
+							pipeline:[
+								{
+									$match: {
+										id: {
+											$in: patientForm.diagnosisTags.tags
+										}
+									}
+								},
+								{
+									$project: {
+										_id: 0,
+										name: 1
+									}
+								}	
+							]
+						})
+
+	        			patientForm.diagnosisTags.tags = tags.map( t => last(t.name.split("/"))) 
+
+	        		} else {
+						patientForm.diagnosisTags.tags = []	        			
+	        		}
+	        	}
+	        }
+
+
 	        let physician
 	        if( data.physician ){
 	            physician = data.physician[0]

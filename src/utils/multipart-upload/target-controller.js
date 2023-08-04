@@ -44,7 +44,8 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
 
         // console.log(`LOAD DIRS FOR TARGET DRIVE: ${backupConfig.location}/${homeDir}`)
         await targetDrive.load(homeDir)
-        // console.log(`Upload FILE: ${fileSourcePath} into GD: ADE BACKUP/${homeDir}/${targetDir}`)
+        
+        console.log(`\n----- COPY FILE ----- ${fileSourcePath} into GD: ${homeDir}/${targetDir}`, "\n\n")
         await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
 
         controller.close()
