@@ -155,7 +155,7 @@ const getForms = async (req, res) => {
 			} else {
 
 				/////////////////////////////////////////////////
-				// data.readonly = true
+				data.readonly = true
 				/////////////////////////////////////////////////
 				
 				res.send(data)
