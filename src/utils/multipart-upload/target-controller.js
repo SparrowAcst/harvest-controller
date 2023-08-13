@@ -48,13 +48,13 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
         console.log(`\n----- COPY FILE ----- ${fileSourcePath} into GD: ${homeDir}/${targetDir}`, "\n\n")
         await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
 
-        controller.close()
+        // controller.close()
 
         return targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
     
     } catch(e) {
 
-        controller.close()
+        // controller.close()
 
         return {error: e.toString()}
     
@@ -76,7 +76,7 @@ const getFileWriteStreamFromGD = async fileId => {
     })
 
     let stream = await targetDrive.geFiletWriteStream({ id: fileId })
-    controller.close()
+    // controller.close()
 
     return stream
 
