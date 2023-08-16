@@ -9,7 +9,8 @@ const Diff = jsondiffpatch.create({
 		"updated by",
 		"complete",
 		"_import",
-		"supd"
+		"supd",
+		"nextTodo"
 	].includes(name))
 })
 
