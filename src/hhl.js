@@ -5,7 +5,7 @@ const uuid = require("uuid").v4
 const YAML = require("js-yaml")
 const fs = require("fs")
 const path = require("path")
-
+const Diff = require("./utils/diff")
 
 const CONFIG = YAML.load(fs.readFileSync(path.join(__dirname,`../../sync-data/.config/db/mongodb.conf.yml`)).toString().replace(/\t/gm, " "))
 
@@ -329,17 +329,20 @@ const updateRecord = async (req, res) => {
 
 		const event = {
 			id: uuid(),
-			dataset: options.dataset, 
-			labelingId: options.record.id,
-			todo: options.record.TODO,
-			assignedBy: options.record["updated by"],
-			assignedTo: options.record["assigned to"],
-			date: options.record["updated at"] 
+			dataset: options.dataset,
+			collection: options.db.labelingCollection, 
+			recordingId: options.record.id,
+			path: options.record.path,
+			diff: Diff.diff(prev, options.record),
+			formattedDiff: Diff.format(Diff.diff(prev[0], options.record)),
+			user: options.user,
+			startedAt: options.session.startedAt,
+			stoppedAt: options.session.stoppedAt
 		}
 
 		await mongodb.replaceOne({
 			db: options.db,
-			collection: `${options.db.name}.workflow-events`,
+			collection: `${options.db.name}.changelog-recordings`,
 			filter:{
                 id: event.id
             },
@@ -356,6 +359,47 @@ const updateRecord = async (req, res) => {
 			requestBody: req.body
 		})
 	}
+}
+
+
+
+const getChangelog = async (req, res) => {
+	try {
+	
+		let options = req.body.options
+
+		const changelog = await mongodb.aggregate({
+				db: options.db,
+				collection: `${options.db.name}.changelog-recordings`,
+				pipeline: [
+				  {
+				    $match:
+				      {
+				        recordingId: options.recordingId,
+				      },
+				  },
+				  {
+				    $project:
+				      {
+				        _id: 0,
+				      },
+				  },
+				  {
+				    $sort:
+				      {
+				        startedAt: -1,
+				      },
+				  },
+				]
+			})
+
+		res.status(200).send(changelog)
+	
+	} catch (e) {
+	
+		res.status(500).send(e.toString())
+	
+	}	
 }
 
 
@@ -504,5 +548,6 @@ module.exports = {
 	getRecord,
 	getMetadata,
 	updateRecord,
-	updateSegmentation
+	updateSegmentation,
+	getChangelog
 }
