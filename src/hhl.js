@@ -332,6 +332,7 @@ const updateRecord = async (req, res) => {
 			dataset: options.dataset,
 			collection: options.db.labelingCollection, 
 			recordingId: options.record.id,
+			examinationId: options.record["Examination ID"],
 			path: options.record.path,
 			diff: Diff.diff(prev, options.record),
 			formattedDiff: Diff.format(Diff.diff(prev[0], options.record)),
