@@ -340,6 +340,7 @@ const updateRecord = async (req, res) => {
 			diff: Diff.diff(prev, options.record),
 			formattedDiff: Diff.format(Diff.diff(prev[0], options.record)),
 			user: options.user,
+			session: options.session.id,
 			startedAt: options.session.startedAt,
 			stoppedAt: options.session.stoppedAt
 		}
@@ -348,8 +349,10 @@ const updateRecord = async (req, res) => {
 			db: options.db,
 			collection: `${options.db.name}.changelog-recordings`,
 			filter:{
-                id: event.id
+                // id: event.id
+                session: event.session
             },
+            
             data: event
 		})
 
