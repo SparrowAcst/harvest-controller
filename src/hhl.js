@@ -230,37 +230,40 @@ const getRecord = async (req, res) => {
 	        ]
 		})
 
+		if(result.length == 0){
 
-		await seglog({
+			seglog({
+				status: 404,
+				request:"record",
+				reason: `record "${options.recordId}" not found`,
+				body: req.body
+			})
+
+			res.status(404).send(`record "${options.recordId}" not found`)
+				
+		}
+
+		seglog({
 
 			status: 200,
-			user: options.user.name,
-			collection: options.db.labelingCollection,
-			recordID: options.recordId,
-			path: (result[0]) ? result[0].path : "N/A", 
 			request:"record",
-			action: options.action,
-			
-		
+			body: req.body,
 		})
 
 
 
-		res.send(result[0])
+		res.status(200).send(result[0])
 
 	} catch (e) {
 
 		let options = req.body.options
 		
-		await seglog({
+		seglog({
 
 			status: 503,
-			user: options.user.name,
-			collection: options.db.labelingCollection,
-			recordID: options.recordId,
 			request:"record",
-			action: options.action,
-			reason: e.toString()
+			reason: e.toString(),
+			body: req.body
 		
 		})
 
@@ -431,18 +434,24 @@ const findCollection = async dataPath => {
 
 }
 
-const seglog = async data => {
-	// data.id = uuid()
-	// data.createdAt = new Date()
-	// const result = await mongodb.updateOne({
-	// 	db: CONFIG.db,
-	// 	collection: "sparrow.seglog",
-	// 	filter:{
- //            id: data.id
- //        },
+const seglog = data => {
 
- //        data
-	// })
+	setTimeout( async () => {
+		
+		data.id = uuid()
+		data.createdAt = new Date()
+
+		const result = await mongodb.updateOne({
+			db: CONFIG.db,
+			collection: "sparrow.seglog",
+			filter:{
+	            id: data.id
+	        },
+	        data
+		})
+
+	}, 10)
+	
 
 }
 
@@ -455,12 +464,12 @@ const updateSegmentation = async (req, res) => {
 
 		if(!dataPath) {
 			
-			await seglog({
+			seglog({
 
 				status: 400,
-				dataPath,
 				request:"segmentation",
-				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`
+				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`,
+				body: req.body
 			
 			})
 			
@@ -470,12 +479,12 @@ const updateSegmentation = async (req, res) => {
 
 		if(!segmentation) {
 			
-			await seglog({
+			seglog({
 
 				status: 400,
-				dataPath,
 				request:"segmentation",
-				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`
+				reason: `"segmentation" required in\n${JSON.stringify(req.body, null, " ")}`,
+				body: req.body
 			
 			})
 
@@ -487,13 +496,13 @@ const updateSegmentation = async (req, res) => {
 
 		if(!collection){
 			
-			await seglog({
+			seglog({
 
 				status: 404,
-				dataPath,
 				request:"segmentation",
-				reason: `path "${dataPath}" not found`
-			
+				reason: `path "${dataPath}" not found`,
+				body: req.body
+				
 			})
 
 			res.status(404).send(`path "${dataPath}" not found`)
@@ -512,24 +521,24 @@ const updateSegmentation = async (req, res) => {
             }
 		})
 
-		await seglog({
+		// seglog({
 
-			status: 200,
-			dataPath,
-			request:"segmentation"
+		// 	status: 200,
+		// 	dataPath,
+		// 	request:"segmentation"
 		
-		})
+		// })
 
 		res.send(result)
 
 	} catch (e) {
 		
-		await seglog({
+		 seglog({
 
 			status: 503,
-			dataPath,
 			request:"segmentation",
-			reason: e.toString()
+			reason: e.toString(),
+			body: req.body	
 		
 		})
 
