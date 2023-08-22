@@ -5,7 +5,7 @@ const uuid = require("uuid").v4
 const YAML = require("js-yaml")
 const fs = require("fs")
 const path = require("path")
-const Diff = require("./utils/diff")
+const { Diff, SegmentationDiff } = require("./utils/diff")
 
 const CONFIG = YAML.load(fs.readFileSync(path.join(__dirname,`../../sync-data/.config/db/mongodb.conf.yml`)).toString().replace(/\t/gm, " "))
 
@@ -410,6 +410,43 @@ const getChangelog = async (req, res) => {
 }
 
 
+const getProfile = async (req, res) => {
+	try {
+	
+		let options = req.body.options
+
+		console.log(options.user.profile)
+
+		const profile = await mongodb.aggregate({
+				db: options.db,
+				collection: `${options.db.name}.profiles`,
+				pipeline: [
+				  {
+				    $match:
+				      {
+				        name: options.user.profile,
+				      },
+				  },
+				  {
+				    $project:
+				      {
+				        _id: 0,
+				      },
+				  }				
+				]
+			})
+
+		res.status(200).send(profile[0])
+	
+	} catch (e) {
+	
+		res.status(500).send(e.toString())
+	
+	}	
+}
+
+
+
 const findCollection = async dataPath => {
 	let datasets = await mongodb.aggregate({
 			db: CONFIG.db,
@@ -512,6 +549,20 @@ const updateSegmentation = async (req, res) => {
 		}
 
 		
+		let updatedRecord = await mongodb.aggregate({
+			db: CONFIG.db,
+			collection: `sparrow.${collection}`,
+			pipeline: [   
+				{ 
+					$match:{
+						path: dataPath
+					}
+				}
+	        ]
+		})
+
+		updatedRecord = updatedRecord[0]
+
 		const result = await mongodb.updateOne({
 			db: CONFIG.db,
 			collection: `sparrow.${collection}`,
@@ -523,6 +574,32 @@ const updateSegmentation = async (req, res) => {
             	segmentation
             }
 		})
+
+		const event = {
+			id: uuid(),
+			type:"update segmentation",
+			collection, 
+			recordingId: updatedRecord.id,
+			examinationId: updatedRecord["Examination ID"],
+			path: updatedRecord.path,
+			segmentation,
+			startedAt: new Date(),
+			stoppedAt: new Date()
+		}
+
+		await mongodb.replaceOne({
+			db: CONFIG.db,
+			collection: `sparrow.changelog-recordings`,
+			filter:{
+                id: event.id
+            },
+            
+            data: event
+		})
+
+
+		
+
 
 		// seglog({
 
@@ -562,5 +639,6 @@ module.exports = {
 	getMetadata,
 	updateRecord,
 	updateSegmentation,
-	getChangelog
+	getChangelog,
+	getProfile
 }

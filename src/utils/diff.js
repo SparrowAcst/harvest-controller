@@ -62,7 +62,25 @@ Diff.format = (delta, parentKey) => {
 	return res
 }
 
-module.exports = Diff
+
+const SegmentationDiff = jsondiffpatch.create({
+	objectHash: (d, index)  => d.name || d.id || index,
+	// propertyFilter: name => !([
+	// 	"updated at",
+	// 	"updated by",
+	// 	"complete",
+	// 	"_import",
+	// 	"supd",
+	// 	"nextTodo"
+	// ].includes(name))
+})
+
+SegmentationDiff.format = Diff.format
+
+module.exports = {
+	Diff, 
+	SegmentationDiff
+}	
 	
 // {
 // 	format: Diff.format,

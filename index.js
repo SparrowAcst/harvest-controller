@@ -80,6 +80,7 @@ router.post("/hhl/get-metadata/", hhl.getMetadata)
 router.post("/hhl/update-record/", hhl.updateRecord)
 router.post("/hhl/segmentation/", hhl.updateSegmentation)
 router.post("/hhl/changelog/", hhl.getChangelog)
+router.post("/hhl/profile/", hhl.getProfile)
 
 
 

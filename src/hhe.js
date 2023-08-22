@@ -35,17 +35,6 @@ const getTasks = async (req, res) => {
 		let options = req.body.options
 
 		options.pipeline = [
-  // {
-  //   $match:
-  //     /**
-  //      * query: The query in MQL.
-  //      */
-  //     {
-  //       "Recording Informativeness": {
-  //         $exists: true,
-  //       },
-  //     },
-  // },
   {
     $group: {
       _id: {
@@ -232,11 +221,28 @@ const getTasks = async (req, res) => {
   },
   {
     $lookup: {
-      from: options.db.examinationCollection,
+      from: options.db.examinationCollection, //"yoda-exams",
       localField: "Examination ID",
       foreignField: "patientId",
       as: "examinationState",
     },
+  },
+  {
+    $lookup:
+      /**
+       * from: The target collection.
+       * localField: The local join field.
+       * foreignField: The target join field.
+       * as: The name for the results.
+       * pipeline: Optional pipeline to run on the foreign collection.
+       * let: Optional variables to use in the pipeline field stages.
+       */
+      {
+        from: options.db.formCollection, //"yoda-forms",
+        localField: "examinationState.0.id",
+        foreignField: "examinationId",
+        as: "forms",
+      },
   },
   {
     $project: {
@@ -244,15 +250,22 @@ const getTasks = async (req, res) => {
       state: {
         $first: "$examinationState.state",
       },
+      forms: {
+        $filter: {
+          input: "$forms",
+          as: "form",
+          cond: {
+            $eq: ["$$form.type", "patient"],
+          },
+        },
+      },
       stat: 1,
-      
-      "qty": {
-	    hist: "$informativeness",
-	  	total:{
-	    	$sum: "$stat.count"
-	  	}  
-	  },
-
+      qty: {
+        hist: "$informativeness",
+        total: {
+          $sum: "$stat.count",
+        },
+      },
       "1st expert": 1,
       "2nd expert": 1,
       CMO: 1,
@@ -262,11 +275,270 @@ const getTasks = async (req, res) => {
     },
   },
   {
+    $addFields:
+      /**
+       * newField: The new field name.
+       * expression: The new field expression.
+       */
+      {
+        dia: {
+          $first: "$forms.data.en.diagnosisTags",
+        },
+      },
+  },
+  // {
+  //   $match:
+  //     /**
+  //      * query: The query in MQL.
+  //      */
+  //     {
+  //       diagnosisTags: {
+  //         $exists: true,
+  //       },
+  //     },
+  // }
+  {
     $sort: {
       "updated at": -1,
     },
   },
 ]
+
+
+
+// [
+//   // {
+//   //   $match:
+//   //     /**
+//   //      * query: The query in MQL.
+//   //      */
+//   //     {
+//   //       "Recording Informativeness": {
+//   //         $exists: true,
+//   //       },
+//   //     },
+//   // },
+//   {
+//     $group: {
+//       _id: {
+//         "Examination ID": "$Examination ID",
+//         TODO: "$TODO",
+//         "Recording Informativeness":
+//           "$Recording Informativeness",
+//       },
+//       count: {
+//         $count: {},
+//       },
+//       "1st expert": {
+//         $addToSet: "$1st expert",
+//       },
+//       "2nd expert": {
+//         $addToSet: "$2nd expert",
+//       },
+//       CMO: {
+//         $addToSet: "$CMO",
+//       },
+//       // informativeness:{
+//       //   $push: "$Recording Informativeness"
+//       // },
+//       updates: {
+//         $push: {
+//           "updated at": "$updated at",
+//           "updated by": "$updated by",
+//         },
+//       },
+//     },
+//   },
+//   {
+//     $project: {
+//       "Examination ID": "$_id.Examination ID",
+//       TODO: "$_id.TODO",
+//       "Recording Informativeness":
+//         "$_id.Recording Informativeness",
+//       count: 1,
+//       "1st expert": 1,
+//       "2nd expert": 1,
+//       CMO: 1,
+//       updates: 1,
+//       maxDate: {
+//         $max: "$updates.updated at",
+//       },
+//     },
+//   },
+//   {
+//     $project: {
+//       "Examination ID": 1,
+//       TODO: 1,
+//       "Recording Informativeness": 1,
+//       count: 1,
+//       "1st expert": 1,
+//       "2nd expert": 1,
+//       CMO: 1,
+//       update: {
+//         $arrayElemAt: [
+//           {
+//             $filter: {
+//               input: "$updates",
+//               as: "item",
+//               cond: {
+//                 $eq: [
+//                   "$maxDate",
+//                   "$$item.updated at",
+//                 ],
+//               },
+//             },
+//           },
+//           0,
+//         ],
+//       },
+//     },
+//   },
+//   {
+//     $group: {
+//       _id: {
+//         "Examination ID": "$Examination ID",
+//       },
+//       stat: {
+//         $addToSet: {
+//           TODO: "$TODO",
+//           count: "$count",
+//         },
+//       },
+//       informativeness: {
+//         $addToSet: {
+//           value: "$Recording Informativeness",
+//           count: "$count",
+//         },
+//       },
+//       "1st expert": {
+//         $addToSet: "$1st expert",
+//       },
+//       "2nd expert": {
+//         $addToSet: "$2nd expert",
+//       },
+//       CMO: {
+//         $addToSet: "$CMO",
+//       },
+//       updates: {
+//         $addToSet: "$update",
+//       },
+//     },
+//   },
+//   {
+//     $project: {
+//       "Examination ID": "$_id.Examination ID",
+//       stat: 1,
+//       informativeness: 1,
+//       "1st expert": {
+//         $reduce: {
+//           input: "$1st expert",
+//           initialValue: [],
+//           in: {
+//             $setUnion: ["$$value", "$$this"],
+//           },
+//         },
+//       },
+//       "2nd expert": {
+//         $reduce: {
+//           input: "$2nd expert",
+//           initialValue: [],
+//           in: {
+//             $setUnion: ["$$value", "$$this"],
+//           },
+//         },
+//       },
+//       CMO: {
+//         $reduce: {
+//           input: "$CMO",
+//           initialValue: [],
+//           in: {
+//             $setUnion: ["$$value", "$$this"],
+//           },
+//         },
+//       },
+//       _id: 0,
+//       updates: 1,
+//       maxDate: {
+//         $max: "$updates.updated at",
+//       },
+//     },
+//   },
+//   {
+//     $project: {
+//       "Examination ID": 1,
+//       stat: 1,
+//       informativeness: 1,
+//       "1st expert": 1,
+//       "2nd expert": 1,
+//       CMO: 1,
+//       update: {
+//         $arrayElemAt: [
+//           {
+//             $filter: {
+//               input: "$updates",
+//               as: "item",
+//               cond: {
+//                 $eq: [
+//                   "$maxDate",
+//                   "$$item.updated at",
+//                 ],
+//               },
+//             },
+//           },
+//           0,
+//         ],
+//       },
+//     },
+//   },
+//   {
+//     $project: {
+//       "Examination ID": 1,
+//       stat: 1,
+//       informativeness: 1,
+//       "1st expert": 1,
+//       "2nd expert": 1,
+//       CMO: 1,
+//       "updated at": "$update.updated at",
+//       "updated by": "$update.updated by",
+//     },
+//   },
+//   {
+//     $lookup: {
+//       from: options.db.examinationCollection,
+//       localField: "Examination ID",
+//       foreignField: "patientId",
+//       as: "examinationState",
+//     },
+//   },
+//   {
+//     $project: {
+//       "Examination ID": 1,
+//       state: {
+//         $first: "$examinationState.state",
+//       },
+//       stat: 1,
+      
+//       "qty": {
+// 	    hist: "$informativeness",
+// 	  	total:{
+// 	    	$sum: "$stat.count"
+// 	  	}  
+// 	  },
+
+//       "1st expert": 1,
+//       "2nd expert": 1,
+//       CMO: 1,
+//       _id: 0,
+//       "updated at": 1,
+//       "updated by": 1,
+//     },
+//   },
+//   {
+//     $sort: {
+//       "updated at": -1,
+//     },
+//   },
+// ]
 
 		
 		// options.pipeline = [
