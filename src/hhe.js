@@ -1,6 +1,7 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep, minBy} = require("lodash")
-
+const { extend, sortBy, uniq, flattenDeep, minBy } = require("lodash")
+const { getPage } = require("./utils/paginate")
+const { hist } = require("./utils/hist")
 
 const getDatasetList = async (req, res) => {
 	try {
@@ -28,6 +29,421 @@ const getDatasetList = async (req, res) => {
 	}	
 
 }
+
+
+
+const getTasks1 = async (req, res) => {
+  try {
+
+    let options = req.body.options
+
+    // let paginationPipeline = [
+    //   {
+    //     $lookup:
+    //       {
+    //         from: options.db.labelingCollection,
+    //         localField: "patientId",
+    //         foreignField: "Examination ID",
+    //         pipeline: [
+    //           {
+    //             $project: {
+    //               _id: 0,
+    //               "updated at": 1,
+    //               update: {
+    //                 at: "$updated at",
+    //                 by: "$updated by",
+    //               },
+    //               "1st expert": 1,
+    //               "2nd expert": 1,
+    //             },
+    //           },
+    //         ],
+    //         as: "r",
+    //       },
+    //   },
+    //   {
+    //     $addFields:
+    //       {
+    //         "updated at": {
+    //           $max: "$r.updated at",
+    //         },
+    //         "1st expert": {
+    //           $map: {
+    //             input: "$r",
+    //             as: "item",
+    //             in: "$$item.1st expert",
+    //           },
+    //         },
+    //         "2nd expert": {
+    //           $map: {
+    //             input: "$r",
+    //             as: "item",
+    //             in: "$$item.2nd expert",
+    //           },
+    //         },
+    //         update: {
+    //           $map: {
+    //             input: "$r",
+    //             as: "item",
+    //             in: "$$item.update",
+    //           },
+    //         },
+    //       },
+    //   },
+    //   {
+    //     $addFields:
+    //       {
+    //         "updated by": {
+    //           $arrayElemAt: [
+    //             {
+    //               $filter: {
+    //                 input: "$update",
+    //                 as: "item",
+    //                 cond: {
+    //                   $eq: [
+    //                     "$updated at",
+    //                     "$$item.at",
+    //                   ],
+    //                 },
+    //               },
+    //             },
+    //             0,
+    //           ],
+    //         },
+    //       },
+    //   },
+    //   {
+    //     $project:
+    //       {
+    //         _id: 0,
+    //         "Examination ID": "$patientId",
+    //         "1st expert": 1,
+    //         "2nd expert": 1,
+    //         "updated at": 1,
+    //         "updated by": "$updated by.by",
+    //       },
+    //   }
+    // ]
+
+    let paginationPipeline = [
+      {
+        $group:
+          {
+            _id: "$Examination ID",
+            "1st expert": {
+              $addToSet: "$1st expert",
+            },
+            "2nd expert": {
+              $addToSet: "$2nd expert",
+            },
+            update: {
+              $push: {
+                by: "$updated by",
+                at: {
+                  $toDate: "$updated at"
+                },
+              },
+            },
+            "updated at": {
+              $max: {
+                $toDate: "$updated at"
+              },
+            },
+          },
+      },
+      {
+        $addFields:
+          {
+            "updated by": {
+              $arrayElemAt: [
+                {
+                  $filter: {
+                    input: "$update",
+                    as: "item",
+                    cond: {
+                      $eq: [
+                        "$updated at",
+                        "$$item.at"
+                      ],
+                    },
+                  },
+                },
+                0,
+              ],
+            },
+          },
+      },
+      {
+        $project:
+          {
+            _id: 0,
+            "Examination ID": "$_id",
+            "1st expert": 1,
+            "2nd expert": 1,
+            "updated at": 1,
+            "updated by": "$updated by.by",
+          },
+      },
+    ]
+
+    let userFilter = (options.me)
+      ? [
+          {
+              '$match': {
+                '$or': [
+                  {
+                    'updated by': options.me
+                  }, {
+                    '1st expert': options.me
+                  }, {
+                    '2nd expert': options.me
+                  }, {
+                    'CMO': options.me
+                  }
+                ]
+              }
+          }    
+      ]
+      : []
+
+    // console.log("---------------0------------------")  
+
+    let data = await mongodb.aggregate(extend({}, options, {
+        collection: `${options.db.name}.${options.db.labelingCollection}`,
+        pipeline: paginationPipeline
+              .concat(options.eventData.filter)
+              .concat(userFilter)
+              .concat([
+                {
+                  $project:{
+                    "Examination ID": 1,
+                    "updated at": 1
+                  }  
+                }
+              ])
+    }))
+
+    // console.log("---------------1------------------")  
+    
+    let count = data.length
+      
+      options.eventData = extend(options.eventData, {
+          total: count,
+          pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
+      })
+
+    let exams = getPage(
+        data, 
+        options.eventData.skip, 
+        options.eventData.limit,
+        d => new Date(d["updated at"]),
+        d => d["Examination ID"],
+        "desc"
+    ) 
+  
+    let nestedPipeline = options.excludeFilter.concat(
+      [
+        {
+          $project: {
+            _id: 0,
+            "updated at": {
+              $toDate: "$updated at"
+            },
+            update: {
+              at: {
+                $toDate: "$updated at"
+              },
+              by: "$updated by",
+            },
+            "Recording Informativeness": 1,
+            "1st expert": 1,
+            "2nd expert": 1,
+            TODO: 1,
+          },
+        }
+      ]
+    )
+
+
+    let mainPipeline = [
+        {
+          $match:
+            {
+              patientId: {
+                $in: exams
+              },
+            },
+        },
+        {
+          $lookup:
+            {
+              from: options.db.labelingCollection,
+              localField: "patientId",
+              foreignField: "Examination ID",
+              pipeline: nestedPipeline,
+              as: "r",
+            },
+        },
+        {
+          $addFields:
+            {
+              "updated at": {
+                $max: "$r.updated at"
+              },
+              "1st expert": {
+                $map: {
+                  input: "$r",
+                  as: "item",
+                  in: "$$item.1st expert",
+                },
+              },
+              "2nd expert": {
+                $map: {
+                  input: "$r",
+                  as: "item",
+                  in: "$$item.2nd expert",
+                },
+              },
+              qty: {
+                $map: {
+                  input: "$r",
+                  as: "item",
+                  in: "$$item.Recording Informativeness",
+                },
+              },
+              TODO: {
+                $map: {
+                  input: "$r",
+                  as: "item",
+                  in: "$$item.TODO",
+                },
+              },
+              update: {
+                $map: {
+                  input: "$r",
+                  as: "item",
+                  in: "$$item.update",
+                },
+              },
+            },
+        },
+        {
+          $addFields:
+            {
+              "updated by": {
+                $arrayElemAt: [
+                  {
+                    $filter: {
+                      input: "$update",
+                      as: "item",
+                      cond: {
+                        $eq: [
+                          "$updated at",
+                          "$$item.at"
+                        ],
+                      },
+                    },
+                  },
+                  0,
+                ],
+              },
+            },
+        },
+        {
+          $lookup:
+            {
+              from: options.db.formCollection,
+              localField: "id",
+              foreignField: "examinationId",
+              pipeline: [
+                {
+                  $match: {
+                    type: "patient",
+                  },
+                },
+                {
+                  $project: {
+                    _id: 0,
+                    dia: "$data.en.diagnosisTags",
+                  },
+                },
+              ],
+              as: "dia",
+            },
+        },
+        {
+          $project:
+            {
+              _id: 0,
+              id: 1,
+              state: 1,
+              "Examination ID": "$patientId",
+              qty: 1,
+              TODO: 1,
+              "1st expert": 1,
+              "2nd expert": 1,
+              "updated at": 1,
+              "updated by": "$updated by.by",
+              dia: {
+                $arrayElemAt: ["$dia.dia", 0],
+              },
+            },
+        },
+        {
+          $sort:{
+            "updated at": -1
+          }
+        }
+      ]
+
+  // console.log(JSON.stringify(mainPipeline, null, ' '))
+
+
+  ////////////////////////////////////////////////////////////////////////
+
+    const ddata = await mongodb.aggregate(extend({}, options, {
+      collection: `${options.db.name}.${options.db.examinationCollection}`,
+      pipeline: mainPipeline 
+    })) 
+
+// console.log("---------------------3---------------------------")
+// console.log(ddata.length)
+
+    const result = {
+        options,
+        collection: ddata.map( d => {
+            
+            d.Recordings = d["1st expert"].length
+
+            d["1st expert"] = sortBy(uniq(flattenDeep(d["1st expert"]))).filter( d => d)
+            d["2nd expert"] = sortBy(uniq(flattenDeep(d["2nd expert"]))).filter( d => d)
+            d["CMO"] = sortBy(uniq(flattenDeep(d["CMO"]))).filter( d => d)
+            
+            d.stat = {
+              stat: hist(d.TODO, d => d, "TODO", "count"),
+              total: d.TODO.length 
+            }
+
+            d.qty =   {
+              hist: hist(d.qty, d => d, "value", "count"),
+              total: d.qty.length 
+            }
+
+            return d
+        })
+    }
+
+      res.send(result)
+
+  } catch (e) {
+    res.send({ 
+      error: e.toString(),
+      requestBody: req.body
+    })
+  }
+}
+
+
 
 const getTasks = async (req, res) => {
 	try {
@@ -1481,7 +1897,7 @@ const updateTasks = async (req, res) => {
 	
 module.exports = {
 	getDatasetList,
-	getTasks,
+	getTasks: getTasks1,
 	getGrants,
 	getStat,
 	getSyncStat,
@@ -1489,3 +1905,139 @@ module.exports = {
 	updateTasks,
 	getOrganizations
 }
+
+
+
+
+// [
+//   // {
+//   //   $count: "string",
+//   // }
+//   {
+//     $project: {
+//       _id: 0,
+//       id: 1,
+//       "Examination ID": "$patientId",
+//       state: 1,
+//     },
+//   },
+//   {
+//     $lookup: {
+      // from: "harvest2",
+      // localField: "Examination ID",
+      // foreignField: "Examination ID",
+      // pipeline: [
+      //   {
+      //     $project: {
+      //       _id: 0,
+      //       "1st expert": 1,
+      //       "2nd expert": 1,
+      //       "updated at": 1,
+      //       "updated by": 1,
+      //       TODO: 1,
+      //       "Recording Informativeness": 1,
+      //     },
+      //   },
+      // ],
+      // as: "records",
+//     },
+//   },
+//   {
+//     $addFields: {
+//       "1st expert": {
+//         $map: {
+//           input: "$records",
+//           as: "r",
+//           in: "$$r.1st expert",
+//         },
+//       },
+//       "2nd expert": {
+//         $map: {
+//           input: "$records",
+//           as: "r",
+//           in: "$$r.2nd expert",
+//         },
+//       },
+//       "updated at": {
+//         $max: "$records.updated at",
+//       },
+//       updates: {
+//         $map: {
+//           input: "$records",
+//           as: "r",
+//           in: {
+//             by: "$$r.updated by",
+//             at: "$$r.updated at",
+//           },
+//         },
+//       },
+//       TODO: {
+//         $map: {
+//           input: "$records",
+//           as: "r",
+//           in: "$$r.TODO",
+//         },
+//       },
+//       qty: {
+//         $map: {
+//           input: "$records",
+//           as: "r",
+//           in: "$$r.Recording Informativeness",
+//         },
+//       },
+//     },
+//   },
+//   // {
+//   //   $sort: {
+//   //     "updated at": -1,
+//   //   },
+//   // }
+//   {
+//     $skip: 0,
+//   },
+//   {
+//     $limit: 50,
+//   },
+//   {
+//     $lookup: {
+//       from: "form2",
+//       localField: "id",
+//       foreignField: "examinationId",
+//       as: "forms",
+//       pipeline: [
+//         {
+//           $match: {
+//             type: "patient",
+//           },
+//         },
+//       ],
+//     },
+//   },
+//   {
+//     $addFields: {
+//       diagnosisTags:
+//         "$forms.0.data.en.diagnosisTags",
+//     },
+//   },
+//   {
+//     $addFields: {
+//       dia: {
+//         $first: "$forms.data.en.diagnosisTags",
+//       },
+//     },
+//   },
+//   // {
+//   //   $match: {
+//   //     dia: {
+//   //       $exists: true,
+//   //     },
+//   //   },
+//   // }
+//   {
+//     $project: {
+//       forms: 0,
+//       diagnosisTags: 0,
+//       records: 0,
+//     },
+//   },
+// ]
