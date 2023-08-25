@@ -1897,7 +1897,7 @@ const updateTasks = async (req, res) => {
 	
 module.exports = {
 	getDatasetList,
-	getTasks: getTasks1,
+	getTasks, //: getTasks1,
 	getGrants,
 	getStat,
 	getSyncStat,
