@@ -173,17 +173,24 @@ const getTasks1 = async (req, res) => {
             },
           },
       },
+      // {
+      //   $project:
+      //     {
+      //       _id: 0,
+      //       "Examination ID": "$_id",
+      //       "1st expert": 1,
+      //       "2nd expert": 1,
+      //       "updated at": 1,
+      //       "updated by": "$updated by.by",
+      //     },
+      // },
       {
-        $project:
-          {
-            _id: 0,
-            "Examination ID": "$_id",
-            "1st expert": 1,
-            "2nd expert": 1,
-            "updated at": 1,
-            "updated by": "$updated by.by",
-          },
-      },
+        $project:{
+          _id: 0,
+          "Examination ID": "$_id",
+          "updated at": 1
+        }  
+      }
     ]
 
     let userFilter = (options.me)
@@ -208,20 +215,29 @@ const getTasks1 = async (req, res) => {
 
     // console.log("---------------0------------------")  
 
+  // console.log(options.excludeFilter)
+  // console.log(options.eventData.filter)
+  // console.log(userFilter)
+  // console.log(paginationPipeline)
+          
+
+
+  // console.log(JSON.stringify(options.excludeFilter 
+  //             .concat(options.eventData.filter)
+  //             .concat(userFilter)
+  //             .concat(paginationPipeline)
+  //             , null, ' '))
+
+
     let data = await mongodb.aggregate(extend({}, options, {
         collection: `${options.db.name}.${options.db.labelingCollection}`,
-        pipeline: paginationPipeline
-              .concat(options.eventData.filter)
+        pipeline: (options.excludeFilter || [] )
+              .concat(options.eventData.filter || [])
               .concat(userFilter)
-              .concat([
-                {
-                  $project:{
-                    "Examination ID": 1,
-                    "updated at": 1
-                  }  
-                }
-              ])
+              .concat(paginationPipeline)
+              
     }))
+
 
     // console.log("---------------1------------------")  
     
@@ -1897,7 +1913,7 @@ const updateTasks = async (req, res) => {
 	
 module.exports = {
 	getDatasetList,
-	getTasks, //: getTasks1,
+	getTasks: getTasks1,
 	getGrants,
 	getStat,
 	getSyncStat,
