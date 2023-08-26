@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep, find, difference, isArray, maxBy, keys, first, isUndefined, groupBy} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, find, difference, isArray, maxBy, keys, first, isUndefined, groupBy, isString} = require("lodash")
 const moment = require("moment") 
 
 const syncOneExamination = require("../../sync-data/src/actions/sync-one-examination")
@@ -234,7 +234,7 @@ const lockForms = async (req, res) => {
 
 const unlockForms = async (req, res) => {
 	try {
-		let options = JSON.parse(req.body).options
+		let options = (isString(req.body)) ? JSON.parse(req.body).options : req.body.options
 		// console.log("unlock", options)
 
 		let data = await mongodb.aggregate({
