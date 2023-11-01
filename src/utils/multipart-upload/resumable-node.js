@@ -228,7 +228,13 @@ const Resumable = class {
               let done = 
                 ( await this.testAllChunkExists(requestMetadata.totalChunks, requestMetadata.identifier) )
                 && this.processed[path.resolve(this.temporaryFolder, info.filename)]
-             
+              
+
+              // console.log("PROCESSED:", path.resolve(this.temporaryFolder, info.filename), ":", this.processed[path.resolve(this.temporaryFolder, info.filename)])  
+              // console.log("ALL CHUNKS:", requestMetadata.totalChunks, " : ", requestMetadata.identifier, " : ", ( await this.testAllChunkExists(requestMetadata.totalChunks, requestMetadata.identifier) ))
+              // console.log("DONE: ", info.filename, " : ", done)
+
+
               if( done ){
                 delete this.processed[path.resolve(this.temporaryFolder, info.filename)]
                 // console.log("DONE", requestMetadata)

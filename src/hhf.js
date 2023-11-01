@@ -638,7 +638,7 @@ const syncExaminations = async (req, res) => {
 			        "Echo Form": "$completeness.Echo Form",
 			        "Recordings": "$completeness.Recordings",
 			        "Files": "$completeness.Files",
-			        
+			        "Protocol":"$protocol",
 			        
 			        "updated at": "$updated at",
 			        comment: "$comment",
@@ -676,6 +676,7 @@ const syncExaminations = async (req, res) => {
 const postSubmitOneExamination = async (req, res) => {
 	try {
 		
+		console.log("submit", req.body.settings)
 		await syncOneExamination(req.body.settings)
 		res.status(200).send()
 

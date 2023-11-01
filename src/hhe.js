@@ -400,6 +400,7 @@ const getTasks1 = async (req, res) => {
               "2nd expert": 1,
               "updated at": 1,
               "updated by": "$updated by.by",
+              "protocol": 1,
               dia: {
                 $arrayElemAt: ["$dia.dia", 0],
               },
@@ -1712,7 +1713,8 @@ const getSyncExaminations = async (req, res) => {
 			      }, 
 			      "updatedAt":"$updatedAt",
 			      "synchronizedAt":"$synchronizedAt",
-			      'state': '$state', 
+			      'state': '$state',
+            "protocol":"$protocol", 
 			      'validation': '$_validation',
 			    }
 			  }, {

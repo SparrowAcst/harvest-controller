@@ -337,7 +337,8 @@ const getForms = async (req, res) => {
 	              'dateTime': 1, 
 	              'patientId': 1, 
 	              'forms': 1, 
-	              'physician': 1, 
+	              'physician': 1,
+	              'protocol': 1, 
 	              'recordCount': {
 	                '$size': '$records'
 	              }
@@ -414,6 +415,7 @@ const getForms = async (req, res) => {
 	        result = {
 	            examination:{
 	                patientId: data.patientId,
+	                protocol: data.protocol || "Complete Protocol",
 	                recordCount:data.recordCount,
 	                state: data.state,
 	                comment: data.comment,
