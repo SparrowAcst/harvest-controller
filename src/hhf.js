@@ -347,6 +347,7 @@ const getExaminationList = async (req, res) => {
 			        "updated at": "$updated at",
 			        comment: "$comment",
 			        status: "$status",
+			        protocol: "$protocol",
 			        "updated by": "$updated by",
 			        "locked by": "$locked by",
 			        "locked at": "$locked at",
