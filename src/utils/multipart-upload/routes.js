@@ -4,12 +4,12 @@ const fsp = require("fs").promises
 
 
 const TARGET_DIR = path.resolve('./.tmp/uploads/')
-console.log(`UPLOADS TARGET ${path.resolve(TARGET_DIR)}`)
+// console.log(`UPLOADS TARGET ${path.resolve(TARGET_DIR)}`)
 
 const Resumable = require('./resumable-node.js') //(TARGET_DIR);
 const resumable = new Resumable(TARGET_DIR)
 
-const { copyToGD, getFileWriteStreamFromGD, createFolder, updateRecording } = require("./target-controller")
+const { copyToGD, getFileWriteStreamFromGD, createFolder, updateRecording, getGdFileMetadata } = require("./target-controller")
 const uuid = require("uuid").v4
 
 let UPLOADS = {}
@@ -62,7 +62,7 @@ const getUpload = async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const postUpdateRecordingStatus = async (req, res) => {
-    console.log("RECORDINGS", RECORDINGS)
+    // console.log("RECORDINGS", RECORDINGS)
       let result = RECORDINGS[req.body.uploadId]
 
       if(result.files){
@@ -76,7 +76,7 @@ const postUpdateRecordingStatus = async (req, res) => {
 
 
 const updateRStatus = uploadId => status => {
-  console.log("updateRStatus", uploadId, status)
+  // console.log("updateRStatus", uploadId, status)
   RECORDINGS[uploadId] = { status }
 }
 
@@ -158,6 +158,14 @@ const postGdStatus = async (req, res) => {
 }  
 
 
+postGetGdFileMetadata = async (req, res) => {
+   try{
+     let result = await getGdFileMetadata(req.body.uploadDescriptor)
+     res.status(200).send(result)
+   } catch (e) {
+     res.status(200).send({error: e.toString()})
+   }  
+}
 
 
 const postGd = async (req, res) => {
@@ -169,8 +177,15 @@ const postGd = async (req, res) => {
         let options = req.body.options
         let uploadId = uuid()
 
-        UPLOADS[uploadId] = {}
+        let result = {
+          uploadId,          
+          homeDir: options.gd.homeDir,
+          targetDir: options.gd.targetDir,
+          file: path.basename(path.resolve(TARGET_DIR, options.source))  
+        }
 
+        UPLOADS[uploadId] = { status:{ state:"wait" }}
+        
         setTimeout(async () => {
           
           let files = await copyToGD(
@@ -184,19 +199,23 @@ const postGd = async (req, res) => {
           try {
             console.log("\n----- UNLINK FILE -----",path.resolve(TARGET_DIR, options.source),"\n")
             await fsp.unlink(path.resolve(TARGET_DIR, options.source))
+            UPLOADS[uploadId] = { status:{ state:"complete" }}
           } catch(e) {
-            console.log("\n----- UNLINK FILE -----", e.toString(),"\n")
+            console.log("\n----- UNLINK FILE 2 -----", e.toString(),"\n")
             setTimeout(async () => {
               await fsp.unlink(path.resolve(TARGET_DIR, options.source))
+                 UPLOADS[uploadId] = { status:{ state:"complete" }}
             }, 10)
+          } finally {
+               UPLOADS[uploadId] = { status:{ state:"complete" }}
           }
 
-          UPLOADS[uploadId] = { files }         
+                   
 
         }, 10)
         
 
-        res.status(200).send({uploadId}) 
+        res.status(200).send(result) 
     
     } catch (e) {
 
@@ -252,6 +271,8 @@ module.exports = {
   postGdStatus,
 
   postUpdateRecording,
-  postUpdateRecordingStatus
+  postUpdateRecordingStatus,
+
+  postGetGdFileMetadata
 
 }

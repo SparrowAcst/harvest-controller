@@ -25,10 +25,40 @@ const updateRecording = async (recording, callback) => {
 }
 
 
-const getFileDescription = async (targetDrive,homeDir, targetDir, file) => {
-    await targetDrive.load(homeDir)
-    targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]        
+const getFileDescription = async (homeDir, targetDir, file) => {
+    const controller = await require("../../../../sync-data/src/controller")({
+        console,
+        firebaseService: {
+            noprefetch: true
+        }
+    })
+
+    try {
+    
+        const targetDrive = await controller.googledriveService.create({
+            subject: backupConfig.subject
+        })
+
+        
+        await targetDrive.load(homeDir)
+        // console.log("----------- for ",`${homeDir}/${targetDir}/${file}`)
+         
+        return targetDrive.fileList(`${homeDir}/${targetDir}/${file}`)[0]
+        
+    } catch(e) {
+        return { error: e.toString()}
+    }           
 }
+
+const getGdFileMetadata = async uploadDescriptor => {
+    let res = await getFileDescription(
+        uploadDescriptor.homeDir,
+        uploadDescriptor.targetDir,
+        uploadDescriptor.file,
+    )
+    return res
+}
+
 
 
 const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
@@ -59,7 +89,7 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
         
         if(!result){
             console.log(`REPEAT for  -- ${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)
-            result = await getFileDescription(targetDrive, homedir, targetDir, path.basename(fileSourcePath))
+            result = await getFileDescription(homeDir, targetDir, path.basename(fileSourcePath))
         }
         
         return result
@@ -123,5 +153,6 @@ module.exports = {
     copyToGD,
     getFileWriteStreamFromGD,
     createFolder,
-    updateRecording
+    updateRecording,
+    getGdFileMetadata
 }

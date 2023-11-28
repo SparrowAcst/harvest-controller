@@ -120,6 +120,6 @@ router.post("/file/gd/status", uploader.postGdStatus)
 router.post("/file/record/status", uploader.postUpdateRecordingStatus)
 router.post("/file/record", uploader.postUpdateRecording)
 
-// router.post("/file/:identifier", uploader.download)
+router.post("/file/metadata", uploader.postGetGdFileMetadata)
 
 module.exports = router
