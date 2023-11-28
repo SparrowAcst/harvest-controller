@@ -25,6 +25,12 @@ const updateRecording = async (recording, callback) => {
 }
 
 
+const getFileDescription = async (targetDrive,homeDir, targetDir, file) => {
+    await targetDrive.load(homeDir)
+    targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]        
+}
+
+
 const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
 
     const controller = await require("../../../../sync-data/src/controller")({
@@ -49,8 +55,14 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
         await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
 
         // controller.close()
-
-        return targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
+        let result = targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
+        
+        if(!result){
+            console.log(`REPEAT for  -- ${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)
+            result = await getFileDescription(targetDrive, homedir, targetDir, path.basename(fileSourcePath))
+        }
+        
+        return result
     
     } catch(e) {
 

@@ -62,7 +62,7 @@ const getUpload = async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const postUpdateRecordingStatus = async (req, res) => {
-    
+    console.log("RECORDINGS", RECORDINGS)
       let result = RECORDINGS[req.body.uploadId]
 
       if(result.files){
@@ -76,6 +76,7 @@ const postUpdateRecordingStatus = async (req, res) => {
 
 
 const updateRStatus = uploadId => status => {
+  console.log("updateRStatus", uploadId, status)
   RECORDINGS[uploadId] = { status }
 }
 
@@ -129,7 +130,9 @@ const postUpdateRecording = async (req, res) => {
 
 
 const updateStatus = uploadId => status => {
-  // console.log("UPDATE UPLOAD STATUS", uploadId, status)
+  if(status.status == "error"){
+    console.log("UPDATE UPLOAD STATUS", uploadId, status)
+  } 
   UPLOADS[uploadId] = { status }
 }
 
@@ -176,7 +179,8 @@ const postGd = async (req, res) => {
             options.gd.targetDir,
             updateStatus(uploadId)
           )  
-          
+
+          console.log("--------------- postGd files", files)
           try {
             console.log("\n----- UNLINK FILE -----",path.resolve(TARGET_DIR, options.source),"\n")
             await fsp.unlink(path.resolve(TARGET_DIR, options.source))
