@@ -37,94 +37,7 @@ const getTasks1 = async (req, res) => {
 
     let options = req.body.options
 
-    // let paginationPipeline = [
-    //   {
-    //     $lookup:
-    //       {
-    //         from: options.db.labelingCollection,
-    //         localField: "patientId",
-    //         foreignField: "Examination ID",
-    //         pipeline: [
-    //           {
-    //             $project: {
-    //               _id: 0,
-    //               "updated at": 1,
-    //               update: {
-    //                 at: "$updated at",
-    //                 by: "$updated by",
-    //               },
-    //               "1st expert": 1,
-    //               "2nd expert": 1,
-    //             },
-    //           },
-    //         ],
-    //         as: "r",
-    //       },
-    //   },
-    //   {
-    //     $addFields:
-    //       {
-    //         "updated at": {
-    //           $max: "$r.updated at",
-    //         },
-    //         "1st expert": {
-    //           $map: {
-    //             input: "$r",
-    //             as: "item",
-    //             in: "$$item.1st expert",
-    //           },
-    //         },
-    //         "2nd expert": {
-    //           $map: {
-    //             input: "$r",
-    //             as: "item",
-    //             in: "$$item.2nd expert",
-    //           },
-    //         },
-    //         update: {
-    //           $map: {
-    //             input: "$r",
-    //             as: "item",
-    //             in: "$$item.update",
-    //           },
-    //         },
-    //       },
-    //   },
-    //   {
-    //     $addFields:
-    //       {
-    //         "updated by": {
-    //           $arrayElemAt: [
-    //             {
-    //               $filter: {
-    //                 input: "$update",
-    //                 as: "item",
-    //                 cond: {
-    //                   $eq: [
-    //                     "$updated at",
-    //                     "$$item.at",
-    //                   ],
-    //                 },
-    //               },
-    //             },
-    //             0,
-    //           ],
-    //         },
-    //       },
-    //   },
-    //   {
-    //     $project:
-    //       {
-    //         _id: 0,
-    //         "Examination ID": "$patientId",
-    //         "1st expert": 1,
-    //         "2nd expert": 1,
-    //         "updated at": 1,
-    //         "updated by": "$updated by.by",
-    //       },
-    //   }
-    // ]
-
+ 
     let paginationPipeline = [
       {
         $group:
@@ -173,17 +86,6 @@ const getTasks1 = async (req, res) => {
             },
           },
       },
-      // {
-      //   $project:
-      //     {
-      //       _id: 0,
-      //       "Examination ID": "$_id",
-      //       "1st expert": 1,
-      //       "2nd expert": 1,
-      //       "updated at": 1,
-      //       "updated by": "$updated by.by",
-      //     },
-      // },
       {
         $project:{
           _id: 0,
@@ -212,21 +114,6 @@ const getTasks1 = async (req, res) => {
           }    
       ]
       : []
-
-    // console.log("---------------0------------------")  
-
-  // console.log(options.excludeFilter)
-  // console.log(options.eventData.filter)
-  // console.log(userFilter)
-  // console.log(paginationPipeline)
-          
-
-
-  // console.log(JSON.stringify(options.excludeFilter 
-  //             .concat(options.eventData.filter)
-  //             .concat(userFilter)
-  //             .concat(paginationPipeline)
-  //             , null, ' '))
 
 
     let data = await mongodb.aggregate(extend({}, options, {
@@ -739,591 +626,6 @@ const getTasks = async (req, res) => {
 
 
 
-// [
-//   // {
-//   //   $match:
-//   //     /**
-//   //      * query: The query in MQL.
-//   //      */
-//   //     {
-//   //       "Recording Informativeness": {
-//   //         $exists: true,
-//   //       },
-//   //     },
-//   // },
-//   {
-//     $group: {
-//       _id: {
-//         "Examination ID": "$Examination ID",
-//         TODO: "$TODO",
-//         "Recording Informativeness":
-//           "$Recording Informativeness",
-//       },
-//       count: {
-//         $count: {},
-//       },
-//       "1st expert": {
-//         $addToSet: "$1st expert",
-//       },
-//       "2nd expert": {
-//         $addToSet: "$2nd expert",
-//       },
-//       CMO: {
-//         $addToSet: "$CMO",
-//       },
-//       // informativeness:{
-//       //   $push: "$Recording Informativeness"
-//       // },
-//       updates: {
-//         $push: {
-//           "updated at": "$updated at",
-//           "updated by": "$updated by",
-//         },
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       "Examination ID": "$_id.Examination ID",
-//       TODO: "$_id.TODO",
-//       "Recording Informativeness":
-//         "$_id.Recording Informativeness",
-//       count: 1,
-//       "1st expert": 1,
-//       "2nd expert": 1,
-//       CMO: 1,
-//       updates: 1,
-//       maxDate: {
-//         $max: "$updates.updated at",
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       "Examination ID": 1,
-//       TODO: 1,
-//       "Recording Informativeness": 1,
-//       count: 1,
-//       "1st expert": 1,
-//       "2nd expert": 1,
-//       CMO: 1,
-//       update: {
-//         $arrayElemAt: [
-//           {
-//             $filter: {
-//               input: "$updates",
-//               as: "item",
-//               cond: {
-//                 $eq: [
-//                   "$maxDate",
-//                   "$$item.updated at",
-//                 ],
-//               },
-//             },
-//           },
-//           0,
-//         ],
-//       },
-//     },
-//   },
-//   {
-//     $group: {
-//       _id: {
-//         "Examination ID": "$Examination ID",
-//       },
-//       stat: {
-//         $addToSet: {
-//           TODO: "$TODO",
-//           count: "$count",
-//         },
-//       },
-//       informativeness: {
-//         $addToSet: {
-//           value: "$Recording Informativeness",
-//           count: "$count",
-//         },
-//       },
-//       "1st expert": {
-//         $addToSet: "$1st expert",
-//       },
-//       "2nd expert": {
-//         $addToSet: "$2nd expert",
-//       },
-//       CMO: {
-//         $addToSet: "$CMO",
-//       },
-//       updates: {
-//         $addToSet: "$update",
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       "Examination ID": "$_id.Examination ID",
-//       stat: 1,
-//       informativeness: 1,
-//       "1st expert": {
-//         $reduce: {
-//           input: "$1st expert",
-//           initialValue: [],
-//           in: {
-//             $setUnion: ["$$value", "$$this"],
-//           },
-//         },
-//       },
-//       "2nd expert": {
-//         $reduce: {
-//           input: "$2nd expert",
-//           initialValue: [],
-//           in: {
-//             $setUnion: ["$$value", "$$this"],
-//           },
-//         },
-//       },
-//       CMO: {
-//         $reduce: {
-//           input: "$CMO",
-//           initialValue: [],
-//           in: {
-//             $setUnion: ["$$value", "$$this"],
-//           },
-//         },
-//       },
-//       _id: 0,
-//       updates: 1,
-//       maxDate: {
-//         $max: "$updates.updated at",
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       "Examination ID": 1,
-//       stat: 1,
-//       informativeness: 1,
-//       "1st expert": 1,
-//       "2nd expert": 1,
-//       CMO: 1,
-//       update: {
-//         $arrayElemAt: [
-//           {
-//             $filter: {
-//               input: "$updates",
-//               as: "item",
-//               cond: {
-//                 $eq: [
-//                   "$maxDate",
-//                   "$$item.updated at",
-//                 ],
-//               },
-//             },
-//           },
-//           0,
-//         ],
-//       },
-//     },
-//   },
-//   {
-//     $project: {
-//       "Examination ID": 1,
-//       stat: 1,
-//       informativeness: 1,
-//       "1st expert": 1,
-//       "2nd expert": 1,
-//       CMO: 1,
-//       "updated at": "$update.updated at",
-//       "updated by": "$update.updated by",
-//     },
-//   },
-//   {
-//     $lookup: {
-//       from: options.db.examinationCollection,
-//       localField: "Examination ID",
-//       foreignField: "patientId",
-//       as: "examinationState",
-//     },
-//   },
-//   {
-//     $project: {
-//       "Examination ID": 1,
-//       state: {
-//         $first: "$examinationState.state",
-//       },
-//       stat: 1,
-      
-//       "qty": {
-// 	    hist: "$informativeness",
-// 	  	total:{
-// 	    	$sum: "$stat.count"
-// 	  	}  
-// 	  },
-
-//       "1st expert": 1,
-//       "2nd expert": 1,
-//       CMO: 1,
-//       _id: 0,
-//       "updated at": 1,
-//       "updated by": 1,
-//     },
-//   },
-//   {
-//     $sort: {
-//       "updated at": -1,
-//     },
-//   },
-// ]
-
-		
-		// options.pipeline = [
-		// 	  {
-		// 	    '$group': {
-		// 	      '_id': {
-		// 	        'Examination ID': '$Examination ID', 
-		// 	        'TODO': '$TODO'
-		// 	      }, 
-		// 	      'count': {
-		// 	        '$count': {}
-		// 	      }, 
-		// 	      '1st expert': {
-		// 	        '$addToSet': '$1st expert'
-		// 	      }, 
-		// 	      '2nd expert': {
-		// 	        '$addToSet': '$2nd expert'
-		// 	      }, 
-		// 	      'CMO': {
-		// 	        '$addToSet': '$CMO'
-		// 	      }, 
-		// 	      'updates': {
-		// 	        '$push': {
-		// 	          'updated at': '$updated at', 
-		// 	          'updated by': '$updated by'
-		// 	        }
-		// 	      }
-		// 	    }
-		// 	  }, {
-		// 	    '$project': {
-		// 	      'Examination ID': '$_id.Examination ID', 
-		// 	      'TODO': '$_id.TODO', 
-		// 	      'count': 1, 
-		// 	      '1st expert': 1, 
-		// 	      '2nd expert': 1, 
-		// 	      'CMO': 1, 
-		// 	      'updates': 1, 
-		// 	      'maxDate': {
-		// 	        '$max': '$updates.updated at'
-		// 	      }
-		// 	    }
-		// 	  }, {
-		// 	    '$project': {
-		// 	      'Examination ID': 1, 
-		// 	      'TODO': 1, 
-		// 	      'count': 1, 
-		// 	      '1st expert': 1, 
-		// 	      '2nd expert': 1, 
-		// 	      'CMO': 1, 
-		// 	      'update': {
-		// 	        '$arrayElemAt': [
-		// 	          {
-		// 	            '$filter': {
-		// 	              'input': '$updates', 
-		// 	              'as': 'item', 
-		// 	              'cond': {
-		// 	                '$eq': [
-		// 	                  '$maxDate', '$$item.updated at'
-		// 	                ]
-		// 	              }
-		// 	            }
-		// 	          }, 0
-		// 	        ]
-		// 	      }
-		// 	    }
-		// 	  }, {
-		// 	    '$group': {
-		// 	      '_id': {
-		// 	        'Examination ID': '$Examination ID'
-		// 	      }, 
-		// 	      'stat': {
-		// 	        '$addToSet': {
-		// 	          'TODO': '$TODO', 
-		// 	          'count': '$count'
-		// 	        }
-		// 	      }, 
-		// 	      '1st expert': {
-		// 	        '$addToSet': '$1st expert'
-		// 	      }, 
-		// 	      '2nd expert': {
-		// 	        '$addToSet': '$2nd expert'
-		// 	      }, 
-		// 	      'CMO': {
-		// 	        '$addToSet': '$CMO'
-		// 	      }, 
-		// 	      'updates': {
-		// 	        '$addToSet': '$update'
-		// 	      }
-		// 	    }
-		// 	  }, {
-		// 	    '$project': {
-		// 	      'Examination ID': '$_id.Examination ID', 
-		// 	      'stat': 1, 
-		// 	      '1st expert': {
-		// 	        '$reduce': {
-		// 	          'input': '$1st expert', 
-		// 	          'initialValue': [], 
-		// 	          'in': {
-		// 	            '$setUnion': [
-		// 	              '$$value', '$$this'
-		// 	            ]
-		// 	          }
-		// 	        }
-		// 	      }, 
-		// 	      '2nd expert': {
-		// 	        '$reduce': {
-		// 	          'input': '$2nd expert', 
-		// 	          'initialValue': [], 
-		// 	          'in': {
-		// 	            '$setUnion': [
-		// 	              '$$value', '$$this'
-		// 	            ]
-		// 	          }
-		// 	        }
-		// 	      }, 
-		// 	      'CMO': {
-		// 	        '$reduce': {
-		// 	          'input': '$CMO', 
-		// 	          'initialValue': [], 
-		// 	          'in': {
-		// 	            '$setUnion': [
-		// 	              '$$value', '$$this'
-		// 	            ]
-		// 	          }
-		// 	        }
-		// 	      }, 
-		// 	      '_id': 0, 
-		// 	      'updates': 1, 
-		// 	      'maxDate': {
-		// 	        '$max': '$updates.updated at'
-		// 	      }
-		// 	    }
-		// 	  }, {
-		// 	    '$project': {
-		// 	      'Examination ID': 1, 
-		// 	      'stat': 1, 
-		// 	      '1st expert': 1, 
-		// 	      '2nd expert': 1, 
-		// 	      'CMO': 1, 
-		// 	      'update': {
-		// 	        '$arrayElemAt': [
-		// 	          {
-		// 	            '$filter': {
-		// 	              'input': '$updates', 
-		// 	              'as': 'item', 
-		// 	              'cond': {
-		// 	                '$eq': [
-		// 	                  '$maxDate', '$$item.updated at'
-		// 	                ]
-		// 	              }
-		// 	            }
-		// 	          }, 0
-		// 	        ]
-		// 	      }
-		// 	    }
-		// 	  }, {
-		// 	    '$project': {
-		// 	      'Examination ID': 1, 
-		// 	      'stat': 1, 
-		// 	      '1st expert': 1, 
-		// 	      '2nd expert': 1, 
-		// 	      'CMO': 1, 
-		// 	      'updated at': '$update.updated at', 
-		// 	      'updated by': '$update.updated by'
-		// 	    }
-		// 	  }, {
-		// 	    '$lookup': {
-		// 	      'from': options.db.examinationCollection, 
-		// 	      'localField': 'Examination ID', 
-		// 	      'foreignField': 'patientId', 
-		// 	      'as': 'examinationState'
-		// 	    }
-		// 	  }, {
-		// 	    '$project': {
-		// 	      'Examination ID': 1, 
-		// 	      'state': {
-		// 	        '$first': '$examinationState.state'
-		// 	      }, 
-		// 	      'stat': 1, 
-		// 	      '1st expert': 1, 
-		// 	      '2nd expert': 1, 
-		// 	      'CMO': 1, 
-		// 	      '_id': 0, 
-		// 	      'updated at': 1, 
-		// 	      'updated by': 1
-		// 	    }
-		// 	  }, 
-		// 	  {
-		// 	    '$sort': 
-		// 	    	(options.latest)
-		// 	    		? 	{
-		// 	    				"updated at": -1
-		// 	    			}
-		// 	    		:	
-		// 				    {
-		// 				      'Examination ID': 1
-		// 				    }
-		// 	  },
-		// 	]	
-
-
-
-				// options.pipeline = [
-				// 	  {
-				// 	    '$sort': 
-				// 	    	(options.latest)
-				// 	    		? 	{
-				// 	    				"updated at": -1
-				// 	    			}
-				// 	    		:	
-				// 				    {
-				// 				      'Examination ID': 1
-				// 				    }
-				// 	  }, 
-				// 	  {
-				// 	    '$group': {
-				// 	      '_id': {
-				// 	        'Examination ID': '$Examination ID', 
-				// 	        'TODO': '$TODO'
-				// 	      }, 
-				// 	      'count': {
-				// 	        '$count': {}
-				// 	      }, 
-				// 	      '1st expert': {
-				// 	        '$addToSet': '$1st expert'
-				// 	      }, 
-				// 	      '2nd expert': {
-				// 	        '$addToSet': '$2nd expert'
-				// 	      }, 
-				// 	      'CMO': {
-				// 	        '$addToSet': '$CMO'
-				// 	      }, 
-				// 	      'updates': {
-				// 	        '$push': {
-				// 	          'updated at': '$updated at', 
-				// 	          'updated by': '$updated by'
-				// 	        }
-				// 	      }
-				// 	    }
-				// 	  }, {
-				// 	    '$project': {
-				// 	      'Examination ID': '$_id.Examination ID', 
-				// 	      'TODO': '$_id.TODO', 
-				// 	      'count': 1, 
-				// 	      '1st expert': 1, 
-				// 	      '2nd expert': 1, 
-				// 	      'CMO': 1, 
-				// 	      'updates': 1
-				// 	    }
-				// 	  }, {
-				// 	    '$group': {
-				// 	      '_id': {
-				// 	        'Examination ID': '$Examination ID'
-				// 	      }, 
-				// 	      'stat': {
-				// 	        '$addToSet': {
-				// 	          'TODO': '$TODO', 
-				// 	          'count': '$count'
-				// 	        }
-				// 	      }, 
-				// 	      '1st expert': {
-				// 	        '$addToSet': '$1st expert'
-				// 	      }, 
-				// 	      '2nd expert': {
-				// 	        '$addToSet': '$2nd expert'
-				// 	      }, 
-				// 	      'CMO': {
-				// 	        '$addToSet': '$CMO'
-				// 	      }, 
-				// 	      'updates': {
-				// 	        '$addToSet': '$updates'
-				// 	      }
-				// 	    }
-				// 	  }, {
-				// 	    '$project': {
-				// 	      'Examination ID': '$_id.Examination ID', 
-				// 	      'stat': 1, 
-				// 	      '1st expert': {
-				// 	        '$reduce': {
-				// 	          'input': '$1st expert', 
-				// 	          'initialValue': [], 
-				// 	          'in': {
-				// 	            '$setUnion': [
-				// 	              '$$value', '$$this'
-				// 	            ]
-				// 	          }
-				// 	        }
-				// 	      }, 
-				// 	      '2nd expert': {
-				// 	        '$reduce': {
-				// 	          'input': '$2nd expert', 
-				// 	          'initialValue': [], 
-				// 	          'in': {
-				// 	            '$setUnion': [
-				// 	              '$$value', '$$this'
-				// 	            ]
-				// 	          }
-				// 	        }
-				// 	      }, 
-				// 	      'CMO': {
-				// 	        '$reduce': {
-				// 	          'input': '$CMO', 
-				// 	          'initialValue': [], 
-				// 	          'in': {
-				// 	            '$setUnion': [
-				// 	              '$$value', '$$this'
-				// 	            ]
-				// 	          }
-				// 	        }
-				// 	      }, 
-				// 	      '_id': 0, 
-				// 	      'updates': {
-				// 	        '$arrayElemAt': [
-				// 	          '$updates', 0
-				// 	        ]
-				// 	      }
-				// 	    }
-				// 	  }, {
-				// 	    '$lookup': {
-				// 	      'from': options.db.examinationCollection, 
-				// 	      'localField': 'Examination ID', 
-				// 	      'foreignField': 'patientId', 
-				// 	      'as': 'examinationState'
-				// 	    }
-				// 	  }, {
-				// 	    '$project': {
-				// 	      'Examination ID': 1, 
-				// 	      'state': {
-				// 	        '$first': '$examinationState.state'
-				// 	      }, 
-				// 	      'stat': 1, 
-				// 	      '1st expert': 1, 
-				// 	      '2nd expert': 1, 
-				// 	      'CMO': 1, 
-				// 	      '_id': 0, 
-				// 	      'updates': 1
-				// 	    }
-				// 	  }, 
-				// 	  // {
-				// 	  //   '$sort': 	(options.latest)
-				// 	  //   		? 	{
-				// 	  //   				"updated at": -1
-				// 	  //   			}
-				// 	  //   		:	
-				// 			// 	    {
-				// 			// 	      'Examination ID': 1
-				// 			// 	    }
-				// 	  // }
-				// 	]
-
-
-
 		options.userFilter = (options.me)
         ? [
             {
@@ -1620,7 +922,8 @@ const getSyncStat = async (req, res) => {
 	              }, 
 	              "updatedAt":"$updatedAt",
 	              "synchronizedAt":"$synchronizedAt",
-	              'state': '$state', 
+	              'state': '$state',
+                 protocol: "$protocol", 
 	              'validation': '$_validation'
 	            }
 	          }, {
@@ -1697,27 +1000,26 @@ const getSyncExaminations = async (req, res) => {
 			      'foreignField': 'id', 
 			      'as': 'organization'
 			    }
-			  }, {
-			    '$project': {
-			      '_id': 0, 
-			      'Examination ID': '$patientId', 
-			      'organization': {
-			        '$arrayElemAt': [
-			          '$organization', 0
-			        ]
-			      }, 
-			      'physician': {
-			        '$arrayElemAt': [
-			          '$physician', 0
-			        ]
-			      }, 
-			      "updatedAt":"$updatedAt",
-			      "synchronizedAt":"$synchronizedAt",
-			      'state': '$state',
-            "protocol":"$protocol", 
-			      'validation': '$_validation',
-			    }
-			  }, {
+			  },   
+        {
+          $project: {
+            _id: 0,
+            "Examination ID": "$patientId",
+            organization: {
+              $arrayElemAt: ["$organization", 0],
+            },
+            physician: {
+              $arrayElemAt: ["$physician", 0],
+            },
+            updatedAt: "$updatedAt",
+            synchronizedAt: "$synchronizedAt",
+            state: "$state",
+            protocol: "$protocol",
+            // records: "$records",
+            validation: "$_validation",
+          },
+        }, 
+        {
 			      $sort:{
 			          updatedAt: -1,
 			          organization: 1,
@@ -1757,13 +1059,49 @@ const getSyncExaminations = async (req, res) => {
 	        pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
 	    })
 
-    	const data = await mongodb.aggregate({
+    	let data = await mongodb.aggregate({
 	    	db: options.db,
 	    	collection: `${options.db.name}.${options.db.examinationCollection}`,
 	    	pipeline: options.pipeline
 		                .concat(options.syncFilter)
 		                .concat(options.pageFilter)
+                    .concat([
+                      {
+                        $lookup: {
+                          from: options.db.labelingCollection,
+                          localField: "Examination ID",
+                          foreignField: "Examination ID",
+                          pipeline: options.excludeFilter.concat([
+                            {
+                              $project: {
+                                _id: 0,
+                                todo: "$TODO",
+                                qty: "$Recording Informativeness",
+                              },
+                            }
+                          ]), 
+                          as: "records",
+                        }
+                      }
+                    ])
 	    })
+
+
+      data = data.map( d => {
+        d.stat = {
+              stat: hist(d.records, d => d.todo, "TODO", "count"),
+              total: d.records.length 
+            }
+
+            d.qty =   {
+              hist: hist(d.records, d => d.qty, "value", "count"),
+              total: d.records.length 
+            }
+
+            d.records = undefined
+
+        return d
+      })
 
 	    res.send({
 	    	options,
@@ -1912,6 +1250,112 @@ const updateTasks = async (req, res) => {
 }		
 
 
+const acceptExaminations = async (req, res) => {
+  try {
+    
+    let options = req.body
+    
+    let records = await mongodb.aggregate({
+      db: options.db,
+      collection: `${options.db.name}.${options.db.examinationCollection}`,
+      pipeline: [
+            {
+              '$match': {
+                'patientId': {
+                  '$in': options.selection
+                }
+              }
+            }, {
+              '$project': {
+                '_id': 0
+              }
+            }
+          ]
+    })
+      
+      records = records.map( r => {
+          r.state = "accepted"
+          return r    
+      })
+      
+      const commands = records.map( r => ({
+          replaceOne:{
+              filter:{
+                  id: r.id
+              },
+              replacement: extend({}, r)
+          }
+      }))
+
+      const result = await mongodb.bulkWrite({
+        db: options.db,
+        collection: `${options.db.name}.${options.db.examinationCollection}`,
+        commands
+      })
+
+      res.send(result)
+
+  } catch (e) {
+    res.send({ 
+      error: e.toString(),
+      requestBody: req.body
+    })
+  }
+}
+
+const rejectExaminations = async (req, res) => {
+  try {
+    
+    let options = req.body
+    
+    let records = await mongodb.aggregate({
+      db: options.db,
+      collection: `${options.db.name}.${options.db.examinationCollection}`,
+      pipeline: [
+            {
+              '$match': {
+                'patientId': {
+                  '$in': options.selection
+                }
+              }
+            }, {
+              '$project': {
+                '_id': 0
+              }
+            }
+          ]
+    })
+      
+      records = records.map( r => {
+          r.state = "rejected"
+          return r    
+      })
+      
+      const commands = records.map( r => ({
+          replaceOne:{
+              filter:{
+                  id: r.id
+              },
+              replacement: extend({}, r)
+          }
+      }))
+
+      const result = await mongodb.bulkWrite({
+        db: options.db,
+        collection: `${options.db.name}.${options.db.examinationCollection}`,
+        commands
+      })
+
+      res.send(result)
+
+  } catch (e) {
+    res.send({ 
+      error: e.toString(),
+      requestBody: req.body
+    })
+  }
+}
+
 	
 module.exports = {
 	getDatasetList,
@@ -1921,141 +1365,8 @@ module.exports = {
 	getSyncStat,
 	getSyncExaminations,
 	updateTasks,
-	getOrganizations
+	getOrganizations,
+  acceptExaminations,
+  rejectExaminations
 }
 
-
-
-
-// [
-//   // {
-//   //   $count: "string",
-//   // }
-//   {
-//     $project: {
-//       _id: 0,
-//       id: 1,
-//       "Examination ID": "$patientId",
-//       state: 1,
-//     },
-//   },
-//   {
-//     $lookup: {
-      // from: "harvest2",
-      // localField: "Examination ID",
-      // foreignField: "Examination ID",
-      // pipeline: [
-      //   {
-      //     $project: {
-      //       _id: 0,
-      //       "1st expert": 1,
-      //       "2nd expert": 1,
-      //       "updated at": 1,
-      //       "updated by": 1,
-      //       TODO: 1,
-      //       "Recording Informativeness": 1,
-      //     },
-      //   },
-      // ],
-      // as: "records",
-//     },
-//   },
-//   {
-//     $addFields: {
-//       "1st expert": {
-//         $map: {
-//           input: "$records",
-//           as: "r",
-//           in: "$$r.1st expert",
-//         },
-//       },
-//       "2nd expert": {
-//         $map: {
-//           input: "$records",
-//           as: "r",
-//           in: "$$r.2nd expert",
-//         },
-//       },
-//       "updated at": {
-//         $max: "$records.updated at",
-//       },
-//       updates: {
-//         $map: {
-//           input: "$records",
-//           as: "r",
-//           in: {
-//             by: "$$r.updated by",
-//             at: "$$r.updated at",
-//           },
-//         },
-//       },
-//       TODO: {
-//         $map: {
-//           input: "$records",
-//           as: "r",
-//           in: "$$r.TODO",
-//         },
-//       },
-//       qty: {
-//         $map: {
-//           input: "$records",
-//           as: "r",
-//           in: "$$r.Recording Informativeness",
-//         },
-//       },
-//     },
-//   },
-//   // {
-//   //   $sort: {
-//   //     "updated at": -1,
-//   //   },
-//   // }
-//   {
-//     $skip: 0,
-//   },
-//   {
-//     $limit: 50,
-//   },
-//   {
-//     $lookup: {
-//       from: "form2",
-//       localField: "id",
-//       foreignField: "examinationId",
-//       as: "forms",
-//       pipeline: [
-//         {
-//           $match: {
-//             type: "patient",
-//           },
-//         },
-//       ],
-//     },
-//   },
-//   {
-//     $addFields: {
-//       diagnosisTags:
-//         "$forms.0.data.en.diagnosisTags",
-//     },
-//   },
-//   {
-//     $addFields: {
-//       dia: {
-//         $first: "$forms.data.en.diagnosisTags",
-//       },
-//     },
-//   },
-//   // {
-//   //   $match: {
-//   //     dia: {
-//   //       $exists: true,
-//   //     },
-//   //   },
-//   // }
-//   {
-//     $project: {
-//       forms: 0,
-//       diagnosisTags: 0,
-//       records: 0,
-//     },
-//   },
-// ]

@@ -41,7 +41,7 @@ const getFileDescription = async (homeDir, targetDir, file) => {
 
         
         await targetDrive.load(homeDir)
-        // console.log("----------- for ",`${homeDir}/${targetDir}/${file}`)
+        console.log("----------- for ",`${homeDir}/${targetDir}/${file}`)
          
         return targetDrive.fileList(`${homeDir}/${targetDir}/${file}`)[0]
         
