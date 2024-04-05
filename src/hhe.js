@@ -1275,6 +1275,7 @@ const acceptExaminations = async (req, res) => {
       
       records = records.map( r => {
           r.state = "accepted"
+          r.updatedAt = new Date()
           return r    
       })
       
@@ -1328,6 +1329,7 @@ const rejectExaminations = async (req, res) => {
       
       records = records.map( r => {
           r.state = "rejected"
+          r.updatedAt = new Date()
           return r    
       })
       
