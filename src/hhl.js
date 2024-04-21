@@ -547,6 +547,7 @@ const findCollection = async dataPath => {
 	let res
 
 	for( let i=0; (i < collections.length) && !res; i++){
+		console.log(collections[i])
 		let f = await mongodb.aggregate({
 				db: CONFIG.db,
 				collection: `sparrow.${collections[i]}`,
@@ -558,7 +559,7 @@ const findCollection = async dataPath => {
 		})
 		if(f.length > 0) res = collections[i]
 	}
-	
+	console.log(">>", res)
 	return res
 
 }
@@ -590,7 +591,7 @@ const updateSegmentation = async (req, res) => {
 
 		let dataPath = req.body.path
 		let segmentation = req.body.segmentation
-		let query = url.parse(req.body.url, true).query
+		let query = (req.body.url) ? url.parse(req.body.url, true).query : {}
 		let collection = query.c || ""
 		let user = query.u || ""
 		let id = query.r || ""
@@ -630,7 +631,28 @@ const updateSegmentation = async (req, res) => {
 		
 		if(!collection){
 			collection = await findCollection(dataPath)	
-		} 
+		} else {
+			let md5map = await mongodb.aggregate({
+				db: CONFIG.db,
+				collection: `sparrow.md5keys`,
+				pipeline: [   
+					{ 
+						$match:{
+							md5: {
+								$in: [collection, user]
+							}
+						}
+					}
+		        ]
+			})
+
+			let f = find(md5map, m => m.md5 == collection)
+			collection = (f) ? f.value : undefined
+
+			f = find(md5map, m => m.md5 == user)
+			user = (f) ? f.value : undefined
+
+		}
 		
 
 		if(!collection){
@@ -648,26 +670,7 @@ const updateSegmentation = async (req, res) => {
 		}
 
 		
-		let md5map = await mongodb.aggregate({
-			db: CONFIG.db,
-			collection: `sparrow.md5keys`,
-			pipeline: [   
-				{ 
-					$match:{
-						md5: {
-							$in: [collection, user]
-						}
-					}
-				}
-	        ]
-		})
-
-		let f = find(md5map, m => m.md5 == collection)
-		collection = (f) ? f.value : undefined
-
-		f = find(md5map, m => m.md5 == user)
-		user = (f) ? f.value : undefined
-
+		
 
 		let updatedRecord = await mongodb.aggregate({
 			db: CONFIG.db,
@@ -683,6 +686,8 @@ const updateSegmentation = async (req, res) => {
 
 		updatedRecord = updatedRecord[0]
 
+		console.log("Record:", updatedRecord.id)
+		
 		const result = await mongodb.updateOne({
 			db: CONFIG.db,
 			collection: `sparrow.${collection}`,
