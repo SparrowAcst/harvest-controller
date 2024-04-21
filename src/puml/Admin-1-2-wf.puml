@@ -1,0 +1,25 @@
+@startuml
+|Import Utils|
+start
+:Generates Recordings \nand Task;
+#DCEDC8:<b>Recording Tags:</b>\nSOURCE:<source name> \nTASK:<task name>; <<output>>
+|Admin|
+:Assigns 1st Extert, 2nd Expert;
+#DCEDC8:<b>Recording  Tags:</b>\nASSING:<task name>: 1st: <user name>\nASSING:<task name>: 2nd: <user name>; <<output>>
+|1st Expert|
+repeat
+:Edits labeling;
+#DCEDC8:<b>Recording  Tags:</b>\nSTATE:<task name>: 1st: finalized; <<output>>
+|2nd Expert|
+:Checks or Edits Labeling;
+if(correct?) then (no)
+#DCEDC8:<b>Recording  Tags:</b>\nSTATE:<task name>: 2nd: rejected; <<output>>
+else (yes)
+endif
+repeat while (correct?) is (no)
+->yes;
+:Finalizes labeling;
+#DCEDC8:<b>Recording  Tags:</b>\nSTATE:<task name>: 2nd: finalized; <<output>>
+stop
+@enduml
+

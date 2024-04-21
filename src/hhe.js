@@ -10,7 +10,14 @@ const getDatasetList = async (req, res) => {
 		
 		options = extend( {}, options, {
 			collection: `${options.db.name}.dataset`,
-			pipeline: [   
+			pipeline: [
+              {
+                $match:{
+                  taged:{
+                    $exists: false
+                  }
+                }
+              },   
 	            {
 	                $project:{ _id: 0 }
 	            }

@@ -80,6 +80,8 @@ router.post("/hhl/get-forms/", hhl.getForms)
 router.post("/hhl/get-record/", hhl.getRecord)
 router.post("/hhl/get-metadata/", hhl.getMetadata)
 router.post("/hhl/update-record/", hhl.updateRecord)
+router.post("/hhl/update-tag-record/", hhl.updateTagedRecord)
+
 router.post("/hhl/segmentation/", hhl.updateSegmentation)
 router.post("/hhl/changelog/", hhl.getChangelog)
 router.post("/hhl/profile/", hhl.getProfile)
@@ -123,5 +125,31 @@ router.post("/file/record/status", uploader.postUpdateRecordingStatus)
 router.post("/file/record", uploader.postUpdateRecording)
 
 router.post("/file/metadata", uploader.postGetGdFileMetadata)
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+const pr = require("./src/prod-record")
+
+router.post("/pr/get-dataset-list/", pr.getDatasetList)
+router.post("/pr/get-grants/", pr.getGrants)
+router.post("/pr/get-events/", pr.getRecords)
+router.post("/pr/get-tag-list/", pr.getTagList)
+router.post("/pr/add-tags/", pr.addTags)
+router.post("/pr/remove-tag/", pr.removeLastTag)
+
+
+router.post("/pr/add-task/", pr.addToTask)
+router.post("/pr/import/", pr.addToTask)
+
+router.post("/pr/segment/", pr.getSegmentation)
+
+router.post("/pr/export/", pr.exportSelection)
+router.get("/pr/export/:id", pr.exportFile)
+router.get("/pr/export/", pr.exportFile)
+
+
+
 
 module.exports = router

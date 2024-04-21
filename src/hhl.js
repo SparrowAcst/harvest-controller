@@ -6,7 +6,7 @@ const YAML = require("js-yaml")
 const fs = require("fs")
 const path = require("path")
 const { Diff, SegmentationDiff } = require("./utils/diff")
-
+const url = require('url')
 const CONFIG = YAML.load(fs.readFileSync(path.join(__dirname,`../../sync-data/.config/db/mongodb.conf.yml`)).toString().replace(/\t/gm, " "))
 
 
@@ -369,6 +369,95 @@ const updateRecord = async (req, res) => {
 }
 
 
+const updateTagedRecord = async (req, res) => {
+	try {
+
+		let options = req.body.options
+
+		options.record.tags = options.record.tags.map( t => {
+			t.createdAt = new Date(t.createdAt)
+			return t
+		})
+
+		options.tags = (options.tags || []).map( t => ({
+			tag: t,
+			createdAt: new Date(),
+			createdBy: {
+				email: options.user.email,
+				namedAs: options.user.altname,
+				photo: options.user.photo
+			}
+		}))
+
+		options.record.tags = options.record.tags.concat(options.tags)
+
+
+		const prev = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.labelingCollection}`,
+			pipeline: [   
+	            {
+	                $match: { id: options.record.id }
+	            },
+	            {
+	                $project:{ _id: 0 }
+	            }
+	                    
+	        ]
+		})
+
+		options.record.segmentation = prev[0].segmentation
+		options.record["updated at"] = new Date()
+
+		const result = await mongodb.replaceOne({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.labelingCollection}`,
+			filter:{
+                id: options.record.id
+            },
+            data: options.record
+		})
+
+		const event = {
+			id: uuid(),
+			dataset: options.dataset,
+			collection: options.db.labelingCollection, 
+			recordingId: options.record.id,
+			examinationId: options.record["Examination ID"],
+			path: options.record.path,
+			diff: Diff.diff(prev, options.record),
+			formattedDiff: Diff.format(Diff.diff(prev[0], options.record)),
+			user: options.user,
+			session: options.session.id,
+			startedAt: options.session.startedAt,
+			stoppedAt: options.session.stoppedAt
+		}
+
+		await mongodb.replaceOne({
+			db: options.db,
+			collection: `${options.db.name}.changelog-recordings`,
+			filter:{
+                // id: event.id
+                session: event.session
+            },
+            
+            data: event
+		})
+
+
+
+		res.send(result)
+
+	} catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
+}
+
+
+
 
 const getChangelog = async (req, res) => {
 	try {
@@ -501,6 +590,12 @@ const updateSegmentation = async (req, res) => {
 
 		let dataPath = req.body.path
 		let segmentation = req.body.segmentation
+		let query = url.parse(req.body.url, true).query
+		let collection = query.c || ""
+		let user = query.u || ""
+		let id = query.r || ""
+
+
 
 		if(!dataPath) {
 			
@@ -532,7 +627,11 @@ const updateSegmentation = async (req, res) => {
 			return
 		}
 
-		let collection = await findCollection(dataPath)
+		
+		if(!collection){
+			collection = await findCollection(dataPath)	
+		} 
+		
 
 		if(!collection){
 			
@@ -549,6 +648,27 @@ const updateSegmentation = async (req, res) => {
 		}
 
 		
+		let md5map = await mongodb.aggregate({
+			db: CONFIG.db,
+			collection: `sparrow.md5keys`,
+			pipeline: [   
+				{ 
+					$match:{
+						md5: {
+							$in: [collection, user]
+						}
+					}
+				}
+	        ]
+		})
+
+		let f = find(md5map, m => m.md5 == collection)
+		collection = (f) ? f.value : undefined
+
+		f = find(md5map, m => m.md5 == user)
+		user = (f) ? f.value : undefined
+
+
 		let updatedRecord = await mongodb.aggregate({
 			db: CONFIG.db,
 			collection: `sparrow.${collection}`,
@@ -573,6 +693,26 @@ const updateSegmentation = async (req, res) => {
             data: {
             	segmentation
             }
+		})
+
+		const seg_hist = {
+			id: uuid(),
+			collection,
+			recordId: updatedRecord.id,
+			updatedAt: new Date(),
+			updatedBy: user,
+			segmentation
+		}
+
+		await mongodb.replaceOne({
+			db: CONFIG.db,
+			collection: `sparrow.segmentation-history`,
+			filter:{
+                id: seg_hist.id
+            },
+            
+			data: seg_hist
+			
 		})
 
 		const event = {
@@ -640,5 +780,6 @@ module.exports = {
 	updateRecord,
 	updateSegmentation,
 	getChangelog,
-	getProfile
+	getProfile,
+	updateTagedRecord
 }

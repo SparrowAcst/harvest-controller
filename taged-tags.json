@@ -1,0 +1,271 @@
+[
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+{
+  "id": "1",
+  "name": "SOURCE: Production (US)",
+  "color": "#1A237E",
+  "background": "#90CAF9",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+
+{
+  "id": "2",
+  "name": "SOURCE: Production (UA)",
+  "color": "#1A237E",
+  "background": "#90CAF9",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+
+{
+  "id": "3",
+  "name": "SOURCE: Testing DB",
+  "color": "#1A237E",
+  "background": "#90CAF9",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+
+{
+  "id": "4",
+  "name": "SOURCE: Demo DB",
+  "color": "#1A237E",
+  "background": "#90CAF9",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+
+{
+  "id": "5",
+  "name": "TASK: Murmurs binary",
+  "color": "#BF360C",
+  "background": "#FFF59D",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+
+{
+  "id": "6",
+  "name": "TASK: Murmurs innocent/significant",
+  "color": "#BF360C",
+  "background": "#FFF59D",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+{
+  "id": "7",
+  "name": "TASK: Segments of unreadable data",
+  "color": "#BF360C",
+  "background": "#FFF59D",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+{
+  "id": "8",
+  "name": "TASK: Segmentation S1/S2",
+  "color": "#BF360C",
+  "background": "#FFF59D",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+{
+  "id": "9",
+  "name": "TASK: Segmentation S3/S4",
+  "color": "#BF360C",
+  "background": "#FFF59D",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+{
+  "id": "10",
+  "name": "TASK: Segmentation arrhythmias",
+  "color": "#BF360C",
+  "background": "#FFF59D",
+  "description": "Test tag \"A\"",
+  "rule": "user => false"
+},
+
+
+
+
+{
+  "id": "11",
+  "name": "ASSIGN: Segmentation arrhythmias: 1st: Daria Savchenko",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "12",
+  "name": "ASSIGN: Segmentation arrhythmias: 1st: María José Aedo",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "13",
+  "name": "ASSIGN: Segmentation arrhythmias: 1st: Bilal Al-khateeb",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+
+{
+  "id": "14",
+  "name": "ASSIGN: Segmentation arrhythmias: 2nd: Mykola Parkhomenko",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "15",
+  "name": "ASSIGN: Segmentation arrhythmias: 2nd: Iryna Prodan",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "16",
+  "name": "ASSIGN: Segmentation arrhythmias: 2nd: Ahmad Amro",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+
+
+{
+  "id": "17",
+  "name": "ASSIGN: Murmurs binary: 1st: Daria Savchenko",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "18",
+  "name": "ASSIGN: Murmurs binary: 1st: María José Aedo",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "19",
+  "name": "ASSIGN: Murmurs binary: 1st: Bilal Al-khateeb",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+
+{
+  "id": "20",
+  "name": "ASSIGN: Murmurs binary: 2nd: Mykola Parkhomenko",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "21",
+  "name": "ASSIGN: Murmurs binary: 2nd: Iryna Prodan",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+{
+  "id": "22",
+  "name": "ASSIGN: Murmurs binary: 2nd: Ahmad Amro",
+  "color": "#4E342E",
+  "background": "#FFD54F",
+  "description": "Test tag \"A\"",
+  "rule": "(user, app) => user.role == 'admin' && app == 'list'"
+},
+
+
+{
+  "id": "23",
+  "name": "STATE: Murmurs binary: 2nd: finalized",
+  "color": "#004D40",
+  "background": "#AED581",
+  "description": "Test tag \"A\"",
+  "rule": "user => (['admin'].includes(user.role)) || (['2nd expert'].includes(user.role) && app == 'labeling')"
+},
+
+{
+  "id": "24",
+  "name": "STATE: Murmurs binary: 1st: finalized",
+  "color": "#004D40",
+  "background": "#AED581",
+  "description": "Test tag \"A\"",
+  "rule": "user => (['admin','2nd expert'].includes(user.role)) || (['1st expert'].includes(user.role) && app == 'labeling')"
+},
+
+{
+  "id": "25",
+  "name": "STATE: Murmurs binary: 2nd: rejected",
+  "color": "#AD1457",
+  "background": "#FFCDD2",
+  "description": "Test tag \"A\"",
+  "rule": "user => (['admin'].includes(user.role)) || (['2nd expert'].includes(user.role) && app == 'labeling')"
+},
+
+{
+  "id": "26",
+  "name": "STATE: Segmentation arrhythmias: 2nd: finalized",
+  "color": "#004D40",
+  "background": "#AED581",
+  "description": "Test tag \"A\"",
+  "rule": "user => (['admin'].includes(user.role)) || (['2nd expert'].includes(user.role) && app == 'labeling')"
+},
+
+{
+  "id": "27",
+  "name": "STATE: Segmentation arrhythmias: 1st: finalized",
+  "color": "#004D40",
+  "background": "#AED581",
+  "description": "Test tag \"A\"",
+  "rule": "user => (['admin','2nd expert'].includes(user.role)) || (['1st expert'].includes(user.role) && app == 'labeling')"
+},
+
+{
+  "id": "28",
+  "name": "STATE: Segmentation arrhythmias: 2nd: rejected",
+  "color": "#AD1457",
+  "background": "#FFCDD2",
+  "description": "Test tag \"A\"",
+  "rule": "user => (['admin'].includes(user.role)) || (['2nd expert'].includes(user.role) && app == 'labeling')"
+}
+
+
+
+]

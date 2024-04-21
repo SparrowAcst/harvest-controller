@@ -1,0 +1,41 @@
+[
+    {
+        "id":"1",
+        "name": "A",
+        "description": "Test tag \"A\"",
+        "rules":{
+            "create": [],
+            "delete": []
+        }
+    },
+    
+    {
+        "id":"2",
+        "name": "B",
+        "description": "Test tag \"B\""
+    }
+
+
+]
+
+
+
+{
+    "tag": "A",
+    "createdAt": "2023-09-23T18:26:23.101+00:00",
+    "createdBy": {
+        "email": "boldak.andrey@gmail.com",
+        "photo": "https://lh3.googleusercontent.com/a/ACg8ocLd44GXOJGf-iej_eSy2Ew9APxGbbHEAdd0gqeeEeFcU_KK-Cva=s96-c",
+        "namedAs": "Andrey Boldak"
+    }
+},
+
+{
+    "tag": "B",
+    "createdAt": "2023-09-24T18:26:23.101+00:00",
+    "createdBy": {
+        "email": "boldak.andrey@gmail.com",
+        "photo": "https://lh3.googleusercontent.com/a/ACg8ocLd44GXOJGf-iej_eSy2Ew9APxGbbHEAdd0gqeeEeFcU_KK-Cva=s96-c",
+        "namedAs": "Andrey Boldak"
+    }
+}

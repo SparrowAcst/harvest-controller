@@ -25,12 +25,15 @@
     "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.0",
     "googleapis": "^114.0.0",
+    "js-md5": "^0.8.3",
     "js-yaml": "^4.1.0",
     "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "mongodb": "^4.13.0",
     "nanomatch": "^1.2.13",
+    "npm": "^10.5.2",
+    "url": "^0.11.3",
     "uuid": "^9.0.0"
   }
 }

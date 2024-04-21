@@ -1,0 +1,217 @@
+{
+    "tags": [
+        "SOURCE:production(UA)",
+        "TASK:TEST IMPORT"
+    ],
+    "records": [
+    {
+        "id": "fecfb71e-a275-4ef8-b179-a6f9f4093655",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_3fu87zsPNhyvMEaEopXK--&patientId=SMA0053&position=leftDecubitus&spot=mitral&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_3fu87zsPNhyvMEaEopXK---"
+    },
+    {
+        "id": "200e8fbd-be9b-4ece-89c0-8a2f4d9fd107",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_4HcaWgTl5SLyQiUBG7Fr&patientId=SMA0053&position=supine&spot=leftAbdomen&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_4HcaWgTl5SLyQiUBG7Fr"
+    },
+    {
+        "id": "4ccb7386-e411-4850-93de-cfbbcac2dd39",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_81LupRD0CxgYXcvV7DEm&patientId=SMA0053&position=supine&spot=rightCarotid&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_81LupRD0CxgYXcvV7DEm"
+    },
+    {
+        "id": "2dcfdabe-cc32-4297-a82c-209275456a9e",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_9EtSSEAuL9MhxjdPMT2i&patientId=SMA0053&position=sitting&spot=erbs&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_9EtSSEAuL9MhxjdPMT2i"
+    },
+    {
+        "id": "4fadb81e-9caf-43aa-be09-4ccd87e7e86c",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_9dZPN3nx782a2AKlZloN&patientId=SMA0053&position=sitting&spot=lowerBackRight&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_9dZPN3nx782a2AKlZloN"
+    },
+    {
+        "id": "38651be0-e329-4cda-be15-91936bd5c9ae",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_E41Kb6PJwKi3rAxQAVrM&patientId=SMA0053&position=supine&spot=pulmonic&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_E41Kb6PJwKi3rAxQAVrM"
+    },
+    {
+        "id": "e9d4cc58-c648-4c6f-a3c1-b6a38fec1a70",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_Eez4AvX9TEW1my5yF4pF&patientId=SMA0053&position=supine&spot=rightAbdomen&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_Eez4AvX9TEW1my5yF4pF"
+    },
+    {
+        "id": "523c8d4b-2834-4308-a9dc-6e36b1eeabac",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_FDU7CFoDgx8JJHVsC8vv&patientId=SMA0053&position=leftDecubitus&spot=mitral&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_FDU7CFoDgx8JJHVsC8vv"
+    },
+    {
+        "id": "c9b36166-0606-4bc7-8475-170dcf0deedf",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_H5Yf7D31Z715xsOgq3po&patientId=SMA0053&position=supine&spot=leftCarotid&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_H5Yf7D31Z715xsOgq3po"
+    },
+    {
+        "id": "81572a31-42e5-4f43-bc1e-c94930b4ce9b",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_Hufou5oga9SlXQ6eNCff&patientId=SMA0053&position=supine&spot=tricuspid&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_Hufou5oga9SlXQ6eNCff"
+    },
+    {
+        "id": "bda59f6f-40c0-42dc-9ec3-821f1534f3eb",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_IFH94K1NrGYlLlfbUAKC&patientId=SMA0053&position=leftDecubitus&spot=mitral&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_IFH94K1NrGYlLlfbUAKC"
+    },
+    {
+        "id": "172f55ed-aa25-41ae-9b86-d5e40fcdb687",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_IoQNkN7myrAqQZOZuDzd&patientId=SMA0053&position=supine&spot=rightCarotid&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_IoQNkN7myrAqQZOZuDzd"
+    },
+    {
+        "id": "a7d71fd6-8896-4c5d-a012-fca890eb14b9",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_LfYzuEQTChYr7AntHC5Q&patientId=SMA0053&position=sitting&spot=erbsRight&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_LfYzuEQTChYr7AntHC5Q"
+    },
+    {
+        "id": "5342bd00-e008-4de0-afa6-dc6daf5bf8f7",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_NkBefF12uwqAasU6DnTM&patientId=SMA0053&position=supine&spot=leftCarotid&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_NkBefF12uwqAasU6DnTM"
+    },
+    {
+        "id": "ca9c57a8-3b27-4641-b773-f2b6432c8fed",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_OxfeBe6N2w4FxOmrasnT&patientId=SMA0053&position=sitting&spot=lowerBackLeft&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_OxfeBe6N2w4FxOmrasnT"
+    },
+    {
+        "id": "2cb7f9bc-dcc7-4b7a-a40f-b8a3473023df",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_WdIiDIcw7VbrXHtAVpfx&patientId=SMA0053&position=supine&spot=aortic&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_WdIiDIcw7VbrXHtAVpfx"
+    },
+    {
+        "id": "da2f26bf-b31a-47cc-b878-8dbefe872631",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_XHzupvU3LhrlJdsIZ3Ma&patientId=SMA0053&position=sitting&spot=middleBackLeft&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_XHzupvU3LhrlJdsIZ3Ma"
+    },
+    {
+        "id": "f2396b6a-ecd3-434c-85c4-7f09fd1631cf",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_ZbZ1femJI0bxeppiff2j&patientId=SMA0053&position=supine&spot=pulmonic&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_ZbZ1femJI0bxeppiff2j"
+    },
+    {
+        "id": "96565b7c-6627-44a2-a05c-b4fb2d3eea3b",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_Zy6o8g9AdUlJeL8Wsh0i&patientId=SMA0053&position=sitting&spot=middleBackRight&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_Zy6o8g9AdUlJeL8Wsh0i"
+    },
+    {
+        "id": "c1d19305-5946-4c52-b2d2-624d20260427",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_buLS9Uee7XwADFS3k5JG&patientId=SMA0053&position=sitting&spot=lowerBackRight&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_buLS9Uee7XwADFS3k5JG"
+    },
+    {
+        "id": "a54f3547-4494-41e5-86eb-83c742225b84",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_eNsrQTCT2QGRnb54VIyq&patientId=SMA0053&position=sitting&spot=erbs&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_eNsrQTCT2QGRnb54VIyq"
+    },
+    {
+        "id": "45e7f738-f952-42f3-a540-f9a9d364c24e",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_euQdcAJpFOz8ZCqbr7eK&patientId=SMA0053&position=sitting&spot=lowerBackRight&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_euQdcAJpFOz8ZCqbr7eK"
+    },
+    {
+        "id": "b258ce19-fa9e-49a3-8ed5-8b599041f41c",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_fGJlKHhC9duOcl10uzs7&patientId=SMA0053&position=supine&spot=leftAbdomen&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_fGJlKHhC9duOcl10uzs7"
+    },
+    {
+        "id": "4a3cbd53-0afc-409d-a625-bec4d3267238",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_fQbckD0anbQTPlK65h0e&patientId=SMA0053&position=supine&spot=tricuspid&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_fQbckD0anbQTPlK65h0e"
+    },
+    {
+        "id": "2b7d5e93-3d2e-48d5-b15e-5009eb52987e",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_h30dyAJ7yxQYGOhds9Gw&patientId=SMA0053&position=supine&spot=rightAbdomen&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_h30dyAJ7yxQYGOhds9Gw"
+    },
+    {
+        "id": "0fa46252-aa44-405b-85a5-b9415ca2e5f3",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_i7OpzuipbqF07rzInYSt&patientId=SMA0053&position=supine&spot=aortic&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_i7OpzuipbqF07rzInYSt"
+    },
+    {
+        "id": "36da3183-f4af-438e-94f9-dd0dddfe7a3e",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_imv2VXBQXLc8h3TEDLZS&patientId=SMA0053&position=supine&spot=leftAbdomen&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_imv2VXBQXLc8h3TEDLZS"
+    },
+    {
+        "id": "4eeeea86-4ce2-4357-98c5-c114cc356dbb",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_irB2ugL8l8fQlcgHcwDB&patientId=SMA0053&position=sitting&spot=lowerBackLeft&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_irB2ugL8l8fQlcgHcwDB"
+    },
+    {
+        "id": "85a81b11-4a39-4ccf-8e0d-f43027cf3ae9",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_j67exQ1xInJo2mUykHUJ&patientId=SMA0053&position=supine&spot=aortic&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_j67exQ1xInJo2mUykHUJ"
+    },
+    {
+        "id": "e46db8d4-90b5-426e-881d-407198b44e4f",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_jAFoE2k0c49JoHxvwjcV&patientId=SMA0053&position=sitting&spot=erbsRight&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_jAFoE2k0c49JoHxvwjcV"
+    },
+    {
+        "id": "f21314df-ee33-412c-9286-9cc724a7b086",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_k5uOsSc34oHw90aB7BTu&patientId=SMA0053&position=supine&spot=pulmonic&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_k5uOsSc34oHw90aB7BTu"
+    },
+    {
+        "id": "c3238b85-b6f7-4a4b-a66c-f06827fe2c8a",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_lIbmtYZs1waCaEn9rbdk&patientId=SMA0053&position=sitting&spot=erbsRight&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_lIbmtYZs1waCaEn9rbdk"
+    },
+    {
+        "id": "a564cbde-4cf1-4ab0-9288-d56700dcabca",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_oTkUYXK5KLjANCS4tDHC&patientId=SMA0053&position=sitting&spot=middleBackLeft&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_oTkUYXK5KLjANCS4tDHC"
+    },
+    {
+        "id": "056d1173-9085-4817-9973-a589f797ab9f",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_okuoXFLDFXFt8x9eL36r&patientId=SMA0053&position=sitting&spot=middleBackLeft&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_okuoXFLDFXFt8x9eL36r"
+    },
+    {
+        "id": "9299ed69-5c0b-438e-8fac-5767d4a1862d",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_rG8eNbaOoX9K7GJzNteM&patientId=SMA0053&position=sitting&spot=lowerBackLeft&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_rG8eNbaOoX9K7GJzNteM"
+    },
+    {
+        "id": "e94729fa-b679-49de-8770-70a182644e19",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_rZFAB2ZvjHmahJMOkN9x&patientId=SMA0053&position=supine&spot=tricuspid&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_rZFAB2ZvjHmahJMOkN9x"
+    },
+    {
+        "id": "dacebcde-d463-488f-87f9-dd63161b6553",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_ssEwcedVoWrO0ebs90J5&patientId=SMA0053&position=supine&spot=rightAbdomen&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_ssEwcedVoWrO0ebs90J5"
+    },
+    {
+        "id": "64729e16-1ff6-4db3-9ab0-b96acfc5a49e",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_uTEEo3N2NjdrbVJPDo9w&patientId=SMA0053&position=sitting&spot=middleBackRight&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_uTEEo3N2NjdrbVJPDo9w"
+    },
+    {
+        "id": "d95a6daf-6c70-4c5d-8ee7-d74e37449b77",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_ulvYMc4NHyqa6mjsyAQL&patientId=SMA0053&position=supine&spot=rightCarotid&device=rnk",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/RNK_ulvYMc4NHyqa6mjsyAQL"
+    },
+    {
+        "id": "6f145d6a-e355-4daf-87de-ccb81bf0bf51",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_w6XPA9wJXwlzOAjfg21K&patientId=SMA0053&position=sitting&spot=erbs&device=iOS",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/iOS_w6XPA9wJXwlzOAjfg21K"
+    },
+    {
+        "id": "28439bd1-c056-485c-8c00-726e9b6a465b",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_xoKjbIRfJlGVdxux74xg&patientId=SMA0053&position=supine&spot=leftCarotid&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_xoKjbIRfJlGVdxux74xg"
+    },
+    {
+        "id": "3b12d337-952b-42e6-a42d-4a6dc969a127",
+        "Segmentation URL": "http://ec2-54-235-192-121.compute-1.amazonaws.com:8002/?record_v3=x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_zdPlWl8gkcaLEywhkSmP&patientId=SMA0053&position=sitting&spot=middleBackRight&device=android",
+        "path": "x9IAzqiRiMQdNf7f1qP2YcizXhG3/recordings/Android_zdPlWl8gkcaLEywhkSmP"
+    }]
+}
