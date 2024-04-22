@@ -746,14 +746,23 @@ const exportSelection = async (req, res) => {
 
 		if(options.comment){
 			pipeline.push({
-				$match:{
-					"Stage Comment": {
-						$regex: options.comment
-					}
-				}	
-			})
-		}
-
+                $match:
+                    {
+                        $or:[
+                            {
+                            	"Stage Comment":{
+                              	    $regex: data.comment
+                            	}
+                            },
+                            {
+                              "importNote":{
+                              	    $regex: data.comment
+                            	}
+                            }
+                          ]
+                    }      
+            })
+        
 		if(options.select.length > 0){
 			
 			let projection = {
@@ -883,13 +892,23 @@ const exportFile = async (req, res) => {
 
 		if(options.comment){
 			pipeline.push({
-				$match:{
-					"Stage Comment": {
-						$regex: options.comment
-					}
-				}	
-			})
-		}
+                $match:
+                    {
+                        $or:[
+                            {
+                            	"Stage Comment":{
+                              	    $regex: data.comment
+                            	}
+                            },
+                            {
+                              "importNote":{
+                              	    $regex: data.comment
+                            	}
+                            }
+                          ]
+                    }      
+            })
+        
 
 
 		if(options.select.length > 0){
