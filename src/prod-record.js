@@ -762,6 +762,7 @@ const exportSelection = async (req, res) => {
                           ]
                     }      
             })
+        }    
         
 		if(options.select.length > 0){
 			
@@ -908,6 +909,7 @@ const exportFile = async (req, res) => {
                           ]
                     }      
             })
+        }    
         
 
 
