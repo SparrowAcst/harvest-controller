@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep, find, last, isUndefined, isNull, keys, isArray, isString, isObject} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, find, first, last, isUndefined, isNull, keys, isArray, isString, isObject} = require("lodash")
 const moment = require("moment") 
 const YAML = require("js-yaml")
 const fs = require("fs")
@@ -275,6 +275,11 @@ const addTags = async (req, res) => {
 				t.createdAt = new Date(t.createdAt)
 				return t
 			})
+			r.tags = sortBy(r.tags, d => d.createdAt)
+			console.log(last(r.tags).tag, first(options.tags).tag)
+			if(last(r.tags).tag == first(options.tags).tag) {
+				r.tags.pop()
+			}	
 			r.tags = r.tags.concat(options.tags)
 			r["updated at"] = new Date()
 			r["Stage Comment"] = "Tags added."
