@@ -148,6 +148,8 @@ router.post("/pr/segment/", pr.getSegmentation)
 router.post("/pr/export/", pr.exportSelection)
 router.get("/pr/export/:id", pr.exportFile)
 router.get("/pr/export/", pr.exportFile)
+router.get("/pr/get-field-list/", pr.getFieldList)
+router.post("/pr/get-field-list/", pr.getFieldList)
 
 
 

@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const {extend, sortBy, uniq, flattenDeep, find, first, last, isUndefined, isNull, keys, isArray, isString, isObject} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, find, first, last, isUndefined, isNull, keys, isArray, isString, isObject, remove} = require("lodash")
 const moment = require("moment") 
 const YAML = require("js-yaml")
 const fs = require("fs")
@@ -162,6 +162,7 @@ const removeLastTag = async (req, res) => {
 
 		let options = req.body.options
 
+		let scopeRegEx = new RegExp(options.tagScope || ".*")
 
 		// options.tags = (options.tags || []).map( t => ({
 		// 	tag: t,
@@ -194,10 +195,13 @@ const removeLastTag = async (req, res) => {
 		
 		records.forEach( r => {
 			
+			let outOfScope = remove(r.tags, d => !scopeRegEx.test(d.tag))
+
+
 			r.tags = sortBy ( r.tags.map(t => {
-					t.createdAt = new Date(t.createdAt)
-					return t
-				}), d => d.createdAt)
+				t.createdAt = new Date(t.createdAt)
+				return t
+			}), d => d.createdAt)
 
 			
 			r.tags.reverse()
@@ -205,6 +209,15 @@ const removeLastTag = async (req, res) => {
 			if(r.tags && r.tags.length>0 && !r.tags[0].tag.startsWith("TASK:") && !r.tags[0].tag.startsWith("SOURCE:")){
 				r.tags.shift()
 			}
+
+			r.tags = r.tags.concat(outOfScope)
+
+			r.tags = sortBy ( r.tags.map(t => {
+				t.createdAt = new Date(t.createdAt)
+				return t
+			}), d => d.createdAt)
+
+
 			r["updated at"] = new Date()
 			r["Stage Comment"] = "Last Tag removed."
 			r["updated by"] = options.user.namedAs
@@ -642,157 +655,93 @@ const addToTask = async (req, res) => {
 	}
 }
 
+
+const getFieldList = async (req, res) => {
+	
+	try {
+
+		const db = CONFIG.db
+		let response = await mongodb.aggregate({
+				db: db,
+				collection: `${db.name}.taged-records`,
+				pipeline: [
+					{
+						$limit: 1
+					},
+					{ 
+						$project: { 
+							_id: 0
+						}
+					}
+				]
+			})
+
+		res.send( sortBy(keys(response[0])) )
+
+	} catch(e) {
+		res.status(503).send({ 
+			error: e.toString()
+		})
+	}	
+
+}
+
 const exportSelection = async (req, res) => {
 	try {
 
 		let options = extend({}, req.body)
 		options.db = CONFIG.db
-
 		options.id = uuid()
-		req.body.id = options.id
 		options.requestedAt = new Date()
-		req.body.requestedAt = options.requestedAt
-		
-		options.hasTags = options.hasTags || []
-		options.withoutTags = options.withoutTags || []
-		options.regexp = options.regexp || ""
-		options.comment = options.comment || ""
-		
-		options.select = options.select || []
-
+		options.requestedBy = options.user.namedAs
 		options.download = options.download || false
 
+		let projection = {
+			_id: 0
+		}
+
+		if( options.filter.fields && options.filter.fields.length > 0 ){
+			options.filter.fields.forEach( f => {
+				projection[f] = 1
+			})
+		}
+
+		options.pipeline.push({
+			$project: projection
+		})
+
 		if(options.download){
-			requestPool[options.id] = options
-			res.send(req.body)
-			return
-		}
-
-		if(!isArray(options.hasTags)){
-			res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isArray(options.withoutTags)){
-			res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isArray(options.select)){
-			res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isString(options.regexp)){
-			res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isString(options.comment)){
-			res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-
-
-		let pipeline = []
-
-		if(options.tagScope){
-
-			pipeline.push({
-				$match:{
-					"tags.tag": {
-						$regex: options.tagScope
-					}	
-				}
+			requestPool[options.id] = {
+				id: options.id,
+				db: options.db,
+				requestedAt: options.requestedAt,
+				requestedBy: options.requestedBy,
+				filter: options.filter,
+				pipeline: options.pipeline
+			}	
+			res.send({
+				id: options.id,
+				requestedAt: options.requestedAt,
+				requestedBy: options.requestedBy,
+				filter: options.filter,
 			})
-
-		}
-
-		
-		if(options.hasTags.length > 0){
-			pipeline.push({
-				$match:{
-					"tags.tag": {
-						$in: options.hasTags
-					}	
-				}
-			})
-		}
-
-		if(options.withoutTags.length > 0){
-			pipeline.push({
-				$match:{
-					"tags.tag": {
-						$nin: options.withoutTags
-					}	
-				}
-			})
+			return
 		}
 		
-		if(options.regexp){
-			pipeline.push({
-				$match:{
-					$or:[
-                        {
-                        	"tags.tag":{
-                          		$regex: options.regexp
-                        	}
-                        },
-                        {
-                          "tags.createdBy.namedAs":{
-                          		$regex: options.regexp
-                        	}
-                        }
-                      ]
-				}			
-			})
-		}
-
-		if(options.comment){
-			pipeline.push({
-                $match:
-                    {
-                        $or:[
-                            {
-                            	"Stage Comment":{
-                              	    $regex: data.comment
-                            	}
-                            },
-                            {
-                              "importNote":{
-                              	    $regex: data.comment
-                            	}
-                            }
-                          ]
-                    }      
-            })
-        }    
-        
-		if(options.select.length > 0){
-			
-			let projection = {
-				_id: 0
-			}
-
-			options.select.forEach( key => {
-				projection[key] = 1
-			})
-
-			pipeline.push({
-				$project: projection
-			})
-		}
-
 		const response = await mongodb.aggregate({
 			db: options.db,
 			collection: `${options.db.name}.taged-records`,
-			pipeline
+			pipeline: options.pipeline
 		})
 
 		
 		res.send({
-			query: req.body,
+			query: {
+				id: options.id,
+				requestedAt: options.requestedAt,
+				requestedBy: options.requestedBy,
+				filter: options.filter
+			},
 			data: response
 		})
 
@@ -805,6 +754,7 @@ const exportSelection = async (req, res) => {
 	}
 }
 
+
 const exportFile = async (req, res) => {
 
 	try {
@@ -816,127 +766,11 @@ const exportFile = async (req, res) => {
 			return
 		}
 
-		if(!isArray(options.hasTags)){
-			res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isArray(options.withoutTags)){
-			res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isArray(options.select)){
-			res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isString(options.regexp)){
-			res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-		if(!isString(options.comment)){
-			res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-			return
-		}
-
-
-		let pipeline = []
-
-		if(options.tagScope){
-
-			pipeline.push({
-				$match:{
-					"tags.tag": {
-						$regex: options.tagScope
-					}	
-				}
-			})
-
-		}
-
 		
-		if(options.hasTags.length > 0){
-			pipeline.push({
-				$match:{
-					"tags.tag": {
-						$in: options.hasTags
-					}	
-				}
-			})
-		}
-
-		if(options.withoutTags.length > 0){
-			pipeline.push({
-				$match:{
-					"tags.tag": {
-						$nin: options.withoutTags
-					}	
-				}
-			})
-		}
-		
-		if(options.regexp){
-			pipeline.push({
-				$match:{
-					$or:[
-                        {
-                        	"tags.tag":{
-                          		$regex: options.regexp
-                        	}
-                        },
-                        {
-                          "tags.createdBy.namedAs":{
-                          		$regex: options.regexp
-                        	}
-                        }
-                      ]
-				}			
-			})
-		}
-
-		if(options.comment){
-			pipeline.push({
-                $match:
-                    {
-                        $or:[
-                            {
-                            	"Stage Comment":{
-                              	    $regex: data.comment
-                            	}
-                            },
-                            {
-                              "importNote":{
-                              	    $regex: data.comment
-                            	}
-                            }
-                          ]
-                    }      
-            })
-        }    
-        
-
-
-		if(options.select.length > 0){
-			
-			let projection = {
-				_id: 0
-			}
-
-			options.select.forEach( key => {
-				projection[key] = 1
-			})
-
-			pipeline.push({
-				$project: projection
-			})
-		}
-
 		const response = await mongodb.aggregate({
 			db: options.db,
 			collection: `${options.db.name}.taged-records`,
-			pipeline
+			pipeline: options.pipeline
 		})
 
 		delete options.db
@@ -945,7 +779,12 @@ const exportFile = async (req, res) => {
   		res.setHeader('Content-type', "application/json");
 
 		res.send({
-			query: options,
+			query: {
+				id: options.id,
+				requestedAt: options.requestedAt,
+				requestedBy: options.requestedBy,
+				filter: options.filter
+			},
 			data: response
 		})
 
@@ -960,6 +799,397 @@ const exportFile = async (req, res) => {
 
 	}	
 }
+
+
+
+// const exportSelection = async (req, res) => {
+// 	try {
+
+// 		let options = extend({}, req.body)
+// 		options.db = CONFIG.db
+
+// 		options.id = uuid()
+// 		req.body.id = options.id
+// 		options.requestedAt = new Date()
+// 		req.body.requestedAt = options.requestedAt
+		
+// 		options.hasTags = (options.hasTags) ? options.includeTags || [] : []
+// 		options.hasLastTags = (options.hasLastTag) ? options.hasLastTags || [] : []
+// 		options.withoutTags = (options.withoutTags) ? options.excludeTags || [] : []
+// 		options.regexp = (options.hasText) ? options.search || "" : ""
+// 		options.comment = (options.hasComment) ? options.comment || "" : ""
+// 		options.rid = (options.hasId) ? options.rid || "" : ""
+// 		options.select = options.fields || []
+
+// 		options.download = options.download || false
+
+// 		if(options.download){
+// 			requestPool[options.id] = options
+// 			res.send(req.body)
+// 			return
+// 		}
+
+// 		if(!isArray(options.hasTags)){
+// 			res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isArray(options.withoutTags)){
+// 			res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isArray(options.select)){
+// 			res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isString(options.regexp)){
+// 			res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isString(options.comment)){
+// 			res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+
+
+// 		let pipeline = []
+
+		
+// 		if(options.tagScope){
+
+// 			pipeline.push({
+// 				$match:{
+// 					"tags.tag": {
+// 						$regex: options.tagScope
+// 					}	
+// 				}
+// 			})
+
+// 		}
+
+// 		if(options.hasId && options.rid){
+// 			pipeline.push({
+// 				$match:{
+// 					"id": {
+// 						$regex: options.rid
+// 					}	
+// 				}
+// 			})			
+// 		}
+		
+// 		if(options.lastTags.length > 0){
+// 			pipeline = pipeline.concat([
+// 				  {
+// 				    $addFields:
+// 				      {
+// 				        lastTag: {
+// 				          $last: "$tags.tag",
+// 				        },
+// 				      },
+// 				  },
+// 				  {
+// 				    $match:
+// 				      {
+// 				        lastTag: {
+// 				          $in: [
+// 				            "STATE: Murmurs binary: 2nd: finalized",
+// 				          ],
+// 				        },
+// 				      },
+// 				  }
+// 			  ])
+// 		}
+
+		
+// 		if(options.hasTags.length > 0){
+// 			pipeline.push({
+// 				$match:{
+// 					"tags.tag": {
+// 						$in: options.hasTags
+// 					}	
+// 				}
+// 			})
+// 		}
+
+// 		if(options.withoutTags.length > 0){
+// 			pipeline.push({
+// 				$match:{
+// 					"tags.tag": {
+// 						$nin: options.withoutTags
+// 					}	
+// 				}
+// 			})
+// 		}
+		
+// 		if(options.regexp){
+// 			pipeline.push({
+// 				$match:{
+// 					$or:[
+//                         {
+//                         	"tags.tag":{
+//                           		$regex: options.regexp
+//                         	}
+//                         },
+//                         {
+//                           "tags.createdBy.namedAs":{
+//                           		$regex: options.regexp
+//                         	}
+//                         }
+//                       ]
+// 				}			
+// 			})
+// 		}
+
+// 		if(options.comment){
+// 			pipeline.push({
+//                 $match:
+//                     {
+//                         $or:[
+//                             {
+//                             	"Stage Comment":{
+//                               	    $regex: options.comment
+//                             	}
+//                             },
+//                             {
+//                               "importNote":{
+//                               	    $regex: options.comment
+//                             	}
+//                             }
+//                           ]
+//                     }      
+//             })
+//         }    
+        
+// 		if(options.select.length > 0){
+			
+// 			let projection = {
+// 				_id: 0
+// 			}
+
+// 			options.select.forEach( key => {
+// 				projection[key] = 1
+// 			})
+
+// 			pipeline.push({
+// 				$project: projection
+// 			})
+// 		}
+
+// 		const response = await mongodb.aggregate({
+// 			db: options.db,
+// 			collection: `${options.db.name}.taged-records`,
+// 			pipeline
+// 		})
+
+		
+// 		res.send({
+// 			query: req.body,
+// 			data: response
+// 		})
+
+
+// 	} catch(e) {
+// 		res.status(503).send({ 
+// 			error: e.toString(),
+// 			requestBody: req.body
+// 		})
+// 	}
+// }
+
+
+
+
+
+
+// const exportFile = async (req, res) => {
+
+// 	try {
+		
+// 		let id = req.query.id || req.params.id
+// 		let options = requestPool[id]
+// 		if(!options){
+// 			res.status(404).send()
+// 			return
+// 		}
+
+// 		if(!isArray(options.hasTags)){
+// 			res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isArray(options.withoutTags)){
+// 			res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isArray(options.select)){
+// 			res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isString(options.regexp)){
+// 			res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+// 		if(!isString(options.comment)){
+// 			res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+// 			return
+// 		}
+
+
+// 		let pipeline = []
+
+// 		if(options.tagScope){
+
+// 			pipeline.push({
+// 				$match:{
+// 					"tags.tag": {
+// 						$regex: options.tagScope
+// 					}	
+// 				}
+// 			})
+
+// 		}
+
+// 		if(options.hasId && options.rid){
+// 			pipeline.push({
+// 				$match:{
+// 					"id": {
+// 						$regex: options.rid
+// 					}	
+// 				}
+// 			})			
+// 		}
+		
+// 		if(options.lastTags.length > 0){
+// 			pipeline = pipeline.concat([
+// 				  {
+// 				    $addFields:
+// 				      {
+// 				        lastTag: {
+// 				          $last: "$tags.tag",
+// 				        },
+// 				      },
+// 				  },
+// 				  {
+// 				    $match:
+// 				      {
+// 				        lastTag: {
+// 				          $in: options.lastTags
+// 				        },
+// 				      },
+// 				  }
+// 			  ])
+// 		}
+
+		
+// 		if(options.hasTags.length > 0){
+// 			pipeline.push({
+// 				$match:{
+// 					"tags.tag": {
+// 						$in: options.hasTags
+// 					}	
+// 				}
+// 			})
+// 		}
+
+// 		if(options.withoutTags.length > 0){
+// 			pipeline.push({
+// 				$match:{
+// 					"tags.tag": {
+// 						$nin: options.withoutTags
+// 					}	
+// 				}
+// 			})
+// 		}
+		
+// 		if(options.regexp){
+// 			pipeline.push({
+// 				$match:{
+// 					$or:[
+//                         {
+//                         	"tags.tag":{
+//                           		$regex: options.regexp
+//                         	}
+//                         },
+//                         {
+//                           "tags.createdBy.namedAs":{
+//                           		$regex: options.regexp
+//                         	}
+//                         }
+//                       ]
+// 				}			
+// 			})
+// 		}
+
+// 		if(options.comment){
+// 			pipeline.push({
+//                 $match:
+//                     {
+//                         $or:[
+//                             {
+//                             	"Stage Comment":{
+//                               	    $regex: options.comment
+//                             	}
+//                             },
+//                             {
+//                               "importNote":{
+//                               	    $regex: options.comment
+//                             	}
+//                             }
+//                           ]
+//                     }      
+//             })
+//         }    
+        
+// 		if(options.select.length > 0){
+			
+// 			let projection = {
+// 				_id: 0
+// 			}
+
+// 			options.select.forEach( key => {
+// 				projection[key] = 1
+// 			})
+
+// 			pipeline.push({
+// 				$project: projection
+// 			})
+// 		}
+
+// 		const response = await mongodb.aggregate({
+// 			db: options.db,
+// 			collection: `${options.db.name}.taged-records`,
+// 			pipeline
+// 		})
+
+// 		delete options.db
+
+// 		res.setHeader('Content-disposition', `attachment; filename=${id}.json`);
+//   		res.setHeader('Content-type', "application/json");
+
+// 		res.send({
+// 			query: options,
+// 			pipeline,
+// 			data: response
+// 		})
+
+// 		delete requestPool[id]
+
+// 	} catch(e) {
+
+// 		res.status(503).send({ 
+// 			error: e.toString(),
+// 			requestBody: req.body
+// 		})
+
+// 	}	
+// }
 
 
 const getSegmentation = async (req, res) => {
@@ -1013,7 +1243,8 @@ module.exports = {
 	addToTask,
 	exportSelection,
 	exportFile,
-	getSegmentation
+	getSegmentation,
+	getFieldList
 }
 
 
