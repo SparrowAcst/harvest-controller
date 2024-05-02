@@ -1029,8 +1029,7 @@ const getSyncExaminations = async (req, res) => {
         {
 			      $sort:{
 			          updatedAt: -1,
-			          organization: 1,
-			          state: 1
+                "Examination ID": -1
 			      }
 			  }
 			]
@@ -1038,14 +1037,25 @@ const getSyncExaminations = async (req, res) => {
     
     	options.filter = []
         
-    	options.pageFilter = [
-	        {
-	            '$skip': options.eventData.skip
-	        }, {
-	            '$limit': options.eventData.limit
-	        }
-	    ]    
-    
+    	if((options.eventData.skip+options.eventData.limit) == options.eventData.total) {
+        options.pageFilter = [
+                {
+                    '$skip': options.eventData.skip
+                }
+            ]
+      } else {
+            
+            options.pageFilter = [
+                {
+                    '$skip': options.eventData.skip
+                }, {
+                    '$limit': options.eventData.limit
+                }
+            ]    
+  
+     }
+     
+     // options.pageFilter = [] 
     
 	    options.countPipeline = [
 	        { $count: 'count'},
@@ -1066,12 +1076,9 @@ const getSyncExaminations = async (req, res) => {
 	        pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
 	    })
 
-    	let data = await mongodb.aggregate({
-	    	db: options.db,
-	    	collection: `${options.db.name}.${options.db.examinationCollection}`,
-	    	pipeline: options.pipeline
-		                .concat(options.syncFilter)
-		                .concat(options.pageFilter)
+      let pipeline = options.pipeline
+                    .concat(options.syncFilter)
+                    .concat(options.pageFilter)
                     .concat([
                       {
                         $lookup: {
@@ -1091,6 +1098,11 @@ const getSyncExaminations = async (req, res) => {
                         }
                       }
                     ])
+
+    	let data = await mongodb.aggregate({
+	    	db: options.db,
+	    	collection: `${options.db.name}.${options.db.examinationCollection}`,
+	    	pipeline 
 	    })
 
 
@@ -1112,7 +1124,8 @@ const getSyncExaminations = async (req, res) => {
 
 	    res.send({
 	    	options,
-        	collection: data	
+        pipeline,
+        collection: data	
 	    })
 
 	} catch (e) {
