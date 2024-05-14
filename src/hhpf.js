@@ -108,8 +108,11 @@ const updateDiagnosisTags = async (req, res) => {
 		let result = await mongodb.updateOne({
 		 	db: options.db,
 		 	collection: `${options.db.name}.${options.db.formCollection}`,
-		 	filter: { id: options.formId },
-		 	data: { "data.en.diagnosisTags": options.diagnosisTags }
+		 	filter: { id: options.form.id },
+		 	data: { 
+		 		"data.en.diagnosisTags": options.form.diagnosisTags,
+		 		"data.en.diagnosis": options.form.diagnosis,
+		 	}
 		})
 		res.send(result)
 	
@@ -122,6 +125,39 @@ const updateDiagnosisTags = async (req, res) => {
 	
 	}	 
 
+}
+
+const getExamination = async (req, res) => {
+	try {
+		
+		let options = req.body.options
+
+		let data = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.examinationCollection}`,
+			pipeline:  [
+	          {
+	            '$match': {
+	              'patientId': options.id
+	            }
+	          },
+	          {
+	            '$project': {
+	              '_id': 0, 
+	          	}
+	          }
+	        ] 
+		})
+
+		data = data[0]
+	    res.send(data)
+
+	} catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
 }
 
 
@@ -169,7 +205,8 @@ const getForms = async (req, res) => {
 	              'patientId': 1, 
 	              'forms': 1, 
 	              'physician': 1,
-	              'protocol': 1, 
+	              'protocol': 1,
+	              'workflowTags': 1, 
 	              'recordCount': {
 	                '$size': '$records'
 	              }
@@ -214,7 +251,7 @@ const getForms = async (req, res) => {
 	                recordCount:data.recordCount,
 	                state: data.state,
 	                protocol: data.protocol || "Complete Protocol",
-	                
+	                workflowTags: data.workflowTags,
 	                comment: data.comment,
 	                date: moment(new Date(data.dateTime)).format("YYYY-MM-DD HH:mm:ss"),
 	                physician
@@ -237,11 +274,104 @@ const getForms = async (req, res) => {
 		})
 	}
 }
+
+
+const updateForm = async (req, res) => {
+	let pipeline = []
+	try {
+		
+		let options = req.body.options
+		
+		pipeline = [
+			{
+				$match:{
+					patientId: options.patientId,
+					type: options.type
+				}
+			}
+		]
+
+		let storedForm = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.formCollection}`,
+			pipeline
+		})	
+
+		storedForm = storedForm[0]
+
+		if(!storedForm) {
+			res.send({
+				error: `${options.form.type} for ${options.patientId} not found`,
+				requestBody: req.body
+			})
+		}
+		
+		storedForm.data.en = options.form
+
+		let result = await mongodb.replaceOne({
+		 	db: options.db,
+		 	collection: `${options.db.name}.${options.db.formCollection}`,
+		 	filter: { id: storedForm.id },
+		 	data: storedForm
+		})
+
+		res.send(result)
+
+	} catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body,
+			pipeline
+		})
+	}
+}
+
+
+const commitWorkflowTags = async (req, res) => {
+	try {
+
+		let options = req.body.options
+
+
+		let workflowTags = (options.examination.workflowTags || []).map( t => ({
+			tag: t.tag,
+			createdAt: new Date(t.createdAt),
+			createdBy: t.createdBy
+		}))
+
+		
+		
+		let result = await mongodb.updateOne({
+		 	db: options.db,
+		 	collection: `${options.db.name}.${options.db.examinationCollection}`,
+		 	filter: { patientId: options.id },
+		 	data: { 
+		 		workflowTags,
+		 		'updated at': new Date(),
+		 		'updated by': options.user.altname,
+		 		'Stage Comment': options.examination['Stage Comment'] 
+		 	}
+		})
+
+	    res.send(result)
+
+	} catch(e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})	
+	}
+}
+
+
 	
 module.exports = {
 	getDatasetList,
 	getGrants,
 	getForms,
-	updateDiagnosisTags
+	updateForm,
+	updateDiagnosisTags,
+	getExamination,
+	commitWorkflowTags
 	// getFile
 }

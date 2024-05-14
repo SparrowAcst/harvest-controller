@@ -595,6 +595,7 @@ const updateSegmentation = async (req, res) => {
 		let collection = query.c || ""
 		let user = query.u || ""
 		let id = query.r || ""
+		let ai = req.body.ai || false
 
 
 
@@ -651,6 +652,10 @@ const updateSegmentation = async (req, res) => {
 
 			f = find(md5map, m => m.md5 == user)
 			user = (f) ? f.value : undefined
+
+			if(ai) {
+				user = "AI"
+			}
 
 		}
 		

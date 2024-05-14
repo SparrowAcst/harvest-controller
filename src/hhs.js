@@ -134,6 +134,7 @@ const getEvents = async (req, res) => {
 						                // "model": 1
 					            	}
 					            : 	{
+						                "Examination ID": 1,
 						                "Body Position": 1,
 						                "Body Spot": 1,
 						                "model": 1

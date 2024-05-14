@@ -47,6 +47,12 @@ router.post("/hhpf/get-dataset-list/", hhpf.getDatasetList)
 router.post("/hhpf/get-grants/", hhpf.getGrants)
 router.post("/hhpf/get-forms/", hhpf.getForms)
 router.post("/hhpf/update-diagnosis/", hhpf.updateDiagnosisTags)
+router.post("/hhpf/update-form/", hhpf.updateForm)
+router.post("/hhpf/get-examination/", hhpf.getExamination)
+router.post("/hhpf/commit-workflow-tags/", hhpf.commitWorkflowTags)
+
+
+
 // router.get("/hhpf/get-file/:id", hhpf.getFile)
 // router.get("/hhpf/file/", hhpf.getFile)
 // router.get("/hhpf/file/:id", hhpf.getFile)
@@ -135,6 +141,8 @@ const pr = require("./src/prod-record")
 router.post("/pr/get-dataset-list/", pr.getDatasetList)
 router.post("/pr/get-grants/", pr.getGrants)
 router.post("/pr/get-events/", pr.getRecords)
+router.post("/pr/get-exams/", pr.getExams)
+
 router.post("/pr/get-tag-list/", pr.getTagList)
 router.post("/pr/add-tags/", pr.addTags)
 router.post("/pr/remove-tag/", pr.removeLastTag)
@@ -152,6 +160,9 @@ router.get("/pr/get-field-list/", pr.getFieldList)
 router.post("/pr/get-field-list/", pr.getFieldList)
 
 
+
+router.post("/pr/add-tags-dia/", pr.addTagsDia)
+router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)
 
 
 module.exports = router
