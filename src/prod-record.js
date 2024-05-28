@@ -439,12 +439,12 @@ const addTagsDia = async (req, res) => {
 		})
 		
 		records.forEach( r => {
-			r.workflowTags = r.workflowTags.map(t => {
+			r.workflowTags = (r.workflowTags || []).map(t => {
 				t.createdAt = new Date(t.createdAt)
 				return t
 			})
 			r.workflowTags = sortBy(r.workflowTags, d => d.createdAt)
-			if(last(r.workflowTags).tag == first(options.tags).tag) {
+			if(r.workflowTags.length > 0 && last(r.workflowTags).tag == first(options.tags).tag) {
 				r.workflowTags.pop()
 			}	
 			r.workflowTags = r.workflowTags.concat(options.tags)
@@ -1038,6 +1038,41 @@ const exportFile = async (req, res) => {
 }
 
 
+const setConsistency = async (req, res) => {
+	try {
+		
+		let options = req.body.options
+		let selection = req.body.selection
+		let consistency = req.body.consistency
+
+		
+		const commands = selection.map( r => ({
+	        updateOne:{
+	            filter:{
+	                id: r
+	            },
+	            update: {$set:{diagnosisConsistency: consistency}}
+	        }
+	    }))
+
+	    const result = await mongodb.bulkWrite({
+	    	db: options.db,
+	    	collection: `${options.db.name}.${options.db.labelingCollection}`,
+	    	commands
+	    })
+
+
+	    res.send(result)
+
+	} catch (e) {
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
+}
+
+
 
 // const exportSelection = async (req, res) => {
 // 	try {
@@ -1485,7 +1520,9 @@ module.exports = {
 	getExams,
 
 	addTagsDia,
-	removeLastTagDia
+	removeLastTagDia,
+
+	setConsistency
 }
 
 

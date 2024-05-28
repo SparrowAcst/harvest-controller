@@ -159,7 +159,7 @@ router.get("/pr/export/", pr.exportFile)
 router.get("/pr/get-field-list/", pr.getFieldList)
 router.post("/pr/get-field-list/", pr.getFieldList)
 
-
+router.post("/pr/save-consistency/", pr.setConsistency)
 
 router.post("/pr/add-tags-dia/", pr.addTagsDia)
 router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)

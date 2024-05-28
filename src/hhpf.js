@@ -112,6 +112,7 @@ const updateDiagnosisTags = async (req, res) => {
 		 	data: { 
 		 		"data.en.diagnosisTags": options.form.diagnosisTags,
 		 		"data.en.diagnosis": options.form.diagnosis,
+		 		"data.en.diagnosisReliability": options.form.diagnosisReliability
 		 	}
 		})
 		res.send(result)
