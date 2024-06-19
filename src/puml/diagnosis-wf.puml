@@ -1,0 +1,48 @@
+@startuml
+
+|Diagnosis Admin \n(2-nd level Diagnostician)|
+start
+:Starts Task;
+#DCEDC8:Add tag \n<b>"STATE: Diagnosis: started"; <<output>>
+fork
+
+|1-st level Diagnostician \n(Patient Form)|
+:Validate/Edit Patient form;
+:Assess patient form reliability;
+:Set diagnosis;
+:Assess Diagnosis reliability;
+
+#DCEDC8:Add tags \n<b>"STATE: Diagnosis: 1st: validated: Patient"; <<output>>
+
+fork again
+|1-st level Diagnostician \n(ECG Form)|
+:Validate/Edit ECG form;
+:Assess ECG form reliability;
+:Set diagnosis;
+:Assess Diagnosis reliability;
+
+#DCEDC8:Add tag \n<b>"STATE: Diagnosis: 1st: validated: ECG"; <<output>>
+
+
+fork again
+|1-st level Diagnostician \n(Echocardiography)|
+:Validate/Edit Echocardiography;
+:Assess Echocardiography reliability;
+:Set diagnosis;
+:Assess Diagnosis reliability;
+#DCEDC8:Add tag \n<b>"STATE: Diagnosis: 1st: validated: Echocardiography"; <<output>>
+|Diagnosis Admin \n(2-nd level Diagnostician)|
+end fork {and}
+
+:Validate/Edit/Finalize Patient form;
+:Assess patient form reliability;
+:Validate/Edit/Finalize ECG form;
+:Assess ECG form reliability;
+:Validate/Edit/Finalize ECHO form;
+:Assess ECHO form reliability;
+:Set/Finalize diagnosis;
+:Assess Diagnosis reliability;
+:Set diagnosis consistency of recordings;
+#DCEDC8:Add tag \n<b>"STATE: Diagnosis: 2nd: finalized"; <<output>>
+stop
+@enduml

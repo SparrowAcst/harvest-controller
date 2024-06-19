@@ -181,21 +181,11 @@ const getExams = async (req, res) => {
 	        pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
 	    })
 
-		let data = await mongodb.aggregate({
-			db: options.db,
-			collection: `${options.db.name}.${options.db.examinationCollection}`,
-			pipeline: 	[]
+	    const pipeline = []
 						.concat(options.valueFilter || [])
 						.concat(options.eventData.filter || [])
 						.concat([
-						 //  {
-						 //  	$addFields:{
-					  // 		  "updated at": {
-							//   	$max: "$tags.createdAt"
-							//   }
-							// }
-						 //  },	
-				          {
+						  {
 				            '$project': {
 				              '_id': 0
 				            }
@@ -215,11 +205,17 @@ const getExams = async (req, res) => {
 				          {
 				            '$limit': options.eventData.limit
 				          }
-				        ])  
+				        ])
+
+		let data = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.examinationCollection}`,
+			pipeline  
 		})
 
 		res.send({
 	    	options,
+	    	pipeline,
 	    	collection: data
 	    })
 
@@ -232,6 +228,44 @@ const getExams = async (req, res) => {
 	}
 }
 
+
+const selectExams = async (req, res) => {
+	try {
+
+		let options = req.body.options
+
+		if(options.pipeline.length == 0){
+			res.send({
+		    	options,
+		    	collection: []
+		    })
+
+		    return 			
+		}
+
+		let data = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.labelingCollection}`,
+			pipeline: options.pipeline.concat([{$project: { id: "$_id"}}])	  
+		})
+
+		// fetch _id of examinations? that consistenced to criteria
+
+		console.log(data)
+
+		res.send({
+	    	options,
+	    	collection: data.map(d => d.id)
+	    })
+
+
+	} catch(e){
+		res.send({ 
+			error: e.toString(),
+			requestBody: req.body
+		})
+	}
+}
 
 
 
@@ -1518,6 +1552,7 @@ module.exports = {
 	getSegmentation,
 	getFieldList,
 	getExams,
+	selectExams,
 
 	addTagsDia,
 	removeLastTagDia,
