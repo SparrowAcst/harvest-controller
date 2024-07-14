@@ -133,6 +133,7 @@ const Worker = class {
             let { version } = options
 
             version = this.resolveVersion({ version })
+            dataId = dataId || version.dataId
 
             if (!version) throw new Error(`brancher.resolveData: version ${version.id} not found`)
 
@@ -200,7 +201,7 @@ const Worker = class {
 
             let { db, branchesCollection, dataId, cache } = this.context
 
-            let { user, source, metadata } = options
+            let { user, source, metadata, task } = options
 
             let parent = this.resolveVersion({ version: source })
 
@@ -210,6 +211,7 @@ const Worker = class {
             let branch = {
                 id: uuid(),
                 dataId,
+                task,
                 user,
                 prev: [{
                     id: parent.id
@@ -297,14 +299,18 @@ const Worker = class {
 
             if (!parent) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
 
-            parent.head = false
-            parent.readonly = true
-
+            
             let prevData = await this.resolveData({ version: parent })
+
+            user = user || parent.user
+            data = data || prevData    
+            
+
 
             let newVersion = {
                 id: uuid(),
                 dataId,
+                task: parent.task,
                 user,
                 prev: [{
                     id: parent.id
@@ -317,6 +323,8 @@ const Worker = class {
                 readonly: false
             }
 
+            parent.head = false
+            parent.readonly = true
             parent.save = newVersion.id
 
 
@@ -354,6 +362,139 @@ const Worker = class {
 
     }
 
+    async freeze(options) {
+
+        try {
+
+            let { db, branchesCollection, dataId, cache, freezePeriod } = this.context
+            let { user, source, data, metadata } = options
+
+            freezePeriod = freezePeriod || options.freezePeriod || [7, "days"]
+
+            let parent = this.resolveVersion({ version: source })
+
+            if (!parent) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
+
+            
+            let prevData = await this.resolveData({ version: parent })
+
+            user = user || parent.user
+            data = data || prevData    
+    
+
+            let newVersion = {
+                id: uuid(),
+                dataId,
+                task: parent.task,
+                user,
+                prev: [{
+                    id: parent.id
+                }],
+                metadata,
+                head: true,
+                createdAt: new Date(),
+                patches: parent.patches.concat([Diff.diff(prevData, data)]).filter(d => d),
+                type: "freeze",
+                expiredAt: moment(new Date()).add(...freezePeriod).toDate(),
+                readonly: true
+            }
+
+            parent.head = false
+            parent.readonly = true
+            parent.freeze = newVersion.id
+
+
+            this.updateInCache({ version: newVersion })
+            this.updateInCache({ version: parent })
+
+
+            await mongodb.bulkWrite({
+                db: db,
+                collection: `${db.name}.${branchesCollection}`,
+                commands: [{
+                        insertOne: {
+                            document: newVersion
+                        }
+                    },
+                    {
+                        replaceOne: {
+                            filter: {
+                                id: parent.id,
+                                dataId: dataId
+                            },
+                            replacement: parent,
+                            upsert: true
+                        }
+                    }
+
+                ]
+            })
+
+            return newVersion
+
+        } catch (e) {
+            throw e
+        }
+
+    }
+
+    async rollback(options) {
+
+        try {
+
+            let { db, branchesCollection, dataId, cache, freezePeriod } = this.context
+            let { user, source, data, metadata } = options
+
+            freezePeriod = freezePeriod || options.freezePeriod || [7, "days"]
+
+            let self = this.resolveVersion({ version: source })
+
+            if (!self) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
+            if (self.type != "freeze") throw new Error(`brancher.freeze: source ${source.id || source} not freeze`)
+            
+            
+            let parent = this.resolveVersion({ version: self.prev[0].id})
+            parent.head = true
+            parent.readonly = false
+            delete parent.freeze
+
+            this.updateInCache({ version: parent })
+            remove(cache, d => d.id == self.id)
+
+            await mongodb.bulkWrite({
+                db: db,
+                collection: `${db.name}.${branchesCollection}`,
+                commands: [
+                    {
+                        replaceOne: {
+                            filter: {
+                                id: parent.id,
+                                dataId: dataId
+                            },
+                            replacement: parent,
+                            upsert: true
+                        }
+                    },
+                    {
+                        deleteOne:{
+                            filter: {
+                                id: self.id,
+                                dataId: dataId  
+                            }
+                        }
+                    }
+
+                ]
+            })
+
+            return parent
+
+        } catch (e) {
+            throw e
+        }
+
+    }
+
     async commit(options) {
 
         try {
@@ -366,9 +507,13 @@ const Worker = class {
 
             if (!parent) throw new Error(`brancher.createDataCommit: source ${source.id || source} not found`)
 
+            data = ( data ) ? data : (await this.resolveData({version: parent}))
+            user = user || parent.user
+
             let newMainHead = {
                 id: uuid(),
                 dataId,
+                task: parent.task,
                 prev: [{
                     id: parent.id
                 }],
@@ -416,7 +561,9 @@ const Worker = class {
 
             }
 
-
+            parent.head = false
+            parent.readonly = true
+            
 
             this.updateInCache({ version: newMainHead })
             this.updateInCache({ version: parent })
@@ -474,7 +621,7 @@ const Worker = class {
 
             let { db, branchesCollection, dataId, cache } = this.context
 
-            let { user, sources, data, metadata } = options
+            let { user, sources, metadata } = options
 
             let parents = sources.map(source => this.resolveVersion({ version: source }))
 
@@ -494,6 +641,7 @@ const Worker = class {
             let mergeHead = {
                 id: uuid(),
                 dataId,
+                task: parents[0].task,
                 user,
                 prev,
                 metadata,
@@ -849,6 +997,11 @@ const Worker = class {
                     {
                         "name": "branch",
                         "symbol": "path://M7.10508 15.2101C8.21506 15.6501 9 16.7334 9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.6938 3.83481 15.5825 5 15.1707V8.82929C3.83481 8.41746 3 7.30622 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6C9 7.30622 8.16519 8.41746 7 8.82929V11.9996C7.83566 11.3719 8.87439 11 10 11H14C15.3835 11 16.5482 10.0635 16.8949 8.78991C15.7849 8.34988 15 7.26661 15 6C15 4.34315 16.3431 3 18 3C19.6569 3 21 4.34315 21 6C21 7.3332 20.1303 8.46329 18.9274 8.85392C18.5222 11.2085 16.4703 13 14 13H10C8.61653 13 7.45179 13.9365 7.10508 15.2101ZM6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17ZM6 5C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7C6.55228 7 7 6.55228 7 6C7 5.44772 6.55228 5 6 5ZM18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z",
+                        "symbolSize": 20
+                    },
+                    {
+                        "name": "freeze",
+                        "symbol": `path://M329.364,237.908l42.558-39.905c25.236-23.661,39.552-56.701,39.552-91.292V49.156c0.009-13.514-5.53-25.918-14.402-34.754C388.235,5.529,375.833-0.009,362.318,0H149.681c-13.514-0.009-25.926,5.529-34.763,14.401c-8.871,8.837-14.41,21.24-14.392,34.754v57.554c0,34.591,14.315,67.632,39.552,91.292l42.55,39.888c2.342,2.205,3.678,5.271,3.678,8.492v19.234c0,3.221-1.336,6.279-3.669,8.476l-42.558,39.905c-25.237,23.652-39.552,56.701-39.552,91.292v57.554c-0.018,13.515,5.522,25.918,14.392,34.755c8.838,8.871,21.249,14.41,34.763,14.401h212.636c13.515,0.009,25.918-5.53,34.755-14.401c8.871-8.838,14.41-21.24,14.402-34.755V405.29c0-34.591-14.316-67.64-39.552-91.292l-42.55-39.897c-2.352-2.205-3.678-5.263-3.678-8.484v-19.234C325.694,243.162,327.021,240.096,329.364,237.908z M373.946,462.844c-0.009,3.273-1.274,6.056-3.411,8.218c-2.162,2.136-4.944,3.402-8.218,3.41H149.681c-3.273-0.009-6.064-1.274-8.226-3.41c-2.136-2.162-3.393-4.945-3.402-8.218V405.29c0-24.212,10.026-47.356,27.691-63.91l42.55-39.906c9.914-9.285,15.539-22.273,15.539-35.857v-19.234c0-13.592-5.625-26.58-15.547-35.866l-42.542-39.896c-17.666-16.554-27.691-39.69-27.691-63.91V49.156c0.009-3.273,1.266-6.055,3.402-8.226c2.162-2.127,4.953-3.394,8.226-3.402h212.636c3.273,0.008,6.056,1.274,8.218,3.402c2.136,2.171,3.402,4.952,3.411,8.226v57.554c0,24.22-10.026,47.356-27.692,63.91l-42.55,39.896c-9.914,9.286-15.538,22.274-15.538,35.866v19.234c0,13.584,5.625,26.572,15.547,35.874l42.541,39.88c17.666,16.563,27.692,39.707,27.692,63.919V462.844z M237.261,378.95l-77.33,77.33h192.128l-77.33-77.33C264.385,368.614,247.615,368.614,237.261,378.95z`,
                         "symbolSize": 20
                     },
                     {

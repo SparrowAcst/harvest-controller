@@ -1,0 +1,1711 @@
+[{
+  "classification": "Diagnosis",
+  "id": "d6629644-e92f-44dc-ad71-9dd6fae43a20",
+  "name": "1. General Diagnoses",
+  "index": 0,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "fcaed40a-cf3a-409f-aa20-32c8e942a311",
+  "name": "1. General Diagnoses/Incomplete diagnosis",
+  "index": 1,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b2ab15cf-8faf-4470-a212-604785d8e1b7",
+  "name": "1. General Diagnoses/Complete diagnosis",
+  "index": 2,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "25c41ef6-4256-4ec7-bdd8-0bcf250414f2",
+  "name": "1. General Diagnoses/Unknown diagnosis",
+  "index": 3,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b66b1206-4d0b-4f1a-b71e-1c7d5ac1c21e",
+  "name": "1. General Diagnoses/Unspecified disorder of circulatory system I99.9",
+  "index": 4,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "81248a54-dfcf-40de-bc1c-aa6b5703076f",
+  "name": "1. General Diagnoses/Encounter for general adult medical examination without abnormal findings (no cardiological pathology found) Z00.00",
+  "index": 5,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e868b275-29e7-44c5-80e3-3873ec4bffdb",
+  "name": "1. General Diagnoses/Pregnancy",
+  "index": 6,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2f807f93-638d-4091-98f4-7ad9d788d6fc",
+  "name": "1. General Diagnoses/Malignant neoplasms (C00-C96)",
+  "index": 7,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4bf40064-31b4-46de-9d1e-be592945dde8",
+  "name": "2. Mitral valve disorders",
+  "index": 8,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3a1fafd3-d145-44a0-b46a-4938e6d696f9",
+  "name": "2. Mitral valve disorders/Normal anatomically and functionally Mitral valve",
+  "index": 9,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b3c2e728-dbe2-4b85-a4a3-e22edde0eba5",
+  "name": "2. Mitral valve disorders/Indeterminate anatomically and functionally Mitral valve",
+  "index": 10,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "28978803-5718-4665-b391-ccfce9fb7697",
+  "name": "2. Mitral valve disorders/Prosthetic Mitral Valve Mechanical",
+  "index": 11,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a8b58cfa-f84d-4e0a-8e3a-1165f4938850",
+  "name": "2. Mitral valve disorders/Prosthetic Mitral Valve Tissue",
+  "index": 12,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a06bde24-45ee-455c-949a-9166bdb9e73d",
+  "name": "2. Mitral valve disorders/Annuloplasty ring",
+  "index": 13,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bf929f9a-e94c-485a-8a9b-a2f0b0eb5119",
+  "name": "2. Mitral valve disorders/Nonrheumatic mitral (valve) prolapse I34.1",
+  "index": 14,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "21a7f797-2571-4fbb-8e9e-35c31b88d562",
+  "name": "2. Mitral valve disorders/Rupture of chordae tendineae",
+  "index": 15,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0f8b764d-a43c-4595-a8bd-7678f7667ade",
+  "name": "2. Mitral valve disorders/Nonrheumatic mitral (valve) annulus calcification I34.81",
+  "index": 16,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e78255d9-6c3b-4b37-87ef-fbd520b5d5df",
+  "name": "2. Mitral valve disorders/Mitral (valve) insufficiency",
+  "index": 17,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ed4ff9c1-6ec8-4af0-a004-51fc1347484f",
+  "name": "2. Mitral valve disorders/Origin of Mitral valve insufficiency",
+  "index": 18,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ff29a1e8-c8e7-48ea-9e75-6ad8958c3841",
+  "name": "2. Mitral valve disorders/Mitral (valve) insufficiency primary",
+  "index": 19,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "8dd4046f-09c8-45c9-b337-13a7ea79948b",
+  "name": "2. Mitral valve disorders/Mitral (valve) insufficiency secondary",
+  "index": 20,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "962a1923-7485-422d-9c06-396088bbaea6",
+  "name": "2. Mitral valve disorders/Mitral (valve) insufficiency of unknown origin",
+  "index": 21,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "45d5de76-4d35-454a-a2bf-bc0bdc380270",
+  "name": "2. Mitral valve disorders/Grade of Mitral valve insufficiency",
+  "index": 22,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e228adff-af50-4c52-8153-d64dd3f5718c",
+  "name": "2. Mitral valve disorders/Mild Mitral (valve) insufficiency",
+  "index": 23,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "89b6a36f-758b-4992-8eca-8c1435b0e360",
+  "name": "2. Mitral valve disorders/Moderate Mitral (valve) insufficiency",
+  "index": 24,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "6ad8a19d-a6e9-4be5-a6f5-9449159bcc5b",
+  "name": "2. Mitral valve disorders/Moderate-severe Mitral (valve) insufficiency",
+  "index": 25,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4c25f84c-507f-4655-b5e5-2da624675243",
+  "name": "2. Mitral valve disorders/Severe Mitral (valve) insufficiency",
+  "index": 26,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a92ac15e-413a-429a-87d0-1dbe6c6d799f",
+  "name": "2. Mitral valve disorders/Mitral (valve) insufficiency of undefined grade",
+  "index": 27,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3c04169c-1c45-479d-8583-a855d174e561",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis",
+  "index": 28,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "7e989f9d-0df5-4b0e-b4a7-e909d9fbc9c2",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/A At risk of MS",
+  "index": 29,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "7fae9077-74e9-4866-a4ce-d93ae301e2db",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/B Progressive MS",
+  "index": 30,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "d7d94c59-9880-4ea3-a240-2ea211736905",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/Severe MS",
+  "index": 31,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "62603f3c-add9-4237-a530-865941bf5025",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/Very severe MS",
+  "index": 32,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1573cfb1-a48a-4ba0-b36c-10f3f8831ade",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/Indeterminate MS",
+  "index": 33,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "272ac82f-f002-4766-a7a4-04a3a11e703f",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/YODA: MS mild",
+  "index": 34,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "79ea1a2b-4383-43b3-a20b-55d7918f1eef",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/YODA: MS moderate",
+  "index": 35,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "df6a1c81-1072-4ea2-9bb3-ccd95fb17e2b",
+  "name": "2. Mitral valve disorders/Mitral (valve) stenosis/YODA: MS severe",
+  "index": 36,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ec952331-a913-4f7d-8927-31767b867883",
+  "name": "3. Aortic valve disorders",
+  "index": 37,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "76bfa1e3-b5d4-4a9d-8815-9c31604083ef",
+  "name": "3. Aortic valve disorders/Normal anatomically and functionally Aortic valve",
+  "index": 38,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "aceedbde-c850-4db8-a334-b44310e9f4de",
+  "name": "3. Aortic valve disorders/Indeterminate anatomically and functionally Aortic valve",
+  "index": 39,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0250a280-52e8-4b0f-b48e-3898e3821a0c",
+  "name": "3. Aortic valve disorders/Prosthetic Aortic Valve Mechanical",
+  "index": 40,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3d243f6c-dae6-4034-b357-f0c3a508196b",
+  "name": "3. Aortic valve disorders/Prosthetic Aortic Valve Tissue",
+  "index": 41,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "819a2aa8-ab12-4123-b8b0-20b0a002f260",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis",
+  "index": 42,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9a164238-9a4e-4352-be58-10a5dbc95b65",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Supravalvular aortic stenosis Q25.3",
+  "index": 43,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "f485b534-a435-4bb0-85e8-882fba9dad2d",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Dynamic subaortic stenosis not related to hypertrophic cardiomyopathy",
+  "index": 44,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3f9bf9cb-52fd-40e5-81c3-d1cdbb5697d1",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Congenital subaortic stenosis Q24.4",
+  "index": 45,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "138826d1-24e8-4cd0-8bf4-244e43daf8ab",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Congenital subaortic stenosis Q24.4/Congenital subaortic stenosis moderate",
+  "index": 46,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "73bba71b-706f-4d91-8087-7fba342e587a",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Congenital subaortic stenosis Q24.4/Congenital subaortic stenosis mild",
+  "index": 47,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e75ccb54-436c-48ef-aa3c-1f62b4e9571e",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Congenital subaortic stenosis Q24.4/Congenital subaortic stenosis severe",
+  "index": 48,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "186c2ea5-72e6-4903-aa31-3d16eef7ed0f",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/A At risk of AS",
+  "index": 49,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b7b2d246-ff4c-4904-b2c3-f38d2cec145a",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/B Progressive AS Mild AS",
+  "index": 50,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c4659019-ec37-434a-b07d-a0488c3910ec",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/B Progressive AS Moderate AS",
+  "index": 51,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2f6b6ec5-c846-4733-9a27-21973b356de8",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/C1 Asymptomatic severe AS",
+  "index": 52,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "53aa6697-6e9c-4bc7-976e-acb07009c32b",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/C2 Asymptomatic severe AS with LV dysfunction",
+  "index": 53,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9c178394-bd83-431f-a306-19c8a02a1ac4",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/D: Symptomatic severe AS",
+  "index": 54,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c8664cde-0c69-4080-acd1-46ba04e148e1",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/D1 Symptomatic severe high- gradient AS",
+  "index": 55,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "56fd2486-29b3-4425-882b-07d876887418",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/D2 Symptomatic severe low-flow low-gradient AS with reduced LVEF",
+  "index": 56,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5afc19f7-5ea0-4a27-9a38-1cdaa16943cd",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/D3 Symptomatic severe low-gradient AS with normal LVEF or paradoxical low-flow severe AS",
+  "index": 57,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "8d5cbfaa-ba6e-47d0-b28b-779f6b1a0bca",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Mild AS unspecified clinically",
+  "index": 58,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "8a06ad96-6e98-4442-8182-07b72db37a2a",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Moderate AS unspecified clinically",
+  "index": 59,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "918bb991-6b46-4fdb-bb6b-20a366325b5b",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Moderate\\severe AS unspecified clinically",
+  "index": 60,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "df456d9a-04b8-4aac-a657-ececce0bad8b",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Severe AS unspecified clinically",
+  "index": 61,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "88c249de-aa43-498d-af54-dda3bb50b80a",
+  "name": "3. Aortic valve disorders/Aortic (valve) stenosis/Indeterminate AS",
+  "index": 62,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bfc443df-c4ff-4ebc-8e7a-c26261005f51",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency",
+  "index": 63,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "be640f98-6015-4e22-8c9e-709ff077c568",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/A At risk of AR",
+  "index": 64,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "43beb402-a0cd-4006-b161-6b5f3866e076",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/B Progressive AR Mild AR",
+  "index": 65,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4303e5ac-2182-4e18-bb34-792353d15edb",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/B Progressive AR Moderate AR",
+  "index": 66,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "67e2149f-d811-42c0-88ca-333a74cf65a0",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/C1 Asymptomatic severe AR",
+  "index": 67,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ffbc5440-174e-4f13-b05d-530bc33c0ae9",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/C2 Asymptomatic severe AR",
+  "index": 68,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5966fdf1-2f2c-4b5f-b298-c582fd81cc8a",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/D Symptomatic severe AR",
+  "index": 69,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "fc5d3aa3-92ca-4363-b9fb-45b6ae43d75d",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/Mild AR unspecified clinically",
+  "index": 70,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "166e0617-dd6b-476e-84ea-fa0efba74f22",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/Moderate AR unspecified clinically",
+  "index": 71,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "caeb74bb-e68e-42b1-b1cf-5018ed9d73aa",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/Moderate\\severe AR unspecified clinically",
+  "index": 72,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "33c1a9e1-b4b3-43ed-a7f4-0a62a2f45455",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/Severe AR unspecified clinically",
+  "index": 73,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e2d56967-ca13-4a52-8721-ada8d09ba2b2",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/Indeterminate AR",
+  "index": 74,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "cf63e575-4ce7-4cf2-a44b-b0a7d076c2fc",
+  "name": "3. Aortic valve disorders/Aortic (valve) insufficiency/Aortic regurgitation acute",
+  "index": 75,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2b2f8504-c6b2-4775-8b1d-0f26a2775714",
+  "name": "4. Tricuspid valve disorders",
+  "index": 76,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e2c3f470-61da-44ac-a594-f6e003b084f6",
+  "name": "4. Tricuspid valve disorders/Normal anatomically and functionally Tricuspid valve",
+  "index": 77,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1d1f1940-7ede-4a68-a77e-a52e27a8c607",
+  "name": "4. Tricuspid valve disorders/Indeterminate anatomically and functionally Tricuspid valve",
+  "index": 78,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c1140020-5c0a-43c1-a6be-cf76f9d10c6b",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) stenosis",
+  "index": 79,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "93de5fb1-9ae1-4552-b73a-553f632183ce",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) stenosis/A, B Non-severe TS",
+  "index": 80,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b54878d3-88ba-4538-b3b0-0d6cba126338",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) stenosis/C, D Severe TS",
+  "index": 81,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bf0d27c4-f76a-497e-a71b-00b63dc518b3",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) stenosis/Indeterminate TS",
+  "index": 82,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "cc642b12-82e1-47c7-b4af-9a0a8b348d6f",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency",
+  "index": 83,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "734fbc39-7af8-4d78-944e-a6b1f23d0cd1",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/A At risk of TR",
+  "index": 84,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2f5a3a7c-5d1d-4c1a-bd9a-6844f2447be3",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/B Progressive TR",
+  "index": 85,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e075cced-efd4-45fa-97f8-d3123b2e1dce",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/B Progressive TR mild",
+  "index": 86,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "6a4ecf59-063d-486b-b487-cbf623e631fe",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/B Progressive TR moderate",
+  "index": 87,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e46c0153-1bfe-496a-968e-f195ee03737f",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/C Asymptomatic, severe TR",
+  "index": 88,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "584b5973-92c0-4b11-8693-f7e2ba4309f3",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/D Symptomatic severe TR",
+  "index": 89,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "60bd8291-80d7-4c3a-9580-3396db7657e3",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/Mild TR unspecified clinically",
+  "index": 90,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0b3a3c6a-5e8e-4666-b65f-37ad5263e6a1",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/Moderate TR unspecified clinically",
+  "index": 91,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "209872e1-ae2d-4f8b-95ae-ca346e907999",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/Moderate\\Severe TR unspecified clinically",
+  "index": 92,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "301c7ba4-9b98-4747-930b-fbf9e47b0e7f",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/Severe TR unspecified clinically",
+  "index": 93,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "05ecf70c-ee3b-48a7-a62d-6563de1e58de",
+  "name": "4. Tricuspid valve disorders/Tricuspid (valve) insufficiency/Indeterminate TR",
+  "index": 94,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "48a27c99-3454-447e-a6b9-d1f7030ea4b3",
+  "name": "5. Pulmonary valve disorders",
+  "index": 95,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4d2a711a-b189-42af-9bb4-7971e970b69e",
+  "name": "5. Pulmonary valve disorders/Normal anatomically and functionally Pulmonary valve",
+  "index": 96,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5ce7e0b3-eee3-4719-be44-339c060273b6",
+  "name": "5. Pulmonary valve disorders/Indeterminate anatomically and functionally Pulmonary valve",
+  "index": 97,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "516359a6-1fb7-4359-b751-448de80cae28",
+  "name": "5. Pulmonary valve disorders/Subvalvular pulmonic stenosis Q24.3",
+  "index": 98,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "067ff1db-c4f1-459c-b7c4-d1cda38bdaec",
+  "name": "5. Pulmonary valve disorders/Pulmonary infundibular stenosis Q24.3",
+  "index": 99,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "47cc7f72-5525-4abc-b601-0fb2cf3aba48",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve stenosis",
+  "index": 100,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9a3c1640-f6d6-4903-ae6e-41ee0ed32f41",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve stenosis/Mild PS",
+  "index": 101,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3832a93f-5761-4680-9a17-e03f92986d50",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve stenosis/Moderate PS",
+  "index": 102,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "36231c95-87f7-4c60-8ddb-47f818b0f72c",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve stenosis/Severe PS",
+  "index": 103,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1aeb17f7-6c8b-4314-81b8-a40dc015d386",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve stenosis/Indeterminate PS",
+  "index": 104,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9c0884bf-bf32-447b-a8b7-dfd00212b662",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve insufficiency",
+  "index": 105,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "53b02dc4-0bfa-4829-808d-1ff664ce78c9",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve insufficiency/A, B Non-severe PR",
+  "index": 106,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2411ab41-49b0-44a4-80ed-439824b7fe3d",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve insufficiency/C, D Severe PR",
+  "index": 107,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "01f8a330-9d8b-412b-81af-dfa1f919c973",
+  "name": "5. Pulmonary valve disorders/Pulmonary valve insufficiency/Indeterminate PR",
+  "index": 108,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "953b19b5-e939-4fa7-9e79-2d45c07757e3",
+  "name": "6. Coronary heart disease",
+  "index": 109,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "f96f1ce2-b02e-461f-bc40-e88736620c37",
+  "name": "6. Coronary heart disease/No coronary heart disease",
+  "index": 110,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "8126af79-699d-4939-8b1f-bfe5280d86f5",
+  "name": "6. Coronary heart disease/Indeterminate coronary heart disease",
+  "index": 111,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "443a7a80-8748-4599-843e-84d9d03b3a30",
+  "name": "6. Coronary heart disease/Angina pectoris I20",
+  "index": 112,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "cac39d69-29cf-419c-acf4-b2cec7dae5c9",
+  "name": "6. Coronary heart disease/Unstable angina I20.0",
+  "index": 113,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "13632b6f-2f6f-4b41-8d4b-00d1cc51dd32",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21",
+  "index": 114,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a83c6a63-978e-49c0-b933-80f300d73b03",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21/ST elevation (STEMI) myocardial infarction of anterior wall I21.0",
+  "index": 115,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1d2fcf57-6c23-4db7-886f-71625c387385",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21/ST elevation (STEMI) myocardial infarction of inferior wall I21.1",
+  "index": 116,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "56939680-5cde-4203-b243-b9bf1df64008",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21/ST elevation (STEMI) myocardial infarction of other sites I21.2",
+  "index": 117,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1a20852e-50b4-4a9f-aa9d-3e1929e6bf79",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21/ST elevation (STEMI) myocardial infarction of unspecified site I21.3",
+  "index": 118,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4b47f2c8-3315-4b31-bbf4-fe9b614ebfc0",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21/Non-ST elevation (NSTEMI) myocardial infarction I21.4",
+  "index": 119,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e64b7791-0865-4fd7-84d9-d521eff4fb6c",
+  "name": "6. Coronary heart disease/Acute myocardial infarction I21/Acute myocardial infarction, unspecified I21.9",
+  "index": 120,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "832167f2-bd43-42a3-92bf-ecdf13f51c95",
+  "name": "6. Coronary heart disease/Acute ischemic heart disease, unspecified I24.9",
+  "index": 121,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "df66dca8-e382-4e36-82d1-4cbe3504357a",
+  "name": "6. Coronary heart disease/Old myocardial infarction I25.2",
+  "index": 122,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "18011f6a-ca38-42b1-aea2-1d1b122e8fdd",
+  "name": "6. Coronary heart disease/Old myocardial infarction I25.2/Old myocardial infarction of inferior wall",
+  "index": 123,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b50408f6-b980-4208-a58f-0d2fd6bfc126",
+  "name": "6. Coronary heart disease/Old myocardial infarction I25.2/Old myocardial infarction of other sites",
+  "index": 124,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a1189129-4d35-417d-8dd4-b977699cc927",
+  "name": "6. Coronary heart disease/Old myocardial infarction I25.2/Old myocardial infarction of anterior wall",
+  "index": 125,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2688ceb8-8114-42f9-a5f5-313127d68e85",
+  "name": "6. Coronary heart disease/Old myocardial infarction I25.2/Old myocardial infarction unspecified",
+  "index": 126,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "46d40b2d-d2ef-4fdc-abc8-0a44006d5b30",
+  "name": "6. Coronary heart disease/Aneurysm of heart I25.3",
+  "index": 127,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0c89c231-8176-4eb7-bbd2-52560588bac0",
+  "name": "6. Coronary heart disease/Ischemic cardiomyopathy I25.5",
+  "index": 128,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "71b65659-3c16-407d-86b7-2e7af1022829",
+  "name": "6. Coronary heart disease/Chronic ischemic heart disease, unspecified I25.9",
+  "index": 129,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "53304ea9-6eab-4cca-b3e5-715232c0e4bf",
+  "name": "6. Coronary heart disease/Ventricular septal defect as current complication following acute myocardial infarction I23.2",
+  "index": 130,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "16a650f9-caea-4d6c-a240-914caf8ff2d2",
+  "name": "6. Coronary heart disease/Killip Class I",
+  "index": 131,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9d9324d6-8b2c-4624-9d66-c453712478f2",
+  "name": "6. Coronary heart disease/Killip Class II",
+  "index": 132,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "66b5a240-1114-4d26-99a2-c9d7da7bc498",
+  "name": "6. Coronary heart disease/Killip Class III",
+  "index": 133,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "46ef1b1d-3d30-4908-8f8b-5f9bac72c6ad",
+  "name": "6. Coronary heart disease/Killip Class IV",
+  "index": 134,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "056af141-41e9-4cf5-a1e2-80d3e112dd57",
+  "name": "6. Coronary heart disease/Killip Class undefined",
+  "index": 135,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0a93500b-ccba-42bf-853c-a6c9e3005050",
+  "name": "6. Coronary heart disease/Presence of aortocoronary bypass graft Z95.1",
+  "index": 136,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "645b7d0e-cb0a-43c9-b8e0-04d3504157b4",
+  "name": "6. Coronary heart disease/Presence of coronary angioplasty implant and graft Z95.5",
+  "index": 137,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "3c568d30-9e3e-4a59-a6c8-816c22f0fb25",
+  "name": "7. Other forms of heart disease I30-I5A",
+  "index": 138,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ab2aa3c3-1303-4102-b5b5-344a555147c9",
+  "name": "7. Other forms of heart disease I30-I5A/No other forms of heart disease",
+  "index": 139,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "6b390ad7-56a1-4e0f-8058-b8598ee27c4e",
+  "name": "7. Other forms of heart disease I30-I5A/Indeterminate other forms of heart disease",
+  "index": 140,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "4d699ab0-37b2-423f-8bb5-61fe6dbd3825",
+  "name": "7. Other forms of heart disease I30-I5A/Acute pericarditis I30",
+  "index": 141,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a6ebbb61-ba56-40a6-b019-254443d508f6",
+  "name": "7. Other forms of heart disease I30-I5A/Pericarditis unspecified",
+  "index": 142,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9840f943-4baf-40ab-a87e-83aa5169d6b8",
+  "name": "7. Other forms of heart disease I30-I5A/Chronic constrictive pericarditis I31.1",
+  "index": 143,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a65643d8-a6e5-4b62-9ac0-a1a141947003",
+  "name": "7. Other forms of heart disease I30-I5A/Pericardial effusion I31.3",
+  "index": 144,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c64f5d56-2663-41d7-8d3a-745d54eb6620",
+  "name": "7. Other forms of heart disease I30-I5A/Acute and subacute infective endocarditis I33.0",
+  "index": 145,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "d9b1b0e8-6faa-47b3-b57e-f99248c39892",
+  "name": "7. Other forms of heart disease I30-I5A/Acute myocarditis I40",
+  "index": 146,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3952bef8-b231-4460-9879-40381eab7ffd",
+  "name": "7. Other forms of heart disease I30-I5A/Myxoma Left Atrial",
+  "index": 147,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9a2b686f-f38b-455f-a94e-7a014d48aa51",
+  "name": "7. Other forms of heart disease I30-I5A/Postcardiotomy syndrome I97.0",
+  "index": 148,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0b837a03-3978-4a5b-a0d1-7b96d5054ca7",
+  "name": "7. Other forms of heart disease I30-I5A/Presence of cardiac pacemaker Z95.0",
+  "index": 149,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "15f06a44-b4f0-4219-a9ea-fd02b62cf5d3",
+  "name": "7. Other forms of heart disease I30-I5A/Presence of aortocoronary bypass graft Z95.1",
+  "index": 150,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "cfbc4f7a-beb5-4f16-bc32-60ac6cb75782",
+  "name": "7. Other forms of heart disease I30-I5A/Presence of coronary angioplasty implant and graft Z95.5",
+  "index": 151,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "7b413cfe-5419-4a4e-a12e-6f3c0f08b468",
+  "name": "7. Other forms of heart disease I30-I5A/Presence of automatic (implantable) cardiac defibrillator Z95.810",
+  "index": 152,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "92436638-8747-43a2-9c5f-11b39bf298b7",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy",
+  "index": 153,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "637f7845-082f-4d12-b77f-a1fc4cf1070f",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Dilated cardiomyopathy I42.0",
+  "index": 154,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "56c320a1-0b32-4afc-a897-60d63c35f351",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Obstructive hypertrophic cardiomyopathy I42.1",
+  "index": 155,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "ac4aba2c-5cbf-4e49-aa1f-c1919050626a",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Other hypertrophic cardiomyopathy I42.2",
+  "index": 156,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "aeae0de5-a928-4d73-b80c-4086ce81c8ab",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Peripartum cardiomyopathy O90.3",
+  "index": 157,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "916f7ad9-f2ca-4bb9-8436-1cdc2f106a12",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Other restrictive cardiomyopathy I42.5",
+  "index": 158,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "0e51ffaf-ff0c-4093-aaeb-5958d4f53539",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Amyloidosis, unspecified E85.9",
+  "index": 159,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "a243bcf5-4b92-4d0c-a972-ac18520022f4",
+  "name": "7. Other forms of heart disease I30-I5A/Cardiomyopathy/Left ventricular noncompaction",
+  "index": 160,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "b9485f12-c397-4167-b29e-d406fa13d4cc",
+  "name": "7. Other forms of heart disease I30-I5A/Arrhythmogenic right ventricular cardiomyopathy (ARVC)",
+  "index": 161,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "368a4df1-5286-4341-bd39-930c8be88bc6",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28",
+  "index": 162,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "651169a1-8d1d-4d4a-aff0-5cd0984ddf9a",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/No cardiac congenital malformation",
+  "index": 163,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "619dbf21-7e68-4d70-90af-d22a29f44807",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Indeterminate cardiac congenital malformation",
+  "index": 164,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "d45d15f9-3b63-4713-8eb3-a544bb687227",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Ventricular septal defect Q21.0",
+  "index": 165,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ec1b284d-259c-4284-ae32-91ebea9dff5f",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Atrial septal defect, unspecified Q21.10",
+  "index": 166,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5ab4ec3b-b365-4b24-b70e-ca093e6399d0",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Ostium primum atrial septal defect (type I) Q21.2",
+  "index": 167,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9692228d-4fc7-4ac0-97d3-b54f0d73a2ff",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Secundum atrial septal defect Q21.11",
+  "index": 168,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "278a174c-e551-4d2f-bf2b-756889ec5b3b",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Coronary sinus atrial septal defect Q21.13",
+  "index": 169,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "fe6c8110-7d43-45cf-ae88-9d93e2097dc1",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Sinus venosus atrial septal defect, unspecified Q21.16",
+  "index": 170,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e427c949-9dfc-49ae-af40-d701016eaece",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Tetralogy of Fallot Q21.3",
+  "index": 171,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "75e0b996-3eeb-4e6d-8e61-b0566e03d42c",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Ebstein's anomaly Q22.5",
+  "index": 172,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "59946c80-0855-4487-ac43-c3378f9c43e2",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Bicuspid aortic valve Q23.1",
+  "index": 173,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5cbda476-efc2-4828-8e2e-e15a17201087",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Dextrocardia Q24.0",
+  "index": 174,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5f039747-f343-464b-abe6-65de8f45182e",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Patent ductus arteriosus Q25.0",
+  "index": 175,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "064ee8fe-2f5b-4077-9e4d-40f98a4dcef7",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Aortopulmonary window Q21.4",
+  "index": 176,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "f9d9888e-e8eb-4313-8743-d00e17b13922",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Coarctation of aorta Q25.1",
+  "index": 177,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2519b248-525d-45e4-b998-c6d51c3d5f06",
+  "name": "8. Congenital malformations of the circulatory system Q20-Q28/Other congenital malformations of circulatory system Q28",
+  "index": 178,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1e8ba7a3-b8fd-4f55-967a-8d97e0f60062",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)",
+  "index": 179,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "91db3754-f2b4-4e47-88e8-7d3985f7aa70",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Pulmonary hypertension is absent",
+  "index": 180,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0e8433ed-95c9-444a-add5-b9e9e5b8ad28",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Pulmonary hypertension is unknown",
+  "index": 181,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c0cb5015-35fa-4662-9642-7c65059466db",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Probably pulmonary hypertension",
+  "index": 182,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2034a6ac-a84d-4553-bd0f-e3123084fe03",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Pulmonary embolism I26",
+  "index": 183,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "71a06582-83d6-43cd-bf99-fb2114f37c91",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Primary pulmonary hypertension I27.0",
+  "index": 184,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bfcb131a-ca1c-46f3-b18f-d8d69e3ee9dc",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Pulmonary hypertension, unspecified I27.20",
+  "index": 185,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5abaab03-8eca-4f44-9df9-f15b9c068c2e",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Secondary pulmonary arterial hypertension I27.21",
+  "index": 186,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "d652c416-d478-4c32-b5c6-0705bf880e20",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Pulmonary hypertension due to lung diseases and hypoxia I27.23",
+  "index": 187,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "832ee351-a574-4d7a-bc32-0481d101c506",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Chronic thromboembolic pulmonary hypertension I27.24",
+  "index": 188,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2639e0fa-c783-4462-a2e2-0e289fab0074",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Eisenmenger's syndrome I27.83",
+  "index": 189,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0fed7930-f2fe-4c4d-b3c8-27c9232d32da",
+  "name": "9. Pulmonary heart disease and diseases of pulmonary circulation (I26-I28)/Aneurysm of pulmonary artery I28.1",
+  "index": 190,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c47d06f8-3a8c-4458-81ff-90b8a8f51da2",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80",
+  "index": 191,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "f88aed6a-bec3-4668-8621-ff9e8cffc2a5",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/No large vessel diseases",
+  "index": 192,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "f24c7ced-3d7e-4ff6-bb19-b539d1ba34c0",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Indeterminate large vessel disease",
+  "index": 193,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "272db74e-9d51-450b-a66a-8ec97249999f",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Atherosclerosis of native arteries of the extremities I70.2",
+  "index": 194,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2d29d4f3-528c-4b44-8dc9-d2aa1a4f4236",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Dissection of aorta I71.0",
+  "index": 195,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b3ab2883-2090-490d-90bf-6453f38f814c",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Dissection of aorta I71.0/Aortic dissection Stanford type A",
+  "index": 196,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ef7ebbef-da21-4932-a861-ac1d52dd3a0c",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Dissection of aorta I71.0/Aortic dissection Stanford type B",
+  "index": 197,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4f1ade40-1059-46e1-a216-c7cf388f4caf",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Dissection of aorta I71.0/Dissection of unspecified site of aorta I71.00",
+  "index": 198,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "642ee4c9-0d9b-48cc-8542-4434d029d5ee",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Aortic aneurism",
+  "index": 199,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "adf85c4e-2c81-498b-a86c-e4620ade7e36",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Aortic aneurism/Thoracic aortic aneurysm, without rupture, unspecified I71.20",
+  "index": 200,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "87b78eaa-03c9-42ff-a0a8-f98baff8f595",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Aortic aneurism/Aneurysm of the ascending aorta, without rupture I71.21",
+  "index": 201,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "d99a1fcf-d39b-4520-8428-e44640a3605b",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Aortic aneurism/Aneurysm of the aortic arch, without rupture I71.22",
+  "index": 202,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0e1d1d21-b0be-4e34-813d-6df3755d6d8e",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Aortic aneurism/Aneurysm of the descending thoracic aorta, without rupture I71.23",
+  "index": 203,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "656607b3-a8d1-4a2b-8240-778eaf6d191c",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Aortic aneurism/Abdominal aortic aneurysm, without rupture I71.4",
+  "index": 204,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0e2f6b03-e1ba-42e7-81ca-7c6c66c315b3",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Other diseases of arteries",
+  "index": 205,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4e34e28d-aa80-4cf5-8bc8-1c163a08b617",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Other diseases of arteries/Arteriovenous fistula, acquired I77.0",
+  "index": 206,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "26295bb3-8545-48d2-9825-c4277e5e6c96",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Other diseases of arteries/Aortic arch syndrome [Takayasu] M31.4",
+  "index": 207,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "d5149807-be19-47fc-8b7e-39355dfbe02d",
+  "name": "10. Diseases of arteries, arterioles and capillaries I70-I79, Phlebitis and thrombophlebitis I80/Phlebitis and thrombophlebitis of unspecified deep vessels of lower extremities",
+  "index": 208,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "39b6eff0-2816-47d2-ae1c-7c3f5c1294c0",
+  "name": "11. Heart Rhythm",
+  "index": 209,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "70cf002d-3c47-4562-8650-e4c91e59515c",
+  "name": "11. Heart Rhythm/Normal heart rhythm",
+  "index": 210,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b5f6bd26-cbd8-43ca-a1af-229aa16b39ad",
+  "name": "11. Heart Rhythm/Indeterminate heart rhythm",
+  "index": 211,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "09b3725c-7b4f-4581-a73f-6617d47ba087",
+  "name": "11. Heart Rhythm/Supraventricular tachycardia I47.1",
+  "index": 212,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "043d9664-9217-4ec5-b81a-519973dcbccf",
+  "name": "11. Heart Rhythm/Ventricular tachycardia I47.2",
+  "index": 213,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ab2d9fe5-d1a6-45d8-b54d-c0765ab4d971",
+  "name": "11. Heart Rhythm/Ventricular fibrillation I49.01",
+  "index": 214,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0b52ee0d-1d82-49ff-b0de-769d8a67d001",
+  "name": "11. Heart Rhythm/Atrial or junctional premature depolarization",
+  "index": 215,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "dc1d7e19-8d04-4ad1-bddb-72733e5b7244",
+  "name": "11. Heart Rhythm/Ventricular premature depolarization I49.3",
+  "index": 216,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "45bd54f5-ac1f-4892-a8f6-51ed103f4d0f",
+  "name": "11. Heart Rhythm/Unspecified premature depolarization",
+  "index": 217,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3e3c233c-7473-467b-a134-86bef16dcf86",
+  "name": "11. Heart Rhythm/Idioventricular rhythm",
+  "index": 218,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "36383234-e12e-4004-b85d-a34280024976",
+  "name": "11. Heart Rhythm/Paroxysmal atrial fibrillation I48.0",
+  "index": 219,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "fbeb2287-6ee4-4135-917e-871246a9627f",
+  "name": "11. Heart Rhythm/Persistent atrial fibrillation I48.1",
+  "index": 220,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5a8019cd-d82a-4b8c-ace4-b0a87e554b19",
+  "name": "11. Heart Rhythm/Chronic atrial fibrillation I48.2",
+  "index": 221,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e3d3d7e6-9eab-48af-b142-1800c29f9795",
+  "name": "11. Heart Rhythm/Typical atrial flutter I48.3",
+  "index": 222,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a470a716-c9a0-4a5f-ad51-52d9fac5c087",
+  "name": "11. Heart Rhythm/Atypical atrial flutter I48.4",
+  "index": 223,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "8e9d5c66-6549-4919-97ab-c3909c6376c4",
+  "name": "11. Heart Rhythm/Paroxysmal atrial flutter",
+  "index": 224,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "29785850-e9a4-4559-825f-c66780dd16c3",
+  "name": "11. Heart Rhythm/Persistent atrial flutter",
+  "index": 225,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1615d68a-093d-45f1-8253-5ac0bda5c81d",
+  "name": "11. Heart Rhythm/Chronic atrial flutter",
+  "index": 226,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c3832705-bebf-47f6-8e43-27aa51fcce83",
+  "name": "11. Heart Rhythm/ Unspecified atrial fibrillation I48.91",
+  "index": 227,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ce1dee3c-24a6-4dd3-9c5b-92c034d3253c",
+  "name": "11. Heart Rhythm/ Unspecified atrial flutter I48.92",
+  "index": 228,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bd58713c-5fda-4fa9-aa17-728748cd4ac1",
+  "name": "12. Heart blocks",
+  "index": 229,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "869af5fa-5451-41bd-a429-5a01016a731b",
+  "name": "12. Heart blocks/No heart blocks",
+  "index": 230,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "400e23ff-70fa-45ab-9bf4-d7e74648d7c4",
+  "name": "12. Heart blocks/Indeterminate heart block",
+  "index": 231,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "dbb0aab6-b3a3-4921-8d1a-563701ebcd42",
+  "name": "12. Heart blocks/Atrioventricular block, first degree I44.0",
+  "index": 232,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "85972b37-11bd-4b0a-9347-bba42e66a459",
+  "name": "12. Heart blocks/Atrioventricular block, second degree I44.1",
+  "index": 233,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a5f044e5-8733-4d5c-b68e-f072c74aa6b6",
+  "name": "12. Heart blocks/Atrioventricular block, complete I44.2",
+  "index": 234,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e412ea0f-617a-4f62-babe-34b026fdaa83",
+  "name": "12. Heart blocks/Other and unspecified atrioventricular block I44.3",
+  "index": 235,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ec678321-5df6-40bd-9ded-ecf641a9902f",
+  "name": "12. Heart blocks/Left anterior fascicular block I44.4",
+  "index": 236,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bd98455b-1321-4bd9-ad98-a2f6bc3f0dad",
+  "name": "12. Heart blocks/Left posterior fascicular block I44.5",
+  "index": 237,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "94295957-bcc5-4073-995b-2fefb85a7f3b",
+  "name": "12. Heart blocks/Left bundle-branch block I44.7",
+  "index": 238,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3967335b-5a19-425e-8515-568f231eac7e",
+  "name": "12. Heart blocks/Incomplete left bundle-branch block",
+  "index": 239,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "d9ddf22c-41f6-4dd0-9203-a171b1b097a9",
+  "name": "12. Heart blocks/Right fascicular block I45.0",
+  "index": 240,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4cd34a51-95d2-4104-93ce-8f0c4338d710",
+  "name": "12. Heart blocks/Incomplete right bundle-branch block",
+  "index": 241,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4f86890b-3130-4803-a264-e72abc7e5ce2",
+  "name": "12. Heart blocks/Nonspecific intraventricular block I45.4",
+  "index": 242,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "a70d5f55-0fdf-4593-8ea4-d9fc07e7a723",
+  "name": "12. Heart blocks/Sick sinus syndrome I49.5",
+  "index": 243,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1f210c9c-f7d5-4465-980f-791db1a68684",
+  "name": "12. Heart blocks/Pre-excitation syndrome I45.6",
+  "index": 244,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "65185a0e-ae22-4775-a4da-9fd67884b3af",
+  "name": "12. Heart blocks/Pre-excitation syndrome I45.6/Wolff-Parkinson-White syndrome",
+  "index": 245,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1f2b094c-c24e-412f-98f4-c20f5aaadfaa",
+  "name": "12. Heart blocks/Pre-excitation syndrome I45.6/Lown-Ganong-Levine syndrome",
+  "index": 246,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "2cd44467-0e61-4611-908d-c3ce76b1758a",
+  "name": "13. Heart failure",
+  "index": 247,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4c10de24-f6ed-4e16-8f02-d1ff3b5c52a8",
+  "name": "13. Heart failure/Heart failure is absent",
+  "index": 248,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "1e8a17d1-0698-40d5-b7b5-7e93d5b858cc",
+  "name": "13. Heart failure/Indeterminate heart failure",
+  "index": 249,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "00503daa-5da3-4a8d-8463-a0f7a2b00536",
+  "name": "13. Heart failure/Heart failure, unspecified I50.9",
+  "index": 250,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b1de02a6-2195-47d6-8f05-235395c434fe",
+  "name": "13. Heart failure/ Acute heart failure",
+  "index": 251,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0d57085a-f039-4efd-9871-b95ce0e73300",
+  "name": "13. Heart failure/ Chronic heart failure",
+  "index": 252,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "3dd7e055-ce95-4177-a3ab-8147402cce49",
+  "name": "13. Heart failure/ Right heart failure I50.81",
+  "index": 253,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "6676b4c6-2744-4e38-bfba-25081ff0fec1",
+  "name": "13. Heart failure/ High output heart failure I50.83",
+  "index": 254,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9164ceea-cfa1-4a65-8838-38d397f7e64d",
+  "name": "14. Cerebrovascular diseases I60-I69",
+  "index": 255,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "ed2f3b7b-fe99-413a-9860-89a548a03f64",
+  "name": "14. Cerebrovascular diseases I60-I69/No cerebrovascular diseases",
+  "index": 256,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b7b4cfed-1aeb-4f4c-bd3e-ba0e25899789",
+  "name": "14. Cerebrovascular diseases I60-I69/Indeterminate cerebrovascular diseases",
+  "index": 257,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "0fbd27e5-a569-4f14-b6f2-31aaaa712174",
+  "name": "14. Cerebrovascular diseases I60-I69/Cerebral infarction I63",
+  "index": 258,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "c2cfdf60-c055-4b0e-8127-a5c03f0a4c98",
+  "name": "14. Cerebrovascular diseases I60-I69/ Sequelae of cerebral infarction I69.3",
+  "index": 259,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "6f42f825-e466-45c1-85c0-38077e52344e",
+  "name": "14. Cerebrovascular diseases I60-I69/ Sequelae of nontraumatic intracerebral hemorrhage I69.1",
+  "index": 260,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bd14a087-823c-4fbc-a42b-cecfc474d712",
+  "name": "14. Cerebrovascular diseases I60-I69/ Sequelae of nontraumatic subarachnoid hemorrhage I69.0",
+  "index": 261,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "aa5b1df4-aab0-4d69-b586-6415f01024c5",
+  "name": "14. Cerebrovascular diseases I60-I69/ Occlusion and stenosis of right carotid artery I65.21",
+  "index": 262,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "49bdfd5b-c881-41d8-8fb5-37aa706b0b0f",
+  "name": "14. Cerebrovascular diseases I60-I69/ Occlusion and stenosis of left carotid artery I65.22",
+  "index": 263,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "4c52c125-da32-4a64-a789-0fd3ba89d60e",
+  "name": "14. Cerebrovascular diseases I60-I69/Intracranial hemorrhage",
+  "index": 264,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "368f0781-7ced-49e0-b050-7b625c7db80f",
+  "name": "14. Cerebrovascular diseases I60-I69/Intracranial hemorrhage in the past",
+  "index": 265,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "cf2debda-7ea8-4b5c-aa03-eda251712c59",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias",
+  "index": 266,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "9a35df79-24b5-4d0f-afe3-b731cc42d4ab",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Hypertension disease I10-I1A",
+  "index": 267,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0f554e0a-8c96-4744-959d-0ad78a833082",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Indeterminate Hypertension disease",
+  "index": 268,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "8a18a5d4-e6d4-4467-b4f8-bf8ad8df79bf",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/No arterial hypertension",
+  "index": 269,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "77e6b2fe-e4a5-4bad-a00b-ee9707793927",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Diabetes mellitus E08-E13",
+  "index": 270,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5dfbc3a1-2dc6-4f7f-b39e-c5fe6fe7d0fe",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Diabetes mellitus E08-E13/Type 2 diabetes mellitus E11",
+  "index": 271,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "b445ac57-e05c-45ef-a2cb-0956db1a4402",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Diabetes mellitus E08-E13/Type 1 diabetes mellitus E10",
+  "index": 272,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "bfcc3366-285b-45c6-8177-a872fe23ad52",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Hypothyroidism, unspecified E03.9",
+  "index": 273,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "fb9228bb-4f7b-4150-8988-ee0a5933fe29",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Anemia, unspecified D64.9",
+  "index": 274,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e548511d-02f0-42df-87ca-667faa844bda",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Chronic kidney disease, unspecified N18.9",
+  "index": 275,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "8994231d-96eb-434c-9c10-467f6717d8eb",
+  "name": "15. Arterial Hypertension, Endocrine, nutritional and metabolic diseases E00-E89, Anemias/Chronic kidney disease, stage 5 N18.5",
+  "index": 276,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "84407ad7-f938-4666-9b1d-741b99fe8009",
+  "name": "16. Pulmonary diseases",
+  "index": 277,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "0bef4a80-58fb-4c56-b220-fd412487c469",
+  "name": "16. Pulmonary diseases/No respiratory diseases",
+  "index": 278,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "e95e782d-1127-4006-a93b-1f3abcf8a7fc",
+  "name": "16. Pulmonary diseases/Indeterminate respiratory diseases",
+  "index": 279,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "d6327ffb-a1fc-4870-8506-ba1dc382e417",
+  "name": "16. Pulmonary diseases/Pneumonia, unspecified organism J18",
+  "index": 280,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "df3b53de-d59a-41c6-adf0-041bc47ff561",
+  "name": "16. Pulmonary diseases/J40 Bronchitis, not specified as acute or chronic",
+  "index": 281,
+  "upsert": false
+},{
+  "classification": "Diagnosis",
+  "id": "5b26cef8-c0c5-4b68-995d-b276464410b2",
+  "name": "16. Pulmonary diseases/J44.9 Chronic obstructive pulmonary disease, unspecified",
+  "index": 282,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "81a8b934-f487-4064-9215-ea598d2033fb",
+  "name": "16. Pulmonary diseases/J45.90 Unspecified asthma",
+  "index": 283,
+  "upsert": true
+},{
+  "classification": "Diagnosis",
+  "id": "d57847c8-9210-4e16-b8a4-916e7546196d",
+  "name": "16. Pulmonary diseases/COVID-19 U07.1",
+  "index": 284,
+  "upsert": false
+}]

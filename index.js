@@ -167,4 +167,19 @@ router.post("/pr/add-tags-dia/", pr.addTagsDia)
 router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)
 
 
+const adeTaskDashboard = require("./src/ade-task-dashboard") 
+
+router.post("/ade-task-dashboard/get-dataset-list/", adeTaskDashboard.getDatasetList)
+router.post("/ade-task-dashboard/get-grants/", adeTaskDashboard.getGrants)
+router.post("/ade-task-dashboard/get-active-task/", adeTaskDashboard.getActiveTask)
+router.post("/ade-task-dashboard/get-employee-stat/", adeTaskDashboard.getEmployeeStat)
+router.post("/ade-task-dashboard/set-employee-quote/", adeTaskDashboard.setQuote)
+router.post("/ade-task-dashboard/cancel-employee-quote/", adeTaskDashboard.cancelQuote)
+router.post("/ade-task-dashboard/get-record/", adeTaskDashboard.getRecordData)
+
+
+const userGrants = require("./src/user-grants")
+router.post("/user-grant", userGrants.getGrants)
+
+
 module.exports = router
