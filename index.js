@@ -173,9 +173,19 @@ router.post("/ade-task-dashboard/get-dataset-list/", adeTaskDashboard.getDataset
 router.post("/ade-task-dashboard/get-grants/", adeTaskDashboard.getGrants)
 router.post("/ade-task-dashboard/get-active-task/", adeTaskDashboard.getActiveTask)
 router.post("/ade-task-dashboard/get-employee-stat/", adeTaskDashboard.getEmployeeStat)
-router.post("/ade-task-dashboard/set-employee-quote/", adeTaskDashboard.setQuote)
-router.post("/ade-task-dashboard/cancel-employee-quote/", adeTaskDashboard.cancelQuote)
+// router.post("/ade-task-dashboard/cancel-employee-quote/", adeTaskDashboard.cancelQuote)
 router.post("/ade-task-dashboard/get-record/", adeTaskDashboard.getRecordData)
+router.post("/ade-task-dashboard/save-record/", adeTaskDashboard.saveRecordData)
+router.post("/ade-task-dashboard/submit-record/", adeTaskDashboard.submitRecordData)
+router.post("/ade-task-dashboard/rollback-record/", adeTaskDashboard.rollbackRecordData)
+
+router.post("/ade-task-dashboard/get-version-chart/", adeTaskDashboard.getVersionChart)
+
+
+const adeClinicDataManagement = require("./src/clinic-data-management") 
+router.post("/cdm/get-dataset-list/", adeClinicDataManagement.getDatasetList)
+router.post("/cdm/get-grants/", adeClinicDataManagement.getGrants)
+router.post("/cdm/get-exams/", adeClinicDataManagement.getExams)
 
 
 const userGrants = require("./src/user-grants")

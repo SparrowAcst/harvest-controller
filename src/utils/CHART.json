@@ -1,419 +1,10776 @@
 {
- "toolbox": {
-  "feature": {
-   "saveAsImage": {}
-  }
- },
- "tooltip": {
-  "formatter": "params => {\n\tif (params.dataType == \"edge\") return\n\treturn `<b>${params.data.category}</b><br/>User: ${(params.data.value[1] == \"main\") ? \"\" : params.data.value[1]}<br/>Created at: ${params.data.x}<br/>${(params.data.readonly) ? \"Read only\" : \"\"}`\n}",
-  "textStyle": {
-   "fontSize": 10
-  }
- },
- "xAxis": {
-  "type": "category",
-  "show": false
- },
- "yAxis": {
-  "type": "category",
-  "data": [
-   "main",
-   "A",
-   "B",
-   "merge"
-  ],
-  "splitArea": {
-   "show": true
-  },
-  "splitLine": {
-   "show": true
-  }
- },
- "series": [
-  {
-   "type": "graph",
-   "layout": "none",
-   "coordinateSystem": "cartesian2d",
-   "label": {
-    "show": true,
-    "position": "bottom",
-    "fontSize": 8
-   },
-   "edgeSymbol": [
-    "none",
-    "arrow"
-   ],
-   "edgeSymbolSize": [
-    0,
-    10
-   ],
-   "categories": [
-    {
-     "name": "main",
-     "symbol": "path://M18 16V14H19V4H6V14.0354C6.1633 14.0121 6.33024 14 6.5 14H8V16H6.5C5.67157 16 5 16.6716 5 17.5C5 18.3284 5.67157 19 6.5 19H10V21H6.5C4.567 21 3 19.433 3 17.5V5C3 3.34315 4.34315 2 6 2H20C20.5523 2 21 2.44772 21 3V20C21 20.5523 20.5523 21 20 21H16V19H19V16H18ZM7 5H9V7H7V5ZM7 8H9V10H7V8ZM14 17V23H12V17H9L13 12L17 17H14Z",
-     "symbolSize": 20
-    },
-    {
-     "name": "merge",
-     "symbol": "path://M7.10508 8.78991C7.45179 10.0635 8.61653 11 10 11H14C16.4703 11 18.5222 12.7915 18.9274 15.1461C20.1303 15.5367 21 16.6668 21 18C21 19.6569 19.6569 21 18 21C16.3431 21 15 19.6569 15 18C15 16.7334 15.7849 15.6501 16.8949 15.2101C16.5482 13.9365 15.3835 13 14 13H10C8.87439 13 7.83566 12.6281 7 12.0004V15.1707C8.16519 15.5825 9 16.6938 9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.6938 3.83481 15.5825 5 15.1707V8.82929C3.83481 8.41746 3 7.30622 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6C9 7.26661 8.21506 8.34988 7.10508 8.78991ZM6 7C6.55228 7 7 6.55228 7 6C7 5.44772 6.55228 5 6 5C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7ZM6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19ZM18 19C18.5523 19 19 18.5523 19 18C19 17.4477 18.5523 17 18 17C17.4477 17 17 17.4477 17 18C17 18.5523 17.4477 19 18 19Z",
-     "symbolSize": 20
-    },
-    {
-     "name": "save",
-     "symbol": "path://M512 1536h768v-384h-768v384zm896 0h128v-896q0-14-10-38.5t-20-34.5l-281-281q-10-10-34-20t-39-10v416q0 40-28 68t-68 28h-576q-40 0-68-28t-28-68v-416h-128v1280h128v-416q0-40 28-68t68-28h832q40 0 68 28t28 68v416zm-384-928v-320q0-13-9.5-22.5t-22.5-9.5h-192q-13 0-22.5 9.5t-9.5 22.5v320q0 13 9.5 22.5t22.5 9.5h192q13 0 22.5-9.5t9.5-22.5zm640 32v928q0 40-28 68t-68 28h-1344q-40 0-68-28t-28-68v-1344q0-40 28-68t68-28h928q40 0 88 20t76 48l280 280q28 28 48 76t20 88z",
-     "symbolSize": 20
-    },
-    {
-     "name": "branch",
-     "symbol": "path://M7.10508 15.2101C8.21506 15.6501 9 16.7334 9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.6938 3.83481 15.5825 5 15.1707V8.82929C3.83481 8.41746 3 7.30622 3 6C3 4.34315 4.34315 3 6 3C7.65685 3 9 4.34315 9 6C9 7.30622 8.16519 8.41746 7 8.82929V11.9996C7.83566 11.3719 8.87439 11 10 11H14C15.3835 11 16.5482 10.0635 16.8949 8.78991C15.7849 8.34988 15 7.26661 15 6C15 4.34315 16.3431 3 18 3C19.6569 3 21 4.34315 21 6C21 7.3332 20.1303 8.46329 18.9274 8.85392C18.5222 11.2085 16.4703 13 14 13H10C8.61653 13 7.45179 13.9365 7.10508 15.2101ZM6 17C5.44772 17 5 17.4477 5 18C5 18.5523 5.44772 19 6 19C6.55228 19 7 18.5523 7 18C7 17.4477 6.55228 17 6 17ZM6 5C5.44772 5 5 5.44772 5 6C5 6.55228 5.44772 7 6 7C6.55228 7 7 6.55228 7 6C7 5.44772 6.55228 5 6 5ZM18 5C17.4477 5 17 5.44772 17 6C17 6.55228 17.4477 7 18 7C18.5523 7 19 6.55228 19 6C19 5.44772 18.5523 5 18 5Z",
-     "symbolSize": 20
-    },
-    {
-     "name": "freeze",
-     "symbol": "path://M329.364,237.908l42.558-39.905c25.236-23.661,39.552-56.701,39.552-91.292V49.156c0.009-13.514-5.53-25.918-14.402-34.754C388.235,5.529,375.833-0.009,362.318,0H149.681c-13.514-0.009-25.926,5.529-34.763,14.401c-8.871,8.837-14.41,21.24-14.392,34.754v57.554c0,34.591,14.315,67.632,39.552,91.292l42.55,39.888c2.342,2.205,3.678,5.271,3.678,8.492v19.234c0,3.221-1.336,6.279-3.669,8.476l-42.558,39.905c-25.237,23.652-39.552,56.701-39.552,91.292v57.554c-0.018,13.515,5.522,25.918,14.392,34.755c8.838,8.871,21.249,14.41,34.763,14.401h212.636c13.515,0.009,25.918-5.53,34.755-14.401c8.871-8.838,14.41-21.24,14.402-34.755V405.29c0-34.591-14.316-67.64-39.552-91.292l-42.55-39.897c-2.352-2.205-3.678-5.263-3.678-8.484v-19.234C325.694,243.162,327.021,240.096,329.364,237.908z M373.946,462.844c-0.009,3.273-1.274,6.056-3.411,8.218c-2.162,2.136-4.944,3.402-8.218,3.41H149.681c-3.273-0.009-6.064-1.274-8.226-3.41c-2.136-2.162-3.393-4.945-3.402-8.218V405.29c0-24.212,10.026-47.356,27.691-63.91l42.55-39.906c9.914-9.285,15.539-22.273,15.539-35.857v-19.234c0-13.592-5.625-26.58-15.547-35.866l-42.542-39.896c-17.666-16.554-27.691-39.69-27.691-63.91V49.156c0.009-3.273,1.266-6.055,3.402-8.226c2.162-2.127,4.953-3.394,8.226-3.402h212.636c3.273,0.008,6.056,1.274,8.218,3.402c2.136,2.171,3.402,4.952,3.411,8.226v57.554c0,24.22-10.026,47.356-27.692,63.91l-42.55,39.896c-9.914,9.286-15.538,22.274-15.538,35.866v19.234c0,13.584,5.625,26.572,15.547,35.874l42.541,39.88c17.666,16.563,27.692,39.707,27.692,63.919V462.844z M237.261,378.95l-77.33,77.33h192.128l-77.33-77.33C264.385,368.614,247.615,368.614,237.261,378.95z",
-     "symbolSize": 20
-    },
-    {
-     "name": "connector",
-     "symbol": "none",
-     "symbolSize": 0
-    }
-   ],
-   "data": [
-    {
-     "name": "d3d1ff948af4",
-     "x": "2024-06-30 17:09:33",
-     "value": [
-      "2024-06-30 17:09:33",
-      "main"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "main",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "66b73fa4968a",
-     "x": "2024-06-30 17:09:35",
-     "value": [
-      "2024-06-30 17:09:35",
-      "A"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "branch",
-     "label": {
-      "position": "bottom"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "582766792c12",
-     "x": "2024-06-30 17:09:35",
-     "value": [
-      "2024-06-30 17:09:35",
-      "B"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "branch",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "925c6ae5e419",
-     "x": "2024-06-30 17:09:37",
-     "value": [
-      "2024-06-30 17:09:37",
-      "A"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "save",
-     "label": {
-      "position": "bottom"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "86f9c817340e",
-     "x": "2024-06-30 17:09:41",
-     "value": [
-      "2024-06-30 17:09:41",
-      "B"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "save",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "3773937999d6",
-     "x": "2024-06-30 17:09:44",
-     "value": [
-      "2024-06-30 17:09:44",
-      "merge"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "merge",
-     "label": {
-      "position": "bottom"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "c5d1ae6bad5a",
-     "x": "2024-06-30 17:09:38",
-     "value": [
-      "2024-06-30 17:09:38",
-      "A"
-     ],
-     "readonly": true,
-     "head": false,
-     "category": "freeze",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": "567dacce9e10",
-     "x": "2024-06-30 17:09:45",
-     "value": [
-      "2024-06-30 17:09:45",
-      "main"
-     ],
-     "readonly": true,
-     "head": true,
-     "category": "main",
-     "label": {
-      "position": "bottom"
-     },
-     "itemStyle": {
-      "color": "#ff9800",
-      "borderColor": "#ff9800",
-      "borderWidth": 0.3
-     }
-    },
-    {
-     "name": null,
-     "x": "2024-06-30 17:09:35",
-     "value": [
-      "2024-06-30 17:09:35",
-      "main"
-     ],
-     "category": "connector",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": null,
-     "x": "2024-06-30 17:09:35",
-     "value": [
-      "2024-06-30 17:09:35",
-      "main"
-     ],
-     "category": "connector",
-     "label": {
-      "position": "bottom"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": null,
-     "x": "2024-06-30 17:09:33",
-     "value": [
-      "2024-06-30 17:09:33",
-      "merge"
-     ],
-     "category": "connector",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": null,
-     "x": "2024-06-30 17:09:41",
-     "value": [
-      "2024-06-30 17:09:41",
-      "merge"
-     ],
-     "category": "connector",
-     "label": {
-      "position": "bottom"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    },
-    {
-     "name": null,
-     "x": "2024-06-30 17:09:45",
-     "value": [
-      "2024-06-30 17:09:45",
-      "merge"
-     ],
-     "category": "connector",
-     "label": {
-      "position": "top"
-     },
-     "itemStyle": {
-      "color": "#333",
-      "borderColor": "#333",
-      "borderWidth": 0
-     }
-    }
-   ],
-   "links": [
-    {
-     "source": 8,
-     "target": 1,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 9,
-     "target": 2,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 1,
-     "target": 3,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 2,
-     "target": 4,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 10,
-     "target": 5,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 11,
-     "target": 5,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 3,
-     "target": 6,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 12,
-     "target": 7,
-     "symbol": [
-      "none",
-      "arrow"
-     ]
-    },
-    {
-     "source": 0,
-     "target": 8,
-     "symbol": "none"
-    },
-    {
-     "source": 0,
-     "target": 9,
-     "symbol": "none"
-    },
-    {
-     "source": 0,
-     "target": 10,
-     "symbol": "none"
-    },
-    {
-     "source": 4,
-     "target": 11,
-     "symbol": "none"
-    },
-    {
-     "source": 5,
-     "target": 12,
-     "symbol": "none"
-    }
-   ],
-   "lineStyle": {
-    "color": "#333",
-    "width": 1.5,
-    "curveness": 0
+ "segmentation": {
+  "toolbox": {
+   "feature": {
+    "saveAsImage": {}
    }
-  }
- ]
+  },
+  "tooltip": {
+   "formatter": "params => {\n                return params.marker + params.name + ': started at ' + params.value[1] + ' s';\n            }"
+  },
+  "dataZoom": [
+   {
+    "type": "slider",
+    "filterMode": "weakFilter",
+    "showDataShadow": false,
+    "labelFormatter": ""
+   },
+   {
+    "type": "inside",
+    "filterMode": "weakFilter"
+   }
+  ],
+  "grid": {
+   "containLabel": true
+  },
+  "xAxis": {
+   "min": 0,
+   "max": 60,
+   "scale": true,
+   "axisLabel": {},
+   "minorTick": {
+    "show": true
+   },
+   "minorSplitLine": {
+    "show": true
+   }
+  },
+  "yAxis": {
+   "data": [
+    "unsegmentable",
+    "Heart Cycle",
+    "S3-S4",
+    "breath"
+   ],
+   "splitLine": {
+    "show": true
+   }
+  },
+  "series": [
+   {
+    "type": "custom",
+    "renderItem": "\n\n            (params, api) => {\n  \n              var categoryIndex = api.value(0);\n              var start = api.coord([api.value(1), categoryIndex]);\n              var end = api.coord([api.value(2), categoryIndex]);\n              var height = api.size([0, 1])[1] *api.value(3) //categoryIndex])[1];  //api.size([0, 1])[1] * 0.1;\n              var rectShape = echarts.graphic.clipRectByRect(\n                {\n                  x: start[0],\n                  y: start[1] + api.size([0, 1])[1]/2 - height * 0.9,\n                  width: end[0] - start[0],\n                  height: height * 0.9\n                },\n                {\n                  x: params.coordSys.x,\n                  y: params.coordSys.y,\n                  width: params.coordSys.width,\n                  height: params.coordSys.height\n                }\n              );\n              return (\n                rectShape && {\n                  type: 'rect',\n                  transition: ['shape'],\n                  shape: rectShape,\n                  style: api.style()\n                }\n              );\n            }\n          ",
+    "itemStyle": {
+     "opacity": 0.8
+    },
+    "encode": {
+     "x": [
+      1,
+      2
+     ],
+     "y": 0,
+     "v": 3
+    },
+    "data": [
+     {
+      "type": "unsegmentable",
+      "start": 0,
+      "end": 0.268,
+      "lf": 0,
+      "hf": 22050,
+      "name": "unsegmentable",
+      "itemStyle": {
+       "normal": {
+        "color": "#e0e0e0",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       0,
+       0,
+       0.268,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 0.174,
+      "end": 1.328,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       0.174,
+       1.328,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 0.268,
+      "end": 0.375,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       0.268,
+       0.375,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 0.375,
+      "end": 0.56,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       0.375,
+       0.56,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 0.56,
+      "end": 0.658,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       0.56,
+       0.658,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 0.658,
+      "end": 1.178,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       0.658,
+       1.178,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 0.792,
+      "end": 0.877,
+      "lf": -41.184,
+      "hf": 42.234,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       0.792,
+       0.877,
+       0.8346970235977708
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 1.178,
+      "end": 1.282,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       1.178,
+       1.282,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 1.282,
+      "end": 1.508,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       1.282,
+       1.508,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 1.508,
+      "end": 1.605,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       1.508,
+       1.605,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 1.605,
+      "end": 2.18,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       1.605,
+       2.18,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 1.71,
+      "end": 1.816,
+      "lf": 21.089,
+      "hf": 39.98,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       1.71,
+       1.816,
+       0.7901498082928179
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 2.18,
+      "end": 2.29,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       2.18,
+       2.29,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 2.29,
+      "end": 2.5,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       2.29,
+       2.5,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 2.5,
+      "end": 2.59,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       2.5,
+       2.59,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 2.59,
+      "end": 3.123,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       2.59,
+       3.123,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 3.123,
+      "end": 3.237,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       3.123,
+       3.237,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 3.237,
+      "end": 3.458,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       3.237,
+       3.458,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 3.458,
+      "end": 3.55,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       3.458,
+       3.55,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 3.55,
+      "end": 3.835,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       3.55,
+       3.835,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 3.662,
+      "end": 3.747,
+      "lf": 16.367,
+      "hf": 50.598,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       3.662,
+       3.747,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 3.835,
+      "end": 3.946,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       3.835,
+       3.946,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 3.946,
+      "end": 4.165,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       3.946,
+       4.165,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 4.036,
+      "end": 5.055,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       4.036,
+       5.055,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 4.165,
+      "end": 4.258,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       4.165,
+       4.258,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 4.258,
+      "end": 4.622,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       4.258,
+       4.622,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 4.622,
+      "end": 4.728,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       4.622,
+       4.728,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 4.728,
+      "end": 4.947,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       4.728,
+       4.947,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 4.947,
+      "end": 5.03,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       4.947,
+       5.03,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 5.03,
+      "end": 5.322,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       5.03,
+       5.322,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 5.322,
+      "end": 5.425,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       5.322,
+       5.425,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 5.425,
+      "end": 5.628,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       5.425,
+       5.628,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 5.628,
+      "end": 5.718,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       5.628,
+       5.718,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 5.718,
+      "end": 6.317,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       5.718,
+       6.317,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 5.824,
+      "end": 5.917,
+      "lf": 21.089,
+      "hf": 41.155,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       5.824,
+       5.917,
+       0.8133720700422942
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 6.317,
+      "end": 6.435,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       6.317,
+       6.435,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 6.435,
+      "end": 6.648,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       6.435,
+       6.648,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 6.648,
+      "end": 6.737,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       6.648,
+       6.737,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 6.737,
+      "end": 7.126,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       6.737,
+       7.126,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 6.813,
+      "end": 6.91,
+      "lf": 21.089,
+      "hf": 39.975,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       6.813,
+       6.91,
+       0.7900509901577137
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 7.126,
+      "end": 7.223,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.126,
+       7.223,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 7.223,
+      "end": 7.458,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.223,
+       7.458,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 7.458,
+      "end": 7.55,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.458,
+       7.55,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 7.55,
+      "end": 7.603,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.55,
+       7.603,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 7.603,
+      "end": 7.708,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.603,
+       7.708,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 7.708,
+      "end": 7.86,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.708,
+       7.86,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 7.86,
+      "end": 7.938,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.86,
+       7.938,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 7.938,
+      "end": 8.105,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       7.938,
+       8.105,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 8.105,
+      "end": 8.208,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       8.105,
+       8.208,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 8.208,
+      "end": 8.398,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       8.208,
+       8.398,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 8.261,
+      "end": 9.438,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       8.261,
+       9.438,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 8.398,
+      "end": 8.483,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       8.398,
+       8.483,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 8.483,
+      "end": 8.732,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       8.483,
+       8.732,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 8.732,
+      "end": 8.847,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       8.732,
+       8.847,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 8.847,
+      "end": 9.03,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       8.847,
+       9.03,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 9.03,
+      "end": 9.122,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       9.03,
+       9.122,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 9.122,
+      "end": 9.361,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       9.122,
+       9.361,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 9.224,
+      "end": 9.315,
+      "lf": -4.289,
+      "hf": 45.877,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       9.224,
+       9.315,
+       0.9066959168346576
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 9.361,
+      "end": 9.467,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       9.361,
+       9.467,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 9.467,
+      "end": 9.675,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       9.467,
+       9.675,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 9.675,
+      "end": 9.768,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       9.675,
+       9.768,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 9.768,
+      "end": 10.142,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       9.768,
+       10.142,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 9.906,
+      "end": 9.999,
+      "lf": 21.089,
+      "hf": 44.106,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       9.906,
+       9.999,
+       0.8716945333807661
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 10.142,
+      "end": 10.25,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       10.142,
+       10.25,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 10.25,
+      "end": 10.477,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       10.25,
+       10.477,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 10.477,
+      "end": 10.567,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       10.477,
+       10.567,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 10.567,
+      "end": 11.222,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       10.567,
+       11.222,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 10.637,
+      "end": 10.729,
+      "lf": 21.089,
+      "hf": 41.745,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       10.637,
+       10.729,
+       0.8250326099845844
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 11.222,
+      "end": 11.34,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       11.222,
+       11.34,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 11.34,
+      "end": 11.533,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       11.34,
+       11.533,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 11.533,
+      "end": 11.62,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       11.533,
+       11.62,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 11.62,
+      "end": 12.054,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       11.62,
+       12.054,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 11.727,
+      "end": 11.824,
+      "lf": 21.089,
+      "hf": 37.614,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       11.727,
+       11.824,
+       0.743389066761532
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 12.054,
+      "end": 12.168,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       12.054,
+       12.168,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 12.168,
+      "end": 12.378,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       12.168,
+       12.378,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 12.378,
+      "end": 12.462,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       12.378,
+       12.462,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 12.462,
+      "end": 12.75,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       12.462,
+       12.75,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 12.75,
+      "end": 12.847,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       12.75,
+       12.847,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 12.847,
+      "end": 13.051,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       12.847,
+       13.051,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 12.961,
+      "end": 13.964,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       12.961,
+       13.964,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 13.051,
+      "end": 13.143,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       13.051,
+       13.143,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 13.143,
+      "end": 13.643,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       13.143,
+       13.643,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 13.643,
+      "end": 13.75,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       13.643,
+       13.75,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 13.75,
+      "end": 13.966,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       13.75,
+       13.966,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 13.966,
+      "end": 14.06,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       13.966,
+       14.06,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 14.06,
+      "end": 14.406,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.06,
+       14.406,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 14.122,
+      "end": 14.212,
+      "lf": 21.089,
+      "hf": 41.155,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       14.122,
+       14.212,
+       0.8133720700422942
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 14.406,
+      "end": 14.518,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.406,
+       14.518,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 14.518,
+      "end": 14.739,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.518,
+       14.739,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 14.739,
+      "end": 14.832,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.739,
+       14.832,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 14.832,
+      "end": 14.872,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.832,
+       14.872,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 14.872,
+      "end": 14.974,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.872,
+       14.974,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 14.974,
+      "end": 15.133,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       14.974,
+       15.133,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 15.133,
+      "end": 15.209,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       15.133,
+       15.209,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 15.209,
+      "end": 15.421,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       15.209,
+       15.421,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 15.421,
+      "end": 15.541,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       15.421,
+       15.541,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 15.541,
+      "end": 15.731,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       15.541,
+       15.731,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 15.731,
+      "end": 15.826,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       15.731,
+       15.826,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 15.826,
+      "end": 16.197,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       15.826,
+       16.197,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 15.917,
+      "end": 16.018,
+      "lf": 21.089,
+      "hf": 41.745,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       15.917,
+       16.018,
+       0.8250326099845844
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 16.197,
+      "end": 16.312,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       16.197,
+       16.312,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 16.312,
+      "end": 16.518,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       16.312,
+       16.518,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 16.518,
+      "end": 16.612,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       16.518,
+       16.612,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 16.612,
+      "end": 16.897,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       16.612,
+       16.897,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 16.708,
+      "end": 16.81,
+      "lf": 19.908,
+      "hf": 41.756,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       16.708,
+       16.81,
+       0.8252500098818135
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 16.897,
+      "end": 17.017,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       16.897,
+       17.017,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 17.017,
+      "end": 17.228,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       17.017,
+       17.228,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 17.228,
+      "end": 17.321,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       17.228,
+       17.321,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 17.321,
+      "end": 18.238,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       17.321,
+       18.238,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 17.458,
+      "end": 17.564,
+      "lf": 21.089,
+      "hf": 41.754,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       17.458,
+       17.564,
+       0.8252104826277719
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 17.638,
+      "end": 18.732,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       17.638,
+       18.732,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 18.238,
+      "end": 18.348,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       18.238,
+       18.348,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 18.348,
+      "end": 18.562,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       18.348,
+       18.562,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 18.562,
+      "end": 18.654,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       18.562,
+       18.654,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 18.654,
+      "end": 18.985,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       18.654,
+       18.985,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 18.985,
+      "end": 19.102,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       18.985,
+       19.102,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 19.102,
+      "end": 19.308,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       19.102,
+       19.308,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 19.308,
+      "end": 19.398,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       19.308,
+       19.398,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 19.398,
+      "end": 19.71,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       19.398,
+       19.71,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 19.71,
+      "end": 19.823,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       19.71,
+       19.823,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 19.823,
+      "end": 20.045,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       19.823,
+       20.045,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 20.045,
+      "end": 20.14,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.045,
+       20.14,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 20.14,
+      "end": 20.292,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.14,
+       20.292,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 20.292,
+      "end": 20.403,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.292,
+       20.403,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 20.403,
+      "end": 20.615,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.403,
+       20.615,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 20.615,
+      "end": 20.708,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.615,
+       20.708,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 20.708,
+      "end": 20.857,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.708,
+       20.857,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 20.857,
+      "end": 20.96,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.857,
+       20.96,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 20.96,
+      "end": 21.172,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       20.96,
+       21.172,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 21.172,
+      "end": 21.258,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       21.172,
+       21.258,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 21.258,
+      "end": 21.97,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       21.258,
+       21.97,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 21.389,
+      "end": 21.46,
+      "lf": 20.499,
+      "hf": 36.947,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       21.389,
+       21.46,
+       0.7302067275386379
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 21.97,
+      "end": 22.073,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       21.97,
+       22.073,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 22.073,
+      "end": 22.303,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       22.073,
+       22.303,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 22.202,
+      "end": 23.273,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       22.202,
+       23.273,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 22.303,
+      "end": 22.393,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       22.303,
+       22.393,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 22.393,
+      "end": 22.698,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       22.393,
+       22.698,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 22.698,
+      "end": 22.808,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       22.698,
+       22.808,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 22.808,
+      "end": 23.03,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       22.808,
+       23.03,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 23.03,
+      "end": 23.134,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       23.03,
+       23.134,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 23.134,
+      "end": 23.421,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       23.134,
+       23.421,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 23.421,
+      "end": 23.536,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       23.421,
+       23.536,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 23.536,
+      "end": 23.758,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       23.536,
+       23.758,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 23.758,
+      "end": 23.852,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       23.758,
+       23.852,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 23.852,
+      "end": 24.237,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       23.852,
+       24.237,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 23.961,
+      "end": 24.043,
+      "lf": 21.679,
+      "hf": 43.516,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       23.961,
+       24.043,
+       0.8600339934384759
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 24.237,
+      "end": 24.344,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       24.237,
+       24.344,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 24.344,
+      "end": 24.572,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       24.344,
+       24.572,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 24.572,
+      "end": 24.66,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       24.572,
+       24.66,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 24.66,
+      "end": 24.977,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       24.66,
+       24.977,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 24.753,
+      "end": 24.834,
+      "lf": 21.089,
+      "hf": 42.336,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       24.753,
+       24.834,
+       0.8367129135538954
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 24.977,
+      "end": 25.08,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       24.977,
+       25.08,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 25.08,
+      "end": 25.298,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.08,
+       25.298,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 25.298,
+      "end": 25.385,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.298,
+       25.385,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 25.385,
+      "end": 25.513,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.385,
+       25.513,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 25.513,
+      "end": 25.617,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.513,
+       25.617,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 25.617,
+      "end": 25.81,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.617,
+       25.81,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 25.81,
+      "end": 25.895,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.81,
+       25.895,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 25.895,
+      "end": 26.963,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       25.895,
+       26.963,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 26.842,
+      "end": 27.943,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       26.842,
+       27.943,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 26.963,
+      "end": 27.079,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       26.963,
+       27.079,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 27.079,
+      "end": 27.272,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       27.079,
+       27.272,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 27.272,
+      "end": 27.359,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       27.272,
+       27.359,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 27.359,
+      "end": 27.673,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       27.359,
+       27.673,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 27.491,
+      "end": 27.572,
+      "lf": 3.973,
+      "hf": 46.464,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       27.491,
+       27.572,
+       0.9182971658958852
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 27.673,
+      "end": 27.788,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       27.673,
+       27.788,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 27.788,
+      "end": 28,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       27.788,
+       28,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 28,
+      "end": 28.102,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       28,
+       28.102,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 28.102,
+      "end": 28.461,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       28.102,
+       28.461,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 28.239,
+      "end": 28.326,
+      "lf": 21.089,
+      "hf": 45.287,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       28.239,
+       28.326,
+       0.8950353768923673
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 28.461,
+      "end": 28.577,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       28.461,
+       28.577,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 28.577,
+      "end": 28.791,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       28.577,
+       28.791,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 28.791,
+      "end": 28.882,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       28.791,
+       28.882,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 28.882,
+      "end": 29.188,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       28.882,
+       29.188,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 28.96,
+      "end": 29.059,
+      "lf": 21.089,
+      "hf": 41.745,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       28.96,
+       29.059,
+       0.8250326099845844
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 29.188,
+      "end": 29.307,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       29.188,
+       29.307,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 29.307,
+      "end": 29.521,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       29.307,
+       29.521,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 29.521,
+      "end": 29.607,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       29.521,
+       29.607,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 29.607,
+      "end": 29.905,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       29.607,
+       29.905,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 29.707,
+      "end": 29.814,
+      "lf": 21.679,
+      "hf": 41.756,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       29.707,
+       29.814,
+       0.8252500098818135
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 29.905,
+      "end": 30.023,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       29.905,
+       30.023,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 30.023,
+      "end": 30.238,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.023,
+       30.238,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 30.238,
+      "end": 30.33,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.238,
+       30.33,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 30.33,
+      "end": 30.492,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.33,
+       30.492,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 30.492,
+      "end": 30.602,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.492,
+       30.602,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 30.602,
+      "end": 30.818,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.602,
+       30.818,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 30.735,
+      "end": 32.002,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       30.735,
+       32.002,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 30.818,
+      "end": 30.908,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.818,
+       30.908,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 30.908,
+      "end": 31.26,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       30.908,
+       31.26,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 31.26,
+      "end": 31.381,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       31.26,
+       31.381,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 31.381,
+      "end": 31.596,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       31.381,
+       31.596,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 31.596,
+      "end": 31.695,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       31.596,
+       31.695,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 31.695,
+      "end": 32.105,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       31.695,
+       32.105,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 31.785,
+      "end": 31.889,
+      "lf": 0.432,
+      "hf": 45.298,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       31.785,
+       31.889,
+       0.8952527767895965
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 32.105,
+      "end": 32.225,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       32.105,
+       32.225,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 32.225,
+      "end": 32.437,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       32.225,
+       32.437,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 32.437,
+      "end": 32.537,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       32.437,
+       32.537,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 32.537,
+      "end": 32.707,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       32.537,
+       32.707,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 32.707,
+      "end": 32.815,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       32.707,
+       32.815,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 32.815,
+      "end": 33.024,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       32.815,
+       33.024,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 33.024,
+      "end": 33.113,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.024,
+       33.113,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 33.113,
+      "end": 33.295,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.113,
+       33.295,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 33.295,
+      "end": 33.409,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.295,
+       33.409,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 33.409,
+      "end": 33.622,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.409,
+       33.622,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 33.622,
+      "end": 33.71,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.622,
+       33.71,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 33.71,
+      "end": 33.995,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.71,
+       33.995,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 33.995,
+      "end": 34.119,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       33.995,
+       34.119,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 34.119,
+      "end": 34.317,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.119,
+       34.317,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 34.317,
+      "end": 34.407,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.317,
+       34.407,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 34.407,
+      "end": 34.574,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.407,
+       34.574,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 34.574,
+      "end": 34.68,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.574,
+       34.68,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 34.68,
+      "end": 34.878,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.68,
+       34.878,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 34.878,
+      "end": 34.965,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.878,
+       34.965,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 34.965,
+      "end": 35.561,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       34.965,
+       35.561,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 35.02,
+      "end": 36.144,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       35.02,
+       36.144,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 35.561,
+      "end": 35.679,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       35.561,
+       35.679,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 35.679,
+      "end": 35.88,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       35.679,
+       35.88,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 35.88,
+      "end": 35.968,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       35.88,
+       35.968,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 35.968,
+      "end": 36.213,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       35.968,
+       36.213,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 36.213,
+      "end": 36.325,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       36.213,
+       36.325,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 36.325,
+      "end": 36.524,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       36.325,
+       36.524,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 36.524,
+      "end": 36.612,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       36.524,
+       36.612,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 36.612,
+      "end": 36.902,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       36.612,
+       36.902,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 36.902,
+      "end": 37.012,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       36.902,
+       37.012,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 37.012,
+      "end": 37.22,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.012,
+       37.22,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 37.22,
+      "end": 37.315,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.22,
+       37.315,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 37.315,
+      "end": 37.495,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.315,
+       37.495,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 37.495,
+      "end": 37.614,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.495,
+       37.614,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 37.614,
+      "end": 37.815,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.614,
+       37.815,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 37.815,
+      "end": 37.905,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.815,
+       37.905,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 37.905,
+      "end": 38.08,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       37.905,
+       38.08,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 38.08,
+      "end": 38.193,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       38.08,
+       38.193,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 38.193,
+      "end": 38.398,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       38.193,
+       38.398,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 38.398,
+      "end": 38.482,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       38.398,
+       38.482,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 38.482,
+      "end": 38.87,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       38.482,
+       38.87,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 38.792,
+      "end": 39.886,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       38.792,
+       39.886,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 38.87,
+      "end": 38.972,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       38.87,
+       38.972,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 38.972,
+      "end": 39.182,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       38.972,
+       39.182,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 39.182,
+      "end": 39.277,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       39.182,
+       39.277,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 39.277,
+      "end": 39.4,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       39.277,
+       39.4,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 39.4,
+      "end": 39.504,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       39.4,
+       39.504,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 39.504,
+      "end": 39.68,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       39.504,
+       39.68,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 39.68,
+      "end": 39.769,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       39.68,
+       39.769,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 39.769,
+      "end": 40.149,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       39.769,
+       40.149,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 40.149,
+      "end": 40.272,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       40.149,
+       40.272,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 40.272,
+      "end": 40.467,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       40.272,
+       40.467,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 40.467,
+      "end": 40.561,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       40.467,
+       40.561,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 40.561,
+      "end": 40.813,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       40.561,
+       40.813,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 40.813,
+      "end": 40.92,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       40.813,
+       40.92,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 40.92,
+      "end": 41.103,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       40.92,
+       41.103,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 41.103,
+      "end": 41.198,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.103,
+       41.198,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 41.198,
+      "end": 41.37,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.198,
+       41.37,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 41.37,
+      "end": 41.478,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.37,
+       41.478,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 41.478,
+      "end": 41.671,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.478,
+       41.671,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 41.671,
+      "end": 41.758,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.671,
+       41.758,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 41.758,
+      "end": 41.991,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.758,
+       41.991,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 41.93,
+      "end": 43.054,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       41.93,
+       43.054,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 41.991,
+      "end": 42.102,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       41.991,
+       42.102,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 42.102,
+      "end": 42.29,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       42.102,
+       42.29,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 42.29,
+      "end": 42.382,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       42.29,
+       42.382,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 42.382,
+      "end": 42.854,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       42.382,
+       42.854,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 42.854,
+      "end": 42.977,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       42.854,
+       42.977,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 42.977,
+      "end": 43.169,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       42.977,
+       43.169,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 43.169,
+      "end": 43.268,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.169,
+       43.268,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 43.268,
+      "end": 43.462,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.268,
+       43.462,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 43.462,
+      "end": 43.585,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.462,
+       43.585,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 43.585,
+      "end": 43.773,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.585,
+       43.773,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 43.773,
+      "end": 43.873,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.773,
+       43.873,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 43.873,
+      "end": 43.964,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.873,
+       43.964,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 43.964,
+      "end": 44.078,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       43.964,
+       44.078,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 44.078,
+      "end": 44.243,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.078,
+       44.243,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 44.243,
+      "end": 44.332,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.243,
+       44.332,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 44.332,
+      "end": 44.467,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.332,
+       44.467,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 44.467,
+      "end": 44.57,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.467,
+       44.57,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 44.57,
+      "end": 44.752,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.57,
+       44.752,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 44.752,
+      "end": 44.845,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.752,
+       44.845,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 44.845,
+      "end": 45.41,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       44.845,
+       45.41,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 45.41,
+      "end": 45.515,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       45.41,
+       45.515,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 45.515,
+      "end": 45.712,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       45.515,
+       45.712,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 45.619,
+      "end": 46.751,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       45.619,
+       46.751,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 45.712,
+      "end": 45.803,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       45.712,
+       45.803,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 45.803,
+      "end": 46.065,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       45.803,
+       46.065,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 45.92,
+      "end": 46.02,
+      "lf": -10.049,
+      "hf": 43.409,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       45.92,
+       46.02,
+       0.8579192853472469
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 46.065,
+      "end": 46.17,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       46.065,
+       46.17,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 46.17,
+      "end": 46.347,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       46.17,
+       46.347,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 46.347,
+      "end": 46.447,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       46.347,
+       46.447,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 46.447,
+      "end": 46.858,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       46.447,
+       46.858,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 46.619,
+      "end": 46.724,
+      "lf": 1.113,
+      "hf": 42.822,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       46.619,
+       46.724,
+       0.8463180362860193
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 46.858,
+      "end": 46.969,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       46.858,
+       46.969,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 46.969,
+      "end": 47.183,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       46.969,
+       47.183,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 47.183,
+      "end": 47.276,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       47.183,
+       47.276,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 47.276,
+      "end": 47.637,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       47.276,
+       47.637,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 47.377,
+      "end": 47.46,
+      "lf": 20.499,
+      "hf": 39.884,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       47.377,
+       47.46,
+       0.7882525000988182
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 47.637,
+      "end": 47.761,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       47.637,
+       47.761,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 47.761,
+      "end": 47.957,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       47.761,
+       47.957,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 47.957,
+      "end": 48.045,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       47.957,
+       48.045,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 48.045,
+      "end": 48.238,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.045,
+       48.238,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 48.238,
+      "end": 48.35,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.238,
+       48.35,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 48.35,
+      "end": 48.545,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.35,
+       48.545,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 48.545,
+      "end": 48.64,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.545,
+       48.64,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 48.64,
+      "end": 48.823,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.64,
+       48.823,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 48.823,
+      "end": 48.938,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.823,
+       48.938,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 48.938,
+      "end": 49.126,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       48.938,
+       49.126,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 49.126,
+      "end": 49.218,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       49.126,
+       49.218,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 49.218,
+      "end": 49.497,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       49.218,
+       49.497,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 49.444,
+      "end": 50.621,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       49.444,
+       50.621,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 49.497,
+      "end": 49.62,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       49.497,
+       49.62,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 49.62,
+      "end": 49.81,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       49.62,
+       49.81,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 49.81,
+      "end": 49.912,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       49.81,
+       49.912,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 49.912,
+      "end": 50.19,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       49.912,
+       50.19,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 49.984,
+      "end": 50.067,
+      "lf": -6.06,
+      "hf": 43.53,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       49.984,
+       50.067,
+       0.8603106842167675
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 50.19,
+      "end": 50.31,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.19,
+       50.31,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 50.31,
+      "end": 50.491,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.31,
+       50.491,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 50.491,
+      "end": 50.583,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.491,
+       50.583,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 50.583,
+      "end": 50.687,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.583,
+       50.687,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 50.687,
+      "end": 50.795,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.687,
+       50.795,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 50.795,
+      "end": 50.973,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.795,
+       50.973,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 50.973,
+      "end": 51.073,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       50.973,
+       51.073,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 51.073,
+      "end": 51.562,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       51.073,
+       51.562,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 51.146,
+      "end": 51.231,
+      "lf": 21.089,
+      "hf": 41.155,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       51.146,
+       51.231,
+       0.8133720700422942
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 51.562,
+      "end": 51.692,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       51.562,
+       51.692,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 51.692,
+      "end": 51.892,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       51.692,
+       51.892,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 51.892,
+      "end": 51.99,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       51.892,
+       51.99,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 51.99,
+      "end": 52.282,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       51.99,
+       52.282,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 52.057,
+      "end": 52.159,
+      "lf": 18.742,
+      "hf": 39.991,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       52.057,
+       52.159,
+       0.790367208190047
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 52.282,
+      "end": 52.392,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       52.282,
+       52.392,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 52.392,
+      "end": 52.59,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       52.392,
+       52.59,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 52.59,
+      "end": 52.682,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       52.59,
+       52.682,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 52.682,
+      "end": 53.043,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       52.682,
+       53.043,
+       1
+      ]
+     },
+     {
+      "type": "S3",
+      "start": 52.789,
+      "end": 52.892,
+      "lf": 11.099,
+      "hf": 35.772,
+      "name": "S3",
+      "itemStyle": {
+       "normal": {
+        "color": "#c8e6c9",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       2,
+       52.789,
+       52.892,
+       0.7069844657891616
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 53.043,
+      "end": 53.16,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       53.043,
+       53.16,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 53.16,
+      "end": 53.353,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       53.16,
+       53.353,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 53.353,
+      "end": 53.44,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       53.353,
+       53.44,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 53.44,
+      "end": 53.767,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       53.44,
+       53.767,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 53.767,
+      "end": 53.887,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       53.767,
+       53.887,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 53.887,
+      "end": 54.082,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       53.887,
+       54.082,
+       1
+      ]
+     },
+     {
+      "type": "Inhale",
+      "start": 54.02,
+      "end": 55.449,
+      "lf": 0,
+      "hf": 22050,
+      "name": "Inhale",
+      "itemStyle": {
+       "normal": {
+        "color": "#b2ebf2",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       3,
+       54.02,
+       55.449,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 54.082,
+      "end": 54.168,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       54.082,
+       54.168,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 54.168,
+      "end": 54.475,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       54.168,
+       54.475,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 54.475,
+      "end": 54.598,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       54.475,
+       54.598,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 54.598,
+      "end": 54.802,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       54.598,
+       54.802,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 54.802,
+      "end": 54.893,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       54.802,
+       54.893,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 54.893,
+      "end": 55.252,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       54.893,
+       55.252,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 55.252,
+      "end": 55.37,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       55.252,
+       55.37,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 55.37,
+      "end": 55.576,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       55.37,
+       55.576,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 55.576,
+      "end": 55.675,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       55.576,
+       55.675,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 55.675,
+      "end": 55.875,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       55.675,
+       55.875,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 55.875,
+      "end": 55.985,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       55.875,
+       55.985,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 55.985,
+      "end": 56.197,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       55.985,
+       56.197,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 56.197,
+      "end": 56.292,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       56.197,
+       56.292,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 56.292,
+      "end": 56.512,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       56.292,
+       56.512,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 56.512,
+      "end": 56.622,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       56.512,
+       56.622,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 56.622,
+      "end": 56.82,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       56.622,
+       56.82,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 56.82,
+      "end": 56.918,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       56.82,
+       56.918,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 56.918,
+      "end": 57.187,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       56.918,
+       57.187,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 57.187,
+      "end": 57.309,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       57.187,
+       57.309,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 57.309,
+      "end": 57.5,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       57.309,
+       57.5,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 57.5,
+      "end": 57.595,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       57.5,
+       57.595,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 57.595,
+      "end": 57.891,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       57.595,
+       57.891,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 57.891,
+      "end": 58.013,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       57.891,
+       58.013,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 58.013,
+      "end": 58.208,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.013,
+       58.208,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 58.208,
+      "end": 58.3,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.208,
+       58.3,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 58.3,
+      "end": 58.397,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.3,
+       58.397,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 58.397,
+      "end": 58.504,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.397,
+       58.504,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 58.504,
+      "end": 58.669,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.504,
+       58.669,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 58.669,
+      "end": 58.754,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.669,
+       58.754,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 58.754,
+      "end": 58.946,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.754,
+       58.946,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 58.946,
+      "end": 59.049,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       58.946,
+       59.049,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 59.049,
+      "end": 59.244,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       59.049,
+       59.244,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 59.244,
+      "end": 59.334,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       59.244,
+       59.334,
+       1
+      ]
+     },
+     {
+      "type": "diastole",
+      "start": 59.334,
+      "end": 59.477,
+      "lf": 0,
+      "hf": 22050,
+      "name": "diastole",
+      "itemStyle": {
+       "normal": {
+        "color": "#7986cb",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       59.334,
+       59.477,
+       1
+      ]
+     },
+     {
+      "type": "S1",
+      "start": 59.477,
+      "end": 59.577,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S1",
+      "itemStyle": {
+       "normal": {
+        "color": "#ef6c00",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       59.477,
+       59.577,
+       1
+      ]
+     },
+     {
+      "type": "systole",
+      "start": 59.577,
+      "end": 59.767,
+      "lf": 0,
+      "hf": 22050,
+      "name": "systole",
+      "itemStyle": {
+       "normal": {
+        "color": "#f9a825",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       59.577,
+       59.767,
+       1
+      ]
+     },
+     {
+      "type": "S2",
+      "start": 59.767,
+      "end": 59.852,
+      "lf": 0,
+      "hf": 22050,
+      "name": "S2",
+      "itemStyle": {
+       "normal": {
+        "color": "#1a237e",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       1,
+       59.767,
+       59.852,
+       1
+      ]
+     },
+     {
+      "type": "unsegmentable",
+      "start": 59.852,
+      "end": 60,
+      "lf": 0,
+      "hf": 22050,
+      "name": "unsegmentable",
+      "itemStyle": {
+       "normal": {
+        "color": "#e0e0e0",
+        "borderColor": "#999",
+        "borderWidth": 0.3
+       }
+      },
+      "value": [
+       0,
+       59.852,
+       60,
+       1
+      ]
+     }
+    ],
+    "markArea": {
+     "itemStyle": {
+      "color": "#fff3e0",
+      "opacity": 0.7,
+      "borderWidth": 1,
+      "borderType": "dashed",
+      "borderColor": "red"
+     },
+     "data": []
+    }
+   }
+  ]
+ },
+ "segmentDurationBoxplot": {
+  "grid": {
+   "containLabel": true
+  },
+  "tooltip": {
+   "trigger": "item",
+   "axisPointer": {
+    "type": "shadow"
+   }
+  },
+  "yAxis": {
+   "type": "category",
+   "data": [
+    "diastole",
+    "systole",
+    "S2-S3",
+    "S3",
+    "S2",
+    "S1"
+   ],
+   "boundaryGap": true
+  },
+  "xAxis": {
+   "type": "value",
+   "name": "Duration, s",
+   "nameLocation": "center",
+   "nameTextStyle": {
+    "fontWeight": "bold"
+   },
+   "nameGap": 25,
+   "minorTick": {
+    "show": true,
+    "splitNumber": 10
+   },
+   "minorSplitLine": {
+    "show": true
+   }
+  },
+  "series": [
+   {
+    "name": "Segment duration",
+    "type": "boxplot",
+    "color": "#234758",
+    "itemStyle": {
+     "borderWidth": 1
+    },
+    "data": [
+     [
+      0.133,
+      0.278,
+      0.384,
+      0.467,
+      1.153
+     ],
+     [
+      0.257,
+      0.304,
+      0.318,
+      0.327,
+      0.337
+     ],
+     [
+      0.156,
+      0.181,
+      0.194,
+      0.217,
+      0.272
+     ],
+     [
+      0.071,
+      0.085,
+      0.093,
+      0.102,
+      0.107
+     ],
+     [
+      0.076,
+      0.088,
+      0.092,
+      0.095,
+      0.104
+     ],
+     [
+      0.097,
+      0.106,
+      0.111,
+      0.118,
+      0.13
+     ]
+    ]
+   },
+   {
+    "name": "outlier",
+    "type": "scatter",
+    "color": "#234758",
+    "symbolSize": 8,
+    "data": [
+     [
+      0.618,
+      "diastole"
+     ],
+     [
+      0.672,
+      "diastole"
+     ],
+     [
+      0.623,
+      "diastole"
+     ],
+     [
+      0.377,
+      "diastole"
+     ],
+     [
+      0.457,
+      "diastole"
+     ],
+     [
+      0.375,
+      "diastole"
+     ],
+     [
+      0.689,
+      "diastole"
+     ],
+     [
+      0.478,
+      "diastole"
+     ],
+     [
+      0.145,
+      "diastole"
+     ],
+     [
+      0.245,
+      "diastole"
+     ],
+     [
+      0.334,
+      "diastole"
+     ],
+     [
+      0.331,
+      "diastole"
+     ],
+     [
+      0.467,
+      "diastole"
+     ],
+     [
+      0.745,
+      "diastole"
+     ],
+     [
+      0.521,
+      "diastole"
+     ],
+     [
+      0.372,
+      "diastole"
+     ],
+     [
+      0.592,
+      "diastole"
+     ],
+     [
+      0.44,
+      "diastole"
+     ],
+     [
+      0.133,
+      "diastole"
+     ],
+     [
+      0.288,
+      "diastole"
+     ],
+     [
+      0.466,
+      "diastole"
+     ],
+     [
+      0.379,
+      "diastole"
+     ],
+     [
+      1.01,
+      "diastole"
+     ],
+     [
+      0.423,
+      "diastole"
+     ],
+     [
+      0.402,
+      "diastole"
+     ],
+     [
+      0.247,
+      "diastole"
+     ],
+     [
+      0.242,
+      "diastole"
+     ],
+     [
+      0.798,
+      "diastole"
+     ],
+     [
+      0.395,
+      "diastole"
+     ],
+     [
+      0.391,
+      "diastole"
+     ],
+     [
+      0.479,
+      "diastole"
+     ],
+     [
+      0.405,
+      "diastole"
+     ],
+     [
+      0.215,
+      "diastole"
+     ],
+     [
+      1.153,
+      "diastole"
+     ],
+     [
+      0.401,
+      "diastole"
+     ],
+     [
+      0.461,
+      "diastole"
+     ],
+     [
+      0.397,
+      "diastole"
+     ],
+     [
+      0.384,
+      "diastole"
+     ],
+     [
+      0.254,
+      "diastole"
+     ],
+     [
+      0.442,
+      "diastole"
+     ],
+     [
+      0.509,
+      "diastole"
+     ],
+     [
+      0.27,
+      "diastole"
+     ],
+     [
+      0.271,
+      "diastole"
+     ],
+     [
+      0.373,
+      "diastole"
+     ],
+     [
+      0.257,
+      "diastole"
+     ],
+     [
+      0.683,
+      "diastole"
+     ],
+     [
+      0.333,
+      "diastole"
+     ],
+     [
+      0.378,
+      "diastole"
+     ],
+     [
+      0.275,
+      "diastole"
+     ],
+     [
+      0.265,
+      "diastole"
+     ],
+     [
+      0.472,
+      "diastole"
+     ],
+     [
+      0.218,
+      "diastole"
+     ],
+     [
+      0.469,
+      "diastole"
+     ],
+     [
+      0.346,
+      "diastole"
+     ],
+     [
+      0.267,
+      "diastole"
+     ],
+     [
+      0.32,
+      "diastole"
+     ],
+     [
+      0.564,
+      "diastole"
+     ],
+     [
+      0.293,
+      "diastole"
+     ],
+     [
+      0.191,
+      "diastole"
+     ],
+     [
+      0.224,
+      "diastole"
+     ],
+     [
+      0.658,
+      "diastole"
+     ],
+     [
+      0.353,
+      "diastole"
+     ],
+     [
+      0.511,
+      "diastole"
+     ],
+     [
+      0.454,
+      "diastole"
+     ],
+     [
+      0.281,
+      "diastole"
+     ],
+     [
+      0.278,
+      "diastole"
+     ],
+     [
+      0.371,
+      "diastole"
+     ],
+     [
+      0.38,
+      "diastole"
+     ],
+     [
+      0.196,
+      "diastole"
+     ],
+     [
+      0.589,
+      "diastole"
+     ],
+     [
+      0.39,
+      "diastole"
+     ],
+     [
+      0.453,
+      "diastole"
+     ],
+     [
+      0.414,
+      "diastole"
+     ],
+     [
+      0.393,
+      "diastole"
+     ],
+     [
+      0.45,
+      "diastole"
+     ],
+     [
+      0.299,
+      "diastole"
+     ],
+     [
+      0.315,
+      "diastole"
+     ],
+     [
+      0.367,
+      "diastole"
+     ],
+     [
+      0.391,
+      "diastole"
+     ],
+     [
+      0.189,
+      "diastole"
+     ],
+     [
+      0.277,
+      "diastole"
+     ],
+     [
+      0.233,
+      "diastole"
+     ],
+     [
+      0.292,
+      "systole"
+     ],
+     [
+      0.33,
+      "systole"
+     ],
+     [
+      0.32,
+      "systole"
+     ],
+     [
+      0.335,
+      "systole"
+     ],
+     [
+      0.33,
+      "systole"
+     ],
+     [
+      0.325,
+      "systole"
+     ],
+     [
+      0.306,
+      "systole"
+     ],
+     [
+      0.331,
+      "systole"
+     ],
+     [
+      0.332,
+      "systole"
+     ],
+     [
+      0.257,
+      "systole"
+     ],
+     [
+      0.293,
+      "systole"
+     ],
+     [
+      0.298,
+      "systole"
+     ],
+     [
+      0.314,
+      "systole"
+     ],
+     [
+      0.335,
+      "systole"
+     ],
+     [
+      0.311,
+      "systole"
+     ],
+     [
+      0.324,
+      "systole"
+     ],
+     [
+      0.301,
+      "systole"
+     ],
+     [
+      0.323,
+      "systole"
+     ],
+     [
+      0.333,
+      "systole"
+     ],
+     [
+      0.261,
+      "systole"
+     ],
+     [
+      0.31,
+      "systole"
+     ],
+     [
+      0.321,
+      "systole"
+     ],
+     [
+      0.331,
+      "systole"
+     ],
+     [
+      0.324,
+      "systole"
+     ],
+     [
+      0.323,
+      "systole"
+     ],
+     [
+      0.335,
+      "systole"
+     ],
+     [
+      0.323,
+      "systole"
+     ],
+     [
+      0.315,
+      "systole"
+     ],
+     [
+      0.333,
+      "systole"
+     ],
+     [
+      0.332,
+      "systole"
+     ],
+     [
+      0.337,
+      "systole"
+     ],
+     [
+      0.335,
+      "systole"
+     ],
+     [
+      0.321,
+      "systole"
+     ],
+     [
+      0.297,
+      "systole"
+     ],
+     [
+      0.309,
+      "systole"
+     ],
+     [
+      0.327,
+      "systole"
+     ],
+     [
+      0.33,
+      "systole"
+     ],
+     [
+      0.333,
+      "systole"
+     ],
+     [
+      0.333,
+      "systole"
+     ],
+     [
+      0.326,
+      "systole"
+     ],
+     [
+      0.336,
+      "systole"
+     ],
+     [
+      0.332,
+      "systole"
+     ],
+     [
+      0.317,
+      "systole"
+     ],
+     [
+      0.327,
+      "systole"
+     ],
+     [
+      0.322,
+      "systole"
+     ],
+     [
+      0.304,
+      "systole"
+     ],
+     [
+      0.319,
+      "systole"
+     ],
+     [
+      0.311,
+      "systole"
+     ],
+     [
+      0.318,
+      "systole"
+     ],
+     [
+      0.32,
+      "systole"
+     ],
+     [
+      0.318,
+      "systole"
+     ],
+     [
+      0.312,
+      "systole"
+     ],
+     [
+      0.28,
+      "systole"
+     ],
+     [
+      0.318,
+      "systole"
+     ],
+     [
+      0.29,
+      "systole"
+     ],
+     [
+      0.301,
+      "systole"
+     ],
+     [
+      0.299,
+      "systole"
+     ],
+     [
+      0.315,
+      "systole"
+     ],
+     [
+      0.311,
+      "systole"
+     ],
+     [
+      0.279,
+      "systole"
+     ],
+     [
+      0.285,
+      "systole"
+     ],
+     [
+      0.302,
+      "systole"
+     ],
+     [
+      0.282,
+      "systole"
+     ],
+     [
+      0.325,
+      "systole"
+     ],
+     [
+      0.32,
+      "systole"
+     ],
+     [
+      0.307,
+      "systole"
+     ],
+     [
+      0.303,
+      "systole"
+     ],
+     [
+      0.313,
+      "systole"
+     ],
+     [
+      0.301,
+      "systole"
+     ],
+     [
+      0.286,
+      "systole"
+     ],
+     [
+      0.33,
+      "systole"
+     ],
+     [
+      0.308,
+      "systole"
+     ],
+     [
+      0.31,
+      "systole"
+     ],
+     [
+      0.315,
+      "systole"
+     ],
+     [
+      0.327,
+      "systole"
+     ],
+     [
+      0.324,
+      "systole"
+     ],
+     [
+      0.322,
+      "systole"
+     ],
+     [
+      0.308,
+      "systole"
+     ],
+     [
+      0.313,
+      "systole"
+     ],
+     [
+      0.317,
+      "systole"
+     ],
+     [
+      0.272,
+      "systole"
+     ],
+     [
+      0.298,
+      "systole"
+     ],
+     [
+      0.232,
+      "S2-S3"
+     ],
+     [
+      0.202,
+      "S2-S3"
+     ],
+     [
+      0.204,
+      "S2-S3"
+     ],
+     [
+      0.196,
+      "S2-S3"
+     ],
+     [
+      0.165,
+      "S2-S3"
+     ],
+     [
+      0.194,
+      "S2-S3"
+     ],
+     [
+      0.231,
+      "S2-S3"
+     ],
+     [
+      0.16,
+      "S2-S3"
+     ],
+     [
+      0.194,
+      "S2-S3"
+     ],
+     [
+      0.156,
+      "S2-S3"
+     ],
+     [
+      0.186,
+      "S2-S3"
+     ],
+     [
+      0.19,
+      "S2-S3"
+     ],
+     [
+      0.23,
+      "S2-S3"
+     ],
+     [
+      0.217,
+      "S2-S3"
+     ],
+     [
+      0.203,
+      "S2-S3"
+     ],
+     [
+      0.181,
+      "S2-S3"
+     ],
+     [
+      0.219,
+      "S2-S3"
+     ],
+     [
+      0.239,
+      "S2-S3"
+     ],
+     [
+      0.169,
+      "S2-S3"
+     ],
+     [
+      0.186,
+      "S2-S3"
+     ],
+     [
+      0.189,
+      "S2-S3"
+     ],
+     [
+      0.208,
+      "S2-S3"
+     ],
+     [
+      0.272,
+      "S2-S3"
+     ],
+     [
+      0.194,
+      "S2-S3"
+     ],
+     [
+      0.174,
+      "S2-S3"
+     ],
+     [
+      0.173,
+      "S2-S3"
+     ],
+     [
+      0.165,
+      "S2-S3"
+     ],
+     [
+      0.199,
+      "S2-S3"
+     ],
+     [
+      0.085,
+      "S3"
+     ],
+     [
+      0.106,
+      "S3"
+     ],
+     [
+      0.085,
+      "S3"
+     ],
+     [
+      0.093,
+      "S3"
+     ],
+     [
+      0.097,
+      "S3"
+     ],
+     [
+      0.091,
+      "S3"
+     ],
+     [
+      0.093,
+      "S3"
+     ],
+     [
+      0.092,
+      "S3"
+     ],
+     [
+      0.097,
+      "S3"
+     ],
+     [
+      0.09,
+      "S3"
+     ],
+     [
+      0.101,
+      "S3"
+     ],
+     [
+      0.102,
+      "S3"
+     ],
+     [
+      0.106,
+      "S3"
+     ],
+     [
+      0.071,
+      "S3"
+     ],
+     [
+      0.082,
+      "S3"
+     ],
+     [
+      0.081,
+      "S3"
+     ],
+     [
+      0.081,
+      "S3"
+     ],
+     [
+      0.087,
+      "S3"
+     ],
+     [
+      0.099,
+      "S3"
+     ],
+     [
+      0.107,
+      "S3"
+     ],
+     [
+      0.104,
+      "S3"
+     ],
+     [
+      0.1,
+      "S3"
+     ],
+     [
+      0.105,
+      "S3"
+     ],
+     [
+      0.083,
+      "S3"
+     ],
+     [
+      0.083,
+      "S3"
+     ],
+     [
+      0.085,
+      "S3"
+     ],
+     [
+      0.102,
+      "S3"
+     ],
+     [
+      0.103,
+      "S3"
+     ],
+     [
+      0.098,
+      "S2"
+     ],
+     [
+      0.097,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.083,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.089,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.078,
+      "S2"
+     ],
+     [
+      0.085,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.087,
+      "S2"
+     ],
+     [
+      0.084,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.094,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.076,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.094,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.086,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.104,
+      "S2"
+     ],
+     [
+      0.094,
+      "S2"
+     ],
+     [
+      0.088,
+      "S2"
+     ],
+     [
+      0.087,
+      "S2"
+     ],
+     [
+      0.085,
+      "S2"
+     ],
+     [
+      0.087,
+      "S2"
+     ],
+     [
+      0.102,
+      "S2"
+     ],
+     [
+      0.091,
+      "S2"
+     ],
+     [
+      0.086,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.099,
+      "S2"
+     ],
+     [
+      0.1,
+      "S2"
+     ],
+     [
+      0.089,
+      "S2"
+     ],
+     [
+      0.088,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.087,
+      "S2"
+     ],
+     [
+      0.088,
+      "S2"
+     ],
+     [
+      0.088,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.084,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.089,
+      "S2"
+     ],
+     [
+      0.094,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.087,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.099,
+      "S2"
+     ],
+     [
+      0.1,
+      "S2"
+     ],
+     [
+      0.089,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.091,
+      "S2"
+     ],
+     [
+      0.1,
+      "S2"
+     ],
+     [
+      0.093,
+      "S2"
+     ],
+     [
+      0.088,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.102,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.1,
+      "S2"
+     ],
+     [
+      0.098,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.087,
+      "S2"
+     ],
+     [
+      0.086,
+      "S2"
+     ],
+     [
+      0.091,
+      "S2"
+     ],
+     [
+      0.099,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.098,
+      "S2"
+     ],
+     [
+      0.095,
+      "S2"
+     ],
+     [
+      0.092,
+      "S2"
+     ],
+     [
+      0.085,
+      "S2"
+     ],
+     [
+      0.09,
+      "S2"
+     ],
+     [
+      0.085,
+      "S2"
+     ],
+     [
+      0.107,
+      "S1"
+     ],
+     [
+      0.104,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.114,
+      "S1"
+     ],
+     [
+      0.111,
+      "S1"
+     ],
+     [
+      0.106,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.118,
+      "S1"
+     ],
+     [
+      0.097,
+      "S1"
+     ],
+     [
+      0.105,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.115,
+      "S1"
+     ],
+     [
+      0.106,
+      "S1"
+     ],
+     [
+      0.108,
+      "S1"
+     ],
+     [
+      0.118,
+      "S1"
+     ],
+     [
+      0.114,
+      "S1"
+     ],
+     [
+      0.097,
+      "S1"
+     ],
+     [
+      0.107,
+      "S1"
+     ],
+     [
+      0.112,
+      "S1"
+     ],
+     [
+      0.102,
+      "S1"
+     ],
+     [
+      0.12,
+      "S1"
+     ],
+     [
+      0.115,
+      "S1"
+     ],
+     [
+      0.12,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.117,
+      "S1"
+     ],
+     [
+      0.113,
+      "S1"
+     ],
+     [
+      0.111,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.115,
+      "S1"
+     ],
+     [
+      0.107,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.104,
+      "S1"
+     ],
+     [
+      0.116,
+      "S1"
+     ],
+     [
+      0.115,
+      "S1"
+     ],
+     [
+      0.116,
+      "S1"
+     ],
+     [
+      0.119,
+      "S1"
+     ],
+     [
+      0.118,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.121,
+      "S1"
+     ],
+     [
+      0.12,
+      "S1"
+     ],
+     [
+      0.108,
+      "S1"
+     ],
+     [
+      0.114,
+      "S1"
+     ],
+     [
+      0.124,
+      "S1"
+     ],
+     [
+      0.106,
+      "S1"
+     ],
+     [
+      0.118,
+      "S1"
+     ],
+     [
+      0.112,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.119,
+      "S1"
+     ],
+     [
+      0.113,
+      "S1"
+     ],
+     [
+      0.102,
+      "S1"
+     ],
+     [
+      0.104,
+      "S1"
+     ],
+     [
+      0.123,
+      "S1"
+     ],
+     [
+      0.107,
+      "S1"
+     ],
+     [
+      0.108,
+      "S1"
+     ],
+     [
+      0.111,
+      "S1"
+     ],
+     [
+      0.123,
+      "S1"
+     ],
+     [
+      0.123,
+      "S1"
+     ],
+     [
+      0.114,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.105,
+      "S1"
+     ],
+     [
+      0.105,
+      "S1"
+     ],
+     [
+      0.111,
+      "S1"
+     ],
+     [
+      0.124,
+      "S1"
+     ],
+     [
+      0.112,
+      "S1"
+     ],
+     [
+      0.115,
+      "S1"
+     ],
+     [
+      0.123,
+      "S1"
+     ],
+     [
+      0.12,
+      "S1"
+     ],
+     [
+      0.108,
+      "S1"
+     ],
+     [
+      0.13,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.117,
+      "S1"
+     ],
+     [
+      0.12,
+      "S1"
+     ],
+     [
+      0.123,
+      "S1"
+     ],
+     [
+      0.118,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.11,
+      "S1"
+     ],
+     [
+      0.122,
+      "S1"
+     ],
+     [
+      0.122,
+      "S1"
+     ],
+     [
+      0.107,
+      "S1"
+     ],
+     [
+      0.103,
+      "S1"
+     ],
+     [
+      0.1,
+      "S1"
+     ]
+    ]
+   }
+  ]
+ },
+ "systoleDiastoleBars": {
+  "legend": {
+   "data": [
+    "Systole",
+    "Diastole"
+   ]
+  },
+  "xAxis": {
+   "type": "category"
+  },
+  "yAxis": {
+   "type": "value",
+   "max": 1.5
+  },
+  "series": [
+   {
+    "name": "Systole",
+    "barWidth": "40%",
+    "data": [
+     0.292,
+     0.33,
+     0.32,
+     0.335,
+     0.33,
+     0.325,
+     0.306,
+     0.331,
+     0.332,
+     0.257,
+     0.293,
+     0.298,
+     0.314,
+     0.335,
+     0.311,
+     0.324,
+     0.301,
+     0.323,
+     0.333,
+     0.261,
+     0.31,
+     0.321,
+     0.331,
+     0.324,
+     0.323,
+     0.335,
+     0.323,
+     0.315,
+     0.333,
+     0.332,
+     0.337,
+     0.335,
+     0.321,
+     0.297,
+     0.309,
+     0.327,
+     0.33,
+     0.333,
+     0.333,
+     0.326,
+     0.336,
+     0.332,
+     0.317,
+     0.327,
+     0.322,
+     0.304,
+     0.319,
+     0.311,
+     0.318,
+     0.32,
+     0.318,
+     0.312,
+     0.28,
+     0.318,
+     0.29,
+     0.301,
+     0.299,
+     0.315,
+     0.311,
+     0.279,
+     0.285,
+     0.302,
+     0.282,
+     0.325,
+     0.32,
+     0.307,
+     0.303,
+     0.313,
+     0.301,
+     0.286,
+     0.33,
+     0.308,
+     0.31,
+     0.315,
+     0.327,
+     0.324,
+     0.322,
+     0.308,
+     0.313,
+     0.317,
+     0.272,
+     0.298
+    ],
+    "color": "#f9a825",
+    "type": "bar",
+    "itemStyle": {
+     "borderColor": "#ef6c00",
+     "borderWidth": 2
+    },
+    "stack": "glob",
+    "markArea": {
+     "itemStyle": {
+      "color": "rgba(255, 50, 50, 0.1)"
+     },
+     "data": [
+      [
+       {
+        "yAxis": 0.2845997842180871
+       },
+       {
+        "yAxis": 0.34327826456240057
+       }
+      ]
+     ]
+    },
+    "markLine": {
+     "silent": true,
+     "symbol": [],
+     "lineStyle": {
+      "color": "red"
+     },
+     "data": [
+      {
+       "yAxis": 0.2845997842180871,
+       "lineStyle": {
+        "width": 1
+       }
+      },
+      {
+       "yAxis": 0.34327826456240057,
+       "lineStyle": {
+        "width": 1
+       }
+      }
+     ]
+    }
+   },
+   {
+    "name": "Diastole",
+    "data": [
+     0.618,
+     0.672,
+     0.623,
+     0.377,
+     0.457,
+     0.375,
+     0.689,
+     0.478,
+     0.145,
+     0.245,
+     0.334,
+     0.331,
+     0.467,
+     0.745,
+     0.521,
+     0.372,
+     0.592,
+     0.44,
+     0.133,
+     0.288,
+     0.466,
+     0.379,
+     1.01,
+     0.423,
+     0.402,
+     0.247,
+     0.242,
+     0.798,
+     0.395,
+     0.391,
+     0.479,
+     0.405,
+     0.215,
+     1.153,
+     0.401,
+     0.461,
+     0.397,
+     0.384,
+     0.254,
+     0.442,
+     0.509,
+     0.27,
+     0.271,
+     0.373,
+     0.257,
+     0.683,
+     0.333,
+     0.378,
+     0.275,
+     0.265,
+     0.472,
+     0.218,
+     0.469,
+     0.346,
+     0.267,
+     0.32,
+     0.564,
+     0.293,
+     0.191,
+     0.224,
+     0.658,
+     0.353,
+     0.511,
+     0.454,
+     0.281,
+     0.278,
+     0.371,
+     0.38,
+     0.196,
+     0.589,
+     0.39,
+     0.453,
+     0.414,
+     0.393,
+     0.45,
+     0.299,
+     0.315,
+     0.367,
+     0.391,
+     0.189,
+     0.277,
+     0.233
+    ],
+    "color": "#7986cb",
+    "type": "bar",
+    "itemStyle": {
+     "borderColor": "#1a237e",
+     "borderWidth": 2
+    },
+    "stack": "glob",
+    "markArea": {
+     "itemStyle": {
+      "color": "rgba(125, 125, 150, 0.05)"
+     },
+     "data": [
+      [
+       {
+        "yAxis": 0.42792433852874184
+       },
+       {
+        "yAxis": 1.0161976126907706
+       }
+      ]
+     ]
+    },
+    "markLine": {
+     "silent": true,
+     "symbol": [],
+     "lineStyle": {
+      "color": "blue"
+     },
+     "data": [
+      {
+       "yAxis": 0.42792433852874184,
+       "lineStyle": {
+        "width": 1
+       }
+      },
+      {
+       "yAxis": 1.0161976126907706,
+       "lineStyle": {
+        "width": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "hfBoxplot": {
+  "grid": {
+   "containLabel": true
+  },
+  "tooltip": {
+   "trigger": "item",
+   "axisPointer": {
+    "type": "shadow"
+   }
+  },
+  "yAxis": {
+   "type": "category",
+   "data": [
+    "S3"
+   ],
+   "boundaryGap": true
+  },
+  "xAxis": {
+   "type": "value",
+   "name": "Frequancy, hz",
+   "nameLocation": "center",
+   "nameTextStyle": {
+    "fontWeight": "bold"
+   },
+   "nameGap": 25,
+   "minorTick": {
+    "show": true,
+    "splitNumber": 10
+   },
+   "minorSplitLine": {
+    "show": true
+   }
+  },
+  "series": [
+   {
+    "name": "High frequency",
+    "type": "boxplot",
+    "color": "#234758",
+    "itemStyle": {
+     "borderWidth": 1
+    },
+    "data": [
+     [
+      35.8,
+      41.2,
+      41.8,
+      43.5,
+      50.6
+     ]
+    ]
+   },
+   {
+    "name": "outlier",
+    "type": "scatter",
+    "color": "#234758",
+    "symbolSize": 8,
+    "data": [
+     [
+      42.2,
+      "S3"
+     ],
+     [
+      40,
+      "S3"
+     ],
+     [
+      50.6,
+      "S3"
+     ],
+     [
+      41.2,
+      "S3"
+     ],
+     [
+      40,
+      "S3"
+     ],
+     [
+      45.9,
+      "S3"
+     ],
+     [
+      44.1,
+      "S3"
+     ],
+     [
+      41.7,
+      "S3"
+     ],
+     [
+      37.6,
+      "S3"
+     ],
+     [
+      41.2,
+      "S3"
+     ],
+     [
+      41.7,
+      "S3"
+     ],
+     [
+      41.8,
+      "S3"
+     ],
+     [
+      41.8,
+      "S3"
+     ],
+     [
+      36.9,
+      "S3"
+     ],
+     [
+      43.5,
+      "S3"
+     ],
+     [
+      42.3,
+      "S3"
+     ],
+     [
+      46.5,
+      "S3"
+     ],
+     [
+      45.3,
+      "S3"
+     ],
+     [
+      41.7,
+      "S3"
+     ],
+     [
+      41.8,
+      "S3"
+     ],
+     [
+      45.3,
+      "S3"
+     ],
+     [
+      43.4,
+      "S3"
+     ],
+     [
+      42.8,
+      "S3"
+     ],
+     [
+      39.9,
+      "S3"
+     ],
+     [
+      43.5,
+      "S3"
+     ],
+     [
+      41.2,
+      "S3"
+     ],
+     [
+      40,
+      "S3"
+     ],
+     [
+      35.8,
+      "S3"
+     ]
+    ]
+   }
+  ]
+ },
+ "systoleDiastoleScatterPlot": {
+  "grid": {
+   "width": 300,
+   "height": 300,
+   "left": "center",
+   "top": "center"
+  },
+  "xAxis": {
+   "name": "Systole, s",
+   "nameLocation": "center",
+   "nameTextStyle": {
+    "fontWeight": "bold"
+   },
+   "nameGap": 25,
+   "min": 0,
+   "max": 1.4335
+  },
+  "yAxis": {
+   "name": "Diastole, s",
+   "nameLocation": "center",
+   "nameTextStyle": {
+    "fontWeight": "bold"
+   },
+   "nameGap": 30,
+   "min": 0,
+   "max": 1.4335
+  },
+  "series": [
+   {
+    "symbolSize": 6,
+    "color": "#234758",
+    "data": [
+     [
+      0.292,
+      0.618
+     ],
+     [
+      0.33,
+      0.672
+     ],
+     [
+      0.32,
+      0.623
+     ],
+     [
+      0.335,
+      0.377
+     ],
+     [
+      0.33,
+      0.457
+     ],
+     [
+      0.325,
+      0.375
+     ],
+     [
+      0.306,
+      0.689
+     ],
+     [
+      0.331,
+      0.478
+     ],
+     [
+      0.332,
+      0.145
+     ],
+     [
+      0.257,
+      0.245
+     ],
+     [
+      0.293,
+      0.334
+     ],
+     [
+      0.298,
+      0.331
+     ],
+     [
+      0.314,
+      0.467
+     ],
+     [
+      0.335,
+      0.745
+     ],
+     [
+      0.311,
+      0.521
+     ],
+     [
+      0.324,
+      0.372
+     ],
+     [
+      0.301,
+      0.592
+     ],
+     [
+      0.323,
+      0.44
+     ],
+     [
+      0.333,
+      0.133
+     ],
+     [
+      0.261,
+      0.288
+     ],
+     [
+      0.31,
+      0.466
+     ],
+     [
+      0.321,
+      0.379
+     ],
+     [
+      0.331,
+      1.01
+     ],
+     [
+      0.324,
+      0.423
+     ],
+     [
+      0.323,
+      0.402
+     ],
+     [
+      0.335,
+      0.247
+     ],
+     [
+      0.323,
+      0.242
+     ],
+     [
+      0.315,
+      0.798
+     ],
+     [
+      0.333,
+      0.395
+     ],
+     [
+      0.332,
+      0.391
+     ],
+     [
+      0.337,
+      0.479
+     ],
+     [
+      0.335,
+      0.405
+     ],
+     [
+      0.321,
+      0.215
+     ],
+     [
+      0.297,
+      1.153
+     ],
+     [
+      0.309,
+      0.401
+     ],
+     [
+      0.327,
+      0.461
+     ],
+     [
+      0.33,
+      0.397
+     ],
+     [
+      0.333,
+      0.384
+     ],
+     [
+      0.333,
+      0.254
+     ],
+     [
+      0.326,
+      0.442
+     ],
+     [
+      0.336,
+      0.509
+     ],
+     [
+      0.332,
+      0.27
+     ],
+     [
+      0.317,
+      0.271
+     ],
+     [
+      0.327,
+      0.373
+     ],
+     [
+      0.322,
+      0.257
+     ],
+     [
+      0.304,
+      0.683
+     ],
+     [
+      0.319,
+      0.333
+     ],
+     [
+      0.311,
+      0.378
+     ],
+     [
+      0.318,
+      0.275
+     ],
+     [
+      0.32,
+      0.265
+     ],
+     [
+      0.318,
+      0.472
+     ],
+     [
+      0.312,
+      0.218
+     ],
+     [
+      0.28,
+      0.469
+     ],
+     [
+      0.318,
+      0.346
+     ],
+     [
+      0.29,
+      0.267
+     ],
+     [
+      0.301,
+      0.32
+     ],
+     [
+      0.299,
+      0.564
+     ],
+     [
+      0.315,
+      0.293
+     ],
+     [
+      0.311,
+      0.191
+     ],
+     [
+      0.279,
+      0.224
+     ],
+     [
+      0.285,
+      0.658
+     ],
+     [
+      0.302,
+      0.353
+     ],
+     [
+      0.282,
+      0.511
+     ],
+     [
+      0.325,
+      0.454
+     ],
+     [
+      0.32,
+      0.281
+     ],
+     [
+      0.307,
+      0.278
+     ],
+     [
+      0.303,
+      0.371
+     ],
+     [
+      0.313,
+      0.38
+     ],
+     [
+      0.301,
+      0.196
+     ],
+     [
+      0.286,
+      0.589
+     ],
+     [
+      0.33,
+      0.39
+     ],
+     [
+      0.308,
+      0.453
+     ],
+     [
+      0.31,
+      0.414
+     ],
+     [
+      0.315,
+      0.393
+     ],
+     [
+      0.327,
+      0.45
+     ],
+     [
+      0.324,
+      0.299
+     ],
+     [
+      0.322,
+      0.315
+     ],
+     [
+      0.308,
+      0.367
+     ],
+     [
+      0.313,
+      0.391
+     ],
+     [
+      0.317,
+      0.189
+     ],
+     [
+      0.272,
+      0.277
+     ],
+     [
+      0.298,
+      0.233
+     ]
+    ],
+    "type": "scatter"
+   }
+  ]
+ },
+ "poincareChart": {
+  "grid": {
+   "width": 300,
+   "height": 300,
+   "left": "center",
+   "top": "center"
+  },
+  "xAxis": {
+   "name": "Duration of Preceding Cardio Cycle, s",
+   "nameLocation": "center",
+   "nameTextStyle": {
+    "fontWeight": "bold"
+   },
+   "nameGap": 25,
+   "min": 0,
+   "max": 2.3145
+  },
+  "yAxis": {
+   "name": "Duration of Next Cardio Cycle, s",
+   "nameLocation": "center",
+   "nameTextStyle": {
+    "fontWeight": "bold"
+   },
+   "nameGap": 35,
+   "min": 0,
+   "max": 2.3145
+  },
+  "series": [
+   {
+    "symbolSize": 6,
+    "color": "#234758",
+    "data": [
+     [
+      1.014,
+      1.112
+     ],
+     [
+      1.112,
+      1.057
+     ],
+     [
+      1.057,
+      0.823
+     ],
+     [
+      0.823,
+      0.893
+     ],
+     [
+      0.893,
+      0.803
+     ],
+     [
+      0.803,
+      1.113
+     ],
+     [
+      1.113,
+      0.906
+     ],
+     [
+      0.906,
+      0.582
+     ],
+     [
+      0.582,
+      0.605
+     ],
+     [
+      0.605,
+      0.742
+     ],
+     [
+      0.742,
+      0.735
+     ],
+     [
+      0.735,
+      0.889
+     ],
+     [
+      0.889,
+      1.198
+     ],
+     [
+      1.198,
+      0.946
+     ],
+     [
+      0.946,
+      0.793
+     ],
+     [
+      0.793,
+      1
+     ],
+     [
+      1,
+      0.875
+     ],
+     [
+      0.875,
+      0.568
+     ],
+     [
+      0.568,
+      0.669
+     ],
+     [
+      0.669,
+      0.891
+     ],
+     [
+      0.891,
+      0.82
+     ],
+     [
+      0.82,
+      1.451
+     ],
+     [
+      1.451,
+      0.864
+     ],
+     [
+      0.864,
+      0.838
+     ],
+     [
+      0.838,
+      0.693
+     ],
+     [
+      0.693,
+      0.668
+     ],
+     [
+      0.668,
+      1.216
+     ],
+     [
+      1.216,
+      0.838
+     ],
+     [
+      0.838,
+      0.838
+     ],
+     [
+      0.838,
+      0.923
+     ],
+     [
+      0.923,
+      0.843
+     ],
+     [
+      0.843,
+      0.64
+     ],
+     [
+      0.64,
+      1.566
+     ],
+     [
+      1.566,
+      0.825
+     ],
+     [
+      0.825,
+      0.904
+     ],
+     [
+      0.904,
+      0.846
+     ],
+     [
+      0.846,
+      0.835
+     ],
+     [
+      0.835,
+      0.697
+     ],
+     [
+      0.697,
+      0.889
+     ],
+     [
+      0.889,
+      0.965
+     ],
+     [
+      0.965,
+      0.71
+     ],
+     [
+      0.71,
+      0.702
+     ],
+     [
+      0.702,
+      0.824
+     ],
+     [
+      0.824,
+      0.685
+     ],
+     [
+      0.685,
+      1.105
+     ],
+     [
+      1.105,
+      0.764
+     ],
+     [
+      0.764,
+      0.799
+     ],
+     [
+      0.799,
+      0.712
+     ],
+     [
+      0.712,
+      0.698
+     ],
+     [
+      0.698,
+      0.892
+     ],
+     [
+      0.892,
+      0.634
+     ],
+     [
+      0.634,
+      0.872
+     ],
+     [
+      0.872,
+      0.771
+     ],
+     [
+      0.771,
+      0.665
+     ],
+     [
+      0.665,
+      0.732
+     ],
+     [
+      0.732,
+      0.986
+     ],
+     [
+      0.986,
+      0.731
+     ],
+     [
+      0.731,
+      0.616
+     ],
+     [
+      0.616,
+      0.606
+     ],
+     [
+      0.606,
+      1.048
+     ],
+     [
+      1.048,
+      0.76
+     ],
+     [
+      0.76,
+      0.904
+     ],
+     [
+      0.904,
+      0.903
+     ],
+     [
+      0.903,
+      0.713
+     ],
+     [
+      0.713,
+      0.7
+     ],
+     [
+      0.7,
+      0.797
+     ],
+     [
+      0.797,
+      0.813
+     ],
+     [
+      0.813,
+      0.605
+     ],
+     [
+      0.605,
+      1.005
+     ],
+     [
+      1.005,
+      0.83
+     ],
+     [
+      0.83,
+      0.878
+     ],
+     [
+      0.878,
+      0.844
+     ],
+     [
+      0.844,
+      0.831
+     ],
+     [
+      0.831,
+      0.895
+     ],
+     [
+      0.895,
+      0.733
+     ],
+     [
+      0.733,
+      0.747
+     ],
+     [
+      0.747,
+      0.797
+     ],
+     [
+      0.797,
+      0.826
+     ],
+     [
+      0.826,
+      0.613
+     ],
+     [
+      0.613,
+      0.652
+     ],
+     [
+      0.652,
+      0.631
+     ]
+    ],
+    "type": "scatter"
+   }
+  ]
+ }
 }

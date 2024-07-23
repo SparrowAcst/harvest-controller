@@ -130,7 +130,7 @@ const run = async () => {
 	    "employee": {
 	        "1st expert": {
 	            "TASK_BUFFER_MIN": 10,
-	            "TASK_BUFFER_MAX": 21,
+	            "TASK_BUFFER_MAX": 84,
 	            "TASK_QUOTE": 42,
 	            "TASK_QUOTE_PERIOD": [
 	                24,
@@ -139,7 +139,7 @@ const run = async () => {
 	        },
 	        "2nd expert": {
 	            "TASK_BUFFER_MIN": 10,
-	            "TASK_BUFFER_MAX": 21,
+	            "TASK_BUFFER_MAX": 84,
 	            "TASK_QUOTE": 42,
 	            "TASK_QUOTE_PERIOD": [
 	                24,
@@ -148,7 +148,7 @@ const run = async () => {
 	        },
 	        "CMO": {
 	            "TASK_BUFFER_MIN": 10,
-	            "TASK_BUFFER_MAX": 21,
+	            "TASK_BUFFER_MAX": 84,
 	            "TASK_QUOTE": 42,
 	            "TASK_QUOTE_PERIOD": [
 	                24,
@@ -157,7 +157,7 @@ const run = async () => {
 	        },
 	        "admin": {
 	            "TASK_BUFFER_MIN": 10,
-	            "TASK_BUFFER_MAX": 42,
+	            "TASK_BUFFER_MAX": 84,
 	            "TASK_QUOTE": 84,
 	            "TASK_QUOTE_PERIOD": [
 	                24,
@@ -218,80 +218,94 @@ const run = async () => {
 	            "description": "Total control for CMO"
 	        },
 	        "role": "admin"
-	    }
+	    },
+
+        dataView: d => ({
+            "Patient ID": d["Examination ID"],
+            "Device": d.model,
+            "Body Spot": d["Body Spot"],
+            "Segmentation URL": d["Segmentation URL"] || d["Segmentation URL "], 
+            "S3": (d.segmentation && d.segmentation.S3 && d.segmentation.S3.length > 0) ? "present" : " ",
+            "Murmurs": (
+                    (d["Systolic murmurs"].filter( d => d != "No systolic murmurs").length + 
+                    d["Diastolic murmurs"].filter( d => d != "No diastolic murmurs").length +
+                    d["Other murmurs"].filter( d => d != "No Other Murmurs").length) > 0
+                ) ? "present" : " ",
+            "Complete": d.complete
+        })
 	}
 
 
     let controller = createController(options)
-    let brancher = await controller.getBrancher(options)
+ //    let brancher = await controller.getBrancher(options)
 
-    const userHead = (dataId, user) => version => version.dataId == dataId && version.user == user && version.head == true 
-	const mainHead = (dataId, user) => version => version.dataId == dataId && version.type == "main" && version.head == true 
-	const getDataHead = (brancher, dataId, user) => {
-		let v1 = brancher.select(userHead(dataId, user))[0]
-		// console.log(v1)  
-		let v2 = brancher.select(mainHead(dataId, user))[0]
-		// console.log(v2)  
+ //    const userHead = (dataId, user) => version => version.dataId == dataId && version.user == user && version.head == true 
+	// const mainHead = (dataId, user) => version => version.dataId == dataId && version.type == "main" && version.head == true 
+	// const getDataHead = (brancher, dataId, user) => {
+	// 	let v1 = brancher.select(userHead(dataId, user))[0]
+	// 	// console.log(v1)  
+	// 	let v2 = brancher.select(mainHead(dataId, user))[0]
+	// 	// console.log(v2)  
 		
-		return (v1) ? v1 : v2
-	}	
+	// 	return (v1) ? v1 : v2
+	// }	
 
 
-	// console.log(options.dataId[0], options.user.altname)
+	// // console.log(options.dataId[0], options.user.altname)
 
-    let head =  getDataHead( brancher, options.dataId[0], options.user.altname)
+ //    let head =  getDataHead( brancher, options.dataId[0], options.user.altname)
     
-    head.data = (await brancher.resolveData({ version: head }))
+ //    head.data = (await brancher.resolveData({ version: head }))
 
 
-    // await controller.selectEmployeeTask({
-    // 	matchEmployee:{
-    // 		namedAs: "A"//options.user.altname
-    // 	},
-    // 	matchVersion: {
-    // 		dataId: options.recordId
-    // 	}
-    // })
+ //    // await controller.selectEmployeeTask({
+ //    // 	matchEmployee:{
+ //    // 		namedAs: "A"//options.user.altname
+ //    // 	},
+ //    // 	matchVersion: {
+ //    // 		dataId: options.recordId
+ //    // 	}
+ //    // })
 
-    console.log(head)
-
-
-    // await initiateData(controller)
-
-    // await controller.startFromMain({
-
-    //     matchVersion: {
-    //         "metadata.task_state": "initiated",
-    //         "metadata.task_name": "Labeling",
-    //         branch: {
-    //             $exists: false,
-    //         }
-    //     },
-
-    //     matchEmployee: {
-    //         namedAs: "Andrey Boldak"
-    //     },
-
-    //     parallel: 1,
-
-    //     metadata: {
-    //         task_state: "test started"
-    //     }
+ //    console.log(head)
 
 
-    // })
+    await initiateData(controller)
 
-    // let taskList = await controller.selectEmployeeTask({
-    //     matchEmployee: {
-    //         namedAs: "Andrey Boldak"
-    //     },
-    //     matchVersion: {
-    //         head: true,
-    //         readonly: false
-    //     }
-    // })
+    await controller.startFromMain({
 
-    // console.log('role: "1st expert"', taskList.length)
+        matchVersion: {
+            "metadata.task_state": "initiated",
+            "metadata.task_name": "Labeling",
+            branch: {
+                $exists: false,
+            }
+        },
+
+        matchEmployee: {
+            namedAs: "Andrey Boldak"
+        },
+
+        parallel: 1,
+
+        metadata: {
+            task_state: "test started"
+        }
+
+
+    })
+
+    let taskList = await controller.selectEmployeeTask({
+        matchEmployee: {
+            namedAs: "Andrey Boldak"
+        },
+        matchVersion: {
+            head: true,
+            readonly: false
+        }
+    })
+
+    console.log(taskList)
 
     // let taskList = await controller.selectEmployeeTask({
     // 	matchEmployee: {

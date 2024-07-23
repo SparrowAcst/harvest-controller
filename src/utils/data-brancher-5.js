@@ -211,7 +211,9 @@ const Worker = class {
 
             let { cache } = this.context
             let { version } = options
-            let result = (version.id) ? version : find(flattenDeep(values(cache)), d => d.id == version)
+            let result = (version.id) 
+                ? version //find(flattenDeep(values(cache)), d => d.id == version.id) 
+                : find(flattenDeep(values(cache)), d => d.id == version)
 
             if (result) {
                 delete result._id
@@ -547,8 +549,7 @@ const Worker = class {
             if (!self) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
             if (self.type != "freeze") throw new Error(`brancher.freeze: source ${source.id || source} not freeze`)
 
-            let parent = this.resolveVersion({ version: self.prev[0].id })
-
+            let parent = this.resolveVersion({ version: first(self.prev).id })
 
             parent.head = true
             parent.readonly = false

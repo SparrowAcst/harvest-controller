@@ -27,31 +27,31 @@ const createBrancher = require("./data-brancher-5")
 const SETTINGS = {
 
     "1st expert": {
-        TASK_BUFFER_MIN: 5,
-        TASK_BUFFER_MAX: 10,
-        TASK_QUOTE: 42,
-        "TASK_QUOTE_PERIOD": [24, "hours"]
+        // TASK_BUFFER_MIN: 5,
+        TASK_BUFFER_MAX: 84,
+        // TASK_QUOTE: 42,
+        // "TASK_QUOTE_PERIOD": [24, "hours"]
     },
 
     "2nd expert": {
-        TASK_BUFFER_MIN: 5,
-        TASK_BUFFER_MAX: 10,
-        TASK_QUOTE: 42,
-        "TASK_QUOTE_PERIOD": [24, "hours"]
+        // TASK_BUFFER_MIN: 5,
+        TASK_BUFFER_MAX: 84,
+        // TASK_QUOTE: 42,
+        // "TASK_QUOTE_PERIOD": [24, "hours"]
     },
 
     "CMO": {
-        TASK_BUFFER_MIN: 5,
-        TASK_BUFFER_MAX: 10,
-        TASK_QUOTE: 42,
-        "TASK_QUOTE_PERIOD": [24, "hours"]
+        // TASK_BUFFER_MIN: 5,
+        TASK_BUFFER_MAX: 84,
+        // TASK_QUOTE: 42,
+        // "TASK_QUOTE_PERIOD": [24, "hours"]
     },
 
     "admin": {
-        TASK_BUFFER_MIN: 5,
-        TASK_BUFFER_MAX: 10,
-        TASK_QUOTE: 42,
-        "TASK_QUOTE_PERIOD": [24, "hours"]
+        // TASK_BUFFER_MIN: 5,
+        TASK_BUFFER_MAX: 84,
+        // TASK_QUOTE: 42,
+        // "TASK_QUOTE_PERIOD": [24, "hours"]
     }
 
 }
@@ -153,7 +153,7 @@ const Worker = class {
             ]
 
             let pipeline = p1.concat(p2).concat(p3)
-            console.log(JSON.stringify(pipeline, null, " "))
+            // console.log(JSON.stringify(pipeline, null, " "))
             let data = await mongodb.aggregate({
                 db,
                 collection: `${db.name}.${grantCollection}`,
@@ -170,39 +170,6 @@ const Worker = class {
 
     }
 
-
-    async addEmployeeQuote( options = {}) {
-        try {
-
-            let { db, quoteCollection } = this.context
-            let { employee, quote, period } = options
-
-            let newQuote = {
-                id: uuid(),
-                createdAt: new Date(),
-                quote,
-                period,
-                user: employee
-            }
-
-            let res = await mongodb.replaceOne({
-                db,
-                collection: `${db.name}.${quoteCollection}`,
-                filter: {
-                    'id': newQuote.id
-                },
-                data: newQuote,
-                upsert: true
-            })
-
-            return res
-
-        } catch (e) {
-
-            throw e
-
-        }
-    }
 
     async getEmployeeActivity(options = {}) {
         try {
@@ -223,29 +190,7 @@ const Worker = class {
                 }
             }] : []
 
-            let p3 = [
-
-                {
-                    $lookup: {
-                        from: quoteCollection,
-                        localField: "namedAs",
-                        foreignField: "user",
-                        pipeline: [{
-                                $sort: {
-                                    createdAt: -1,
-                                },
-                            },
-                            {
-                                $project: {
-                                    _id: 0,
-                                },
-                            },
-                        ],
-                        as: "quote",
-                    },
-                }
-            ]
-
+            let p3 = []
             let pipeline = p1.concat(p2).concat(p3)
 
             let data = await mongodb.aggregate({
@@ -275,13 +220,11 @@ const Worker = class {
                 complete: d => d.type == "save" && (!!d.branch || !!d.freeze || !!d.merge)
             }
 
-
-
             let { db, grantCollection, branchesCollection } = this.context
             let { employee, version } = options
 
             let taskList = await this.getEmployeeActivity({
-                employee,
+                employee: employee || {},
                 version: version || {}
             })
 
@@ -298,28 +241,7 @@ const Worker = class {
                 })
 
                 result.totals.buffer = result.totals.inProgress + result.totals.started
-
-                result.quote = (t.quote.length > 0) ? t.quote : [{
-                    user: t.namedAs,
-                    quote: this.context.employee[t.role].TASK_QUOTE,
-                    period: this.context.employee[t.role].TASK_QUOTE_PERIOD,
-                    createdAt: new Date()
-                }]
-
-                if (!result.quote[0].quote) {
-                    result.quote = [{
-                        user: t.namedAs,
-                        quote: this.context.employee[t.role].TASK_QUOTE,
-                        period: this.context.employee[t.role].TASK_QUOTE_PERIOD,
-                        createdAt: new Date()
-                    }]
-                }
-
-                result.priority = 0
-                if (result.totals.assigned < (result.quote[0].quote || this.context.employee[t.role].TASK_QUOTE)) {
-                    // result.priority = Math.max(result.totals.assigned, this.context.employee[t.role].TASK_BUFFER_MAX - result.totals.buffer)
-                    result.priority = this.context.employee[t.role].TASK_BUFFER_MAX - result.totals.buffer
-                }
+                result.priority = this.context.employee[t.role].TASK_BUFFER_MAX - result.totals.buffer
 
                 return extend({}, t, result)
             })
@@ -599,17 +521,16 @@ const Worker = class {
 
             let taskGroups = await this.getMainVersionByPatient({ matchVesion: matchVesion || {} })
 
-
             for (let group of taskGroups) {
 
                 let priority = (await this.getEmployeeStat({
 
                         employee: matchEmployee || {},
-                        version: {
-                            createdAt: {
-                                $gte: moment(new Date()).subtract(...taskQuotePeriod).toDate()
-                            }
-                        }
+                        // version: {
+                        //     createdAt: {
+                        //         $gte: moment(new Date()).subtract(...taskQuotePeriod).toDate()
+                        //     }
+                        // }
 
                     }))
 

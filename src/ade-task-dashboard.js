@@ -3,6 +3,22 @@ const { extend } = require("lodash")
 const moment = require("moment")
 
 const createTaskController = require("./utils/task-controller")
+const { getSegmentationAnalysis } = require("./utils/segment-analysis")
+
+
+const dataView = d => ({
+        "Patient ID": d["Examination ID"],
+        "Device": d.model,
+        "Body Spot": d["Body Spot"],
+        "S3": (d.segmentation && d.segmentation.S3 && d.segmentation.S3.length > 0) ? "present" : " ",
+        "Murmurs": (
+                (d["Systolic murmurs"].filter( d => d != "No systolic murmurs").length + 
+                d["Diastolic murmurs"].filter( d => d != "No diastolic murmurs").length +
+                d["Other murmurs"].filter( d => d != "No Other Murmurs").length) > 0
+            ) ? "present" : " ",
+        "Complete": d.complete
+    })
+
 
 const getDatasetList = async (req, res) => {
     try {
@@ -42,7 +58,7 @@ const getActiveTask = async (req, res) => {
 
             matchVersion: {
                 head: true,
-                readonly: false
+                // readonly: false
             }
 
         })
@@ -72,18 +88,18 @@ const getEmployeeStat = async (req, res) => {
                 namedAs: options.user.altname
             },
 
-            version: {
-                createdAt: {
-                    $gte: moment(new Date()).subtract(...options.taskQuotePeriod).toDate()
-                }
-            }
+            // version: {
+            //     createdAt: {
+            //         $gte: moment(new Date()).subtract(...options.taskQuotePeriod).toDate()
+            //     }
+            // }
 
         })
 
         if (result.length > 0) {
             res.send({
                 totals: result[0].totals,
-                quote: result[0].quote
+                // quote: result[0].quote
             })
         } else {
             res.send({
@@ -105,11 +121,49 @@ const getGrants = async (req, res) => {
 
         let options = req.body.options
 
+        let { user, db, grantCollection, profileCollection } = options 
+
         options = extend({}, options, {
-            collection: `${options.db.name}.${options.grantCollection}`,
-            pipeline: [{
-                $project: { _id: 0 }
-            }]
+            collection: `${db.name}.${grantCollection}`,
+            pipeline: [
+              {
+                $match:
+                  {
+                    email: user.email,
+                  },
+              },
+              {
+                $lookup:
+                  {
+                    from: profileCollection,
+                    localField: "profile",
+                    foreignField: "name",
+                    as: "result",
+                    pipeline: [
+                      {
+                        $project: {
+                          _id: 0,
+                        },
+                      },
+                    ],
+                  },
+              },
+              {
+                $addFields:
+                  {
+                    profile: {
+                      $first: "$result",
+                    },
+                  },
+              },
+              {
+                $project:
+                  {
+                    _id: 0,
+                    result: 0,
+                  },
+              },
+            ]
         })
 
 
@@ -124,64 +178,16 @@ const getGrants = async (req, res) => {
     }
 }
 
-const setQuote = async (req, res) => {
-	    try {
-
-        	let options = req.body
-        	const controller = createTaskController(options)
-
-        let result = await controller.addEmployeeQuote({
-        	employee: options.user.altname,
-        	quote: controller.context.employee[options.user.role].TASK_QUOTE,
-        	period: controller.context.employee[options.user.role].TASK_QUOTE_PERIOD
-        })
-
-        res.send(result)
-        
-        } catch (e) {
-        
-	        res.send({
-	            error: e.toString(),
-	            requestBody: req.body
-	        })
-    	}
-}
-
-const cancelQuote = async (req, res) => {
-	    try {
-
-        	let options = req.body
-        	const controller = createTaskController(options)
-
-        let result = await controller.addEmployeeQuote({
-        	employee: options.user.altname,
-        	quote: Infinity,
-        	period: controller.context.employee[options.user.role].TASK_QUOTE_PERIOD
-        })
-
-        res.send(result)
-        
-        } catch (e) {
-        
-	        res.send({
-	            error: e.toString(),
-	            requestBody: req.body
-	        })
-    	}
-}
 
 
 const getRecordData = async (req, res) => {
 	try {
 
 		let { options } = req.body
-        console.log("recordId", options.recordId)
         options.dataId = [options.recordId]
-        console.log(options)
 
         const controller = createTaskController(options)
 		let brancher = await controller.getBrancher(options)
-
 	    const userHead = (dataId, user) => version => version.dataId == dataId && version.user == user && version.head == true 
 		const mainHead = (dataId, user) => version => version.dataId == dataId && version.type == "main" && version.head == true 
 		const getDataHead = (brancher, dataId, user) => {
@@ -191,8 +197,10 @@ const getRecordData = async (req, res) => {
 		}	
     
     	let head =  getDataHead( brancher, options.recordId, options.user.altname)
-    
     	head.data = (await brancher.resolveData({ version: head }))
+        if( head.data.segmentation){
+            head.data.segmentationAnalysis = getSegmentationAnalysis( head.data.segmentation )
+        }
 
     	res.send(head)
 
@@ -204,13 +212,111 @@ const getRecordData = async (req, res) => {
 	}
 }
 
+
+const saveRecordData = async (req, res) => {
+    try {
+
+        let { options } = req.body
+        
+        options = extend({}, options, {dataView})
+
+        const controller = createTaskController(options)
+        let brancher = await controller.getBrancher(options)
+        
+        let result = await brancher.save(options)
+
+        res.send(result)
+
+    } catch (e) {
+        res.send({
+                error: e.toString(),
+                requestBody: req.body
+            })
+    }
+}
+
+const submitRecordData = async (req, res) => {
+    try {
+
+        let { options } = req.body
+        
+        options = extend({}, options, {dataView})
+
+        const controller = createTaskController(options)
+        let brancher = await controller.getBrancher(options)
+        
+        options.source = await brancher.save(options)
+        let result = await brancher.freeze(options)
+
+        res.send(result)
+
+    } catch (e) {
+        res.send({
+                error: e.toString(),
+                requestBody: req.body
+            })
+    }
+}
+
+
+const rollbackRecordData = async (req, res) => {
+    try {
+
+        let { options } = req.body
+        
+        options = extend({}, options, {dataView, dataId: options.recordId})
+
+        const controller = createTaskController(options)
+        let brancher = await controller.getBrancher(options)
+        
+        let result = await brancher.rollback(options)
+
+        res.send(result)
+
+    } catch (e) {
+        res.send({
+                error: e.toString(),
+                requestBody: req.body
+            })
+    }
+}
+
+
+const getVersionChart = async (req, res) => {
+    try {
+
+        let { options } = req.body
+        
+        options = extend({}, options, {dataView})
+
+        const controller = createTaskController(options)
+        let brancher = await controller.getBrancher(options)
+        
+        let result = await brancher.getChart(options)
+
+        res.send(result)
+
+    } catch (e) {
+        res.send({
+                error: e.toString(),
+                requestBody: req.body
+            })
+    }
+}
+
+
+
+
+
 module.exports = {
     getDatasetList,
     getActiveTask,
     getEmployeeStat,
     getGrants,
-    setQuote,
-    cancelQuote,
     getRecordData,
+    saveRecordData,
+    submitRecordData,
+    rollbackRecordData,
+    getVersionChart
     
 }
