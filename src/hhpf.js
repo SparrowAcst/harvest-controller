@@ -102,9 +102,15 @@ const getGrants = async (req, res) => {
 
 const updateDiagnosisTags = async (req, res) => {
 	
+	
 	try {
+		
 	
 		let options = req.body.options
+	
+		console.log("updateDiagnosisTags", "options.form.diagnosis", options.form.diagnosis)
+
+
 		let result = await mongodb.updateOne({
 		 	db: options.db,
 		 	collection: `${options.db.name}.${options.db.formCollection}`,
@@ -118,7 +124,7 @@ const updateDiagnosisTags = async (req, res) => {
 		res.send(result)
 	
 	} catch (e) {
-	
+		console.log(e.toString())
 		res.send({ 
 			error: e.toString(),
 			requestBody: req.body
@@ -167,10 +173,7 @@ const getForms = async (req, res) => {
 		
 		let options = req.body.options
 
-		let data = await mongodb.aggregate({
-			db: options.db,
-			collection: `${options.db.name}.${options.db.examinationCollection}`,
-			pipeline:  [
+		let pipeline = [
 	          {
 	            '$match': {
 	              'patientId': options.id
@@ -218,9 +221,18 @@ const getForms = async (req, res) => {
 	            }
 	          }
 	        ] 
+
+	        console.log(pipeline)
+
+		let data = await mongodb.aggregate({
+			db: options.db,
+			collection: `${options.db.name}.${options.db.examinationCollection}`,
+			pipeline 
 		})
 
 		data = data[0]
+
+		console.log(data)
 
 	    if(data) {
 	        let formType = ["patient","echo","ekg", "attachements"]
@@ -232,6 +244,11 @@ const getForms = async (req, res) => {
 	            }
 	        }).filter( f => f)
 	        
+	        console.log()
+	        console.log("FORMS  >>", forms)
+	        console.log()
+
+
 	        let physician
 	        if( data.physician ){
 	            physician = data.physician[0]
@@ -312,7 +329,11 @@ const updateForm = async (req, res) => {
 		let result = await mongodb.replaceOne({
 		 	db: options.db,
 		 	collection: `${options.db.name}.${options.db.formCollection}`,
-		 	filter: { id: storedForm.id },
+		 	filter: { 
+		 		// id: storedForm.id
+		 		patientId: options.patientId,
+				type: options.type 
+		 	},
 		 	data: storedForm
 		})
 

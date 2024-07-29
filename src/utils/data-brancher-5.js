@@ -395,11 +395,15 @@ const Worker = class {
 
             let prevData = await this.resolveData({ version: parent })
 
+            let difference = Diff.diff(prevData, data)
+
+            if( !difference ) {
+                return parent
+            }
+
             user = user || parent.user
             data = data || prevData
             let dataId = parent.dataId
-
-
 
             let newVersion = {
                 id: uuid(),
