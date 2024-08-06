@@ -20,7 +20,7 @@ const {
 
 } = require("lodash")
 
-const { avg, std, quantile, confidenceInterval, min, max } = require("./stat")
+const { avg, std, quantile, confidenceInterval, min, max } = require("../../utils/stat")
 
 const Diff = require('jsondiffpatch')
 
@@ -176,7 +176,6 @@ const parse = segmentation => {
         segments = parseV2(segmentation)
     } else if (segmentation) segments = parseV1(segmentation)
     return sortBy(segments, d => d.start)
-
 
 }
 
@@ -1246,7 +1245,8 @@ const getSegmentationAnalysis = segmentation => {
     }
 
     sa =  getTotals(sa)
-
+    // console.log("getSegmentationAnalysis", segmentation)
+    
     sa.charts = {
         segmentation: getSegmentationChart(sa),
         segmentDurationBoxplot: getSegmentDurationBoxplot(sa),

@@ -1,0 +1,222 @@
+[
+ {
+  "id": "64b29620-f411-4013-9433-2fab77667432",
+  "createdAt": "2024-08-02T16:49:02.042Z",
+  "user": {
+   "name": "AI"
+  },
+  "record": {
+   "id": "8a63dbe8-2095-457a-8a99-a102542dba2b",
+   "size": "1268178",
+   "url": "https://firebasestorage.googleapis.com/v0/b/stethophonedata.appspot.com/o/I5zctp2XBLddFV4xCDJ7KNqe4k32%2Frecordings%2FAndroid_PFKjweMvEd4gQtiifTcb?alt=media&token=9b439e3c-9f7b-422d-b781-3d3a5b0585e3",
+   "mimeType": "application/x-zip"
+  },
+  "data": {
+   "quality": "good",
+   "segmentation": {
+    "s2": [
+     {
+      "start": 0.16,
+      "end": 0.26
+     },
+     {
+      "start": 1.04,
+      "end": 1.15
+     },
+     {
+      "start": 1.84,
+      "end": 1.95
+     },
+     {
+      "start": 2.77,
+      "end": 2.89
+     },
+     {
+      "start": 3.52,
+      "end": 3.64
+     },
+     {
+      "start": 4.4,
+      "end": 4.51
+     },
+     {
+      "start": 5.17,
+      "end": 5.28
+     },
+     {
+      "start": 5.93,
+      "end": 6.04
+     },
+     {
+      "start": 6.73,
+      "end": 6.84
+     },
+     {
+      "start": 7.55,
+      "end": 7.67
+     },
+     {
+      "start": 8.77,
+      "end": 8.89
+     },
+     {
+      "start": 9.88,
+      "end": 9.99
+     },
+     {
+      "start": 11.12,
+      "end": 11.23
+     },
+     {
+      "start": 12.1,
+      "end": 12.22
+     },
+     {
+      "start": 12.92,
+      "end": 13.05
+     },
+     {
+      "start": 13.66,
+      "end": 13.78
+     },
+     {
+      "start": 14.71,
+      "end": 14.82
+     },
+     {
+      "start": 15.69,
+      "end": 15.8
+     },
+     {
+      "start": 16.7,
+      "end": 16.82
+     },
+     {
+      "start": 17.59,
+      "end": 17.69
+     },
+     {
+      "start": 18.09,
+      "end": 18.19
+     },
+     {
+      "start": 18.72,
+      "end": 18.81
+     },
+     {
+      "start": 19.76,
+      "end": 19.87
+     }
+    ],
+    "s1": [
+     {
+      "start": 0.71,
+      "end": 0.84
+     },
+     {
+      "start": 1.51,
+      "end": 1.64
+     },
+     {
+      "start": 2.42,
+      "end": 2.55
+     },
+     {
+      "start": 3.18,
+      "end": 3.31
+     },
+     {
+      "start": 4.07,
+      "end": 4.19
+     },
+     {
+      "start": 4.84,
+      "end": 4.97
+     },
+     {
+      "start": 5.59,
+      "end": 5.72
+     },
+     {
+      "start": 6.39,
+      "end": 6.51
+     },
+     {
+      "start": 7.23,
+      "end": 7.35
+     },
+     {
+      "start": 8.42,
+      "end": 8.56
+     },
+     {
+      "start": 9.53,
+      "end": 9.66
+     },
+     {
+      "start": 10.77,
+      "end": 10.9
+     },
+     {
+      "start": 11.76,
+      "end": 11.89
+     },
+     {
+      "start": 12.59,
+      "end": 12.72
+     },
+     {
+      "start": 13.35,
+      "end": 13.47
+     },
+     {
+      "start": 14.36,
+      "end": 14.49
+     },
+     {
+      "start": 15.34,
+      "end": 15.48
+     },
+     {
+      "start": 16.35,
+      "end": 16.48
+     },
+     {
+      "start": 17.23,
+      "end": 17.38
+     },
+     {
+      "start": 17.8,
+      "end": 17.92
+     },
+     {
+      "start": 19.4,
+      "end": 19.54
+     }
+    ],
+    "unsegmentable": [
+     {
+      "start": 18.49,
+      "end": 18.6
+     }
+    ]
+   },
+   "murmur_present": "no",
+   "heart_rate": 66
+  },
+  "benchmark": {
+   "fb": {
+    "benchmark (ticks)": 9215240300,
+    "benchmark (time)": "9.2152403 s"
+   },
+   "api": {
+    "benchmark (ticks)": 602748000,
+    "benchmark (time)": "602.748 ms"
+   },
+   "total": {
+    "benchmark (ticks)": 9817955900,
+    "benchmark (time)": "9.8179559 s"
+   }
+  }
+ }
+]

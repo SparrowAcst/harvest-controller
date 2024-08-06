@@ -2905,30 +2905,32 @@ const run = async () => {
         ]
     }
 
-    console.log(JSON.stringify(getSegmentationChart(segmentation), null, " "))
+    // console.log(JSON.stringify(getSegmentationChart(segmentation), null, " "))
 
-    // let s2 = JSON.parse(JSON.stringify(segmentation))
-    // let s3 = JSON.parse(JSON.stringify(segmentation))
-
-
-    // s2.S1[0] = [
-    //     "0.361",
-    //     "0.375",
-    //     "0.000",
-    //     "22050.000"
-    // ]
-
-    // s2.S1.splice(10, 4)
-    // s3.S2 = s3.S2.slice(0, -10)
-
-    // let d1 = diff2(parse(segmentation), parse(s2))
-    // let d2 = diff2(parse(segmentation), parse(s3))
-    // let d3 = diff2(parse(s2), parse(s3))
+    let s2 = JSON.parse(JSON.stringify(segmentation))
+    let s3 = JSON.parse(JSON.stringify(segmentation))
 
 
-    // let diffs = [d1, d2, d3]
+    s2.S1[0] = [
+        "0.361",
+        "0.375",
+        "0.000",
+        "22050.000"
+    ]
 
-    // // console.log(JSON.stringify(getSegmentationChart(segmentation, getNonConsistencyIntervals(diffs)), null, " "))
+    s2.S1.splice(10, 4)
+    s3.S2 = s3.S2.slice(0, -10)
+
+    let d1 = diff2(parse(segmentation), parse(s2))
+    let d2 = diff2(parse(segmentation), parse(s3))
+    let d3 = diff2(parse(s2), parse(s3))
+
+
+    let diffs = [d1, d2, d3]
+
+    console.log(JSON.stringify(getNonConsistencyIntervals(diffs), null, " "))
+
+    // console.log(JSON.stringify(getSegmentationChart(segmentation, getNonConsistencyIntervals(diffs)), null, " "))
 
     // // console.log(JSON.stringify(getMultiSegmentationChart([segmentation, s2, s3], getNonConsistencyIntervals(diffs)), null, " "))
 

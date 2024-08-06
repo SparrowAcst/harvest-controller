@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const DBCache = require("./src/db-cache")
 
 ////////////////////////////////////////////////////////////////////////////
 const hhe = require("./src/hhe")
@@ -168,18 +169,24 @@ router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)
 
 
 const adeTaskDashboard = require("./src/ade-task-dashboard") 
+const adeGrants = require("./src/ade-grants") 
+const adeLabeling = require("./src/ade-labeling") 
 
-router.post("/ade-task-dashboard/get-dataset-list/", adeTaskDashboard.getDatasetList)
-router.post("/ade-task-dashboard/get-grants/", adeTaskDashboard.getGrants)
-router.post("/ade-task-dashboard/get-active-task/", adeTaskDashboard.getActiveTask)
-router.post("/ade-task-dashboard/get-employee-stat/", adeTaskDashboard.getEmployeeStat)
+router.post("/ade-grants/get-dataset-list/", [DBCache, adeGrants.getDatasetList])
+router.post("/ade-grants/get-grants/", [DBCache, adeGrants.getGrants])
+router.post("/ade-task-dashboard/get-active-task/", [DBCache, adeTaskDashboard.getActiveTask])
+router.post("/ade-task-dashboard/get-employee-stat/", [DBCache, adeTaskDashboard.getEmployeeStat])
 // router.post("/ade-task-dashboard/cancel-employee-quote/", adeTaskDashboard.cancelQuote)
-router.post("/ade-task-dashboard/get-record/", adeTaskDashboard.getRecordData)
-router.post("/ade-task-dashboard/save-record/", adeTaskDashboard.saveRecordData)
-router.post("/ade-task-dashboard/submit-record/", adeTaskDashboard.submitRecordData)
-router.post("/ade-task-dashboard/rollback-record/", adeTaskDashboard.rollbackRecordData)
+router.post("/ade-labeling/get-record/", [DBCache, adeLabeling.getRecordData])
+router.post("/ade-labeling/save-record/", [DBCache, adeLabeling.saveRecordData])
+router.post("/ade-labeling/submit-record/", [DBCache, adeLabeling.submitRecordData])
+router.post("/ade-labeling/rollback-record/", [DBCache, adeLabeling.rollbackRecordData])
+router.post("/ade-labeling/get-version-chart/", [DBCache, adeLabeling.getVersionChart])
+router.post("/ade-labeling/get-metadata/", [DBCache, adeLabeling.getMetadata])
+router.post("/ade-labeling/get-forms/", [DBCache, adeLabeling.getForms])
+router.post("/ade-labeling/changelog/", [DBCache, adeLabeling.getChangelog])
+router.post("/ade-labeling/get-records/", [DBCache, adeLabeling.getRecords])
 
-router.post("/ade-task-dashboard/get-version-chart/", adeTaskDashboard.getVersionChart)
 
 
 const adeClinicDataManagement = require("./src/clinic-data-management") 
@@ -190,6 +197,24 @@ router.post("/cdm/get-exams/", adeClinicDataManagement.getExams)
 
 const userGrants = require("./src/user-grants")
 router.post("/user-grant", userGrants.getGrants)
+
+
+const segmentationRequest = require("./src/segmentation-request")
+
+router.post("/segmentation/open-request/", [DBCache, segmentationRequest.openRequest])
+router.get("/segmentation/:requestId/close/", segmentationRequest.closeRequest)
+router.post("/segmentation/:requestId/close/", segmentationRequest.closeRequest)
+
+router.get("/segmentation/", segmentationRequest.getSegmentationData)
+router.get("/segmentation/:requestId", segmentationRequest.getSegmentationData)
+
+router.get("/segmentation/:requestId/raw", segmentationRequest.getSegmentationDataRaw)
+
+router.post("/segmentation/", segmentationRequest.updateSegmentationData)
+router.post("/segmentation/:requestId", segmentationRequest.updateSegmentationData)
+
+
+
 
 
 module.exports = router

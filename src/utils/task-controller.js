@@ -217,7 +217,7 @@ const Worker = class {
                 assigned: d => d.type == "branch",
                 inProgress: d => d.type == "save" && d.head == true && d.readonly == false,
                 started: d => d.type == "branch" && d.head == true && d.readonly == false,
-                complete: d => d.type == "save" && (!!d.branch || !!d.freeze || !!d.merge)
+                complete: d => d.type == "save" && (!!d.branch || !!d.submit || !!d.merge)
             }
 
             let { db, grantCollection, branchesCollection } = this.context
@@ -396,7 +396,7 @@ const Worker = class {
     }
 
 
-    async getExpiredFreeze(options = {}) {
+    async getExpiredSubmit(options = {}) {
 
         try {
 
@@ -406,7 +406,7 @@ const Worker = class {
             let p1 = (version) ? [{ $match: version }] : []
             let p2 = [{
                 $match: {
-                    type: "freeze",
+                    type: "submit",
                     expiredAt: {
                         $lte: new Date(),
                     },
@@ -434,7 +434,7 @@ const Worker = class {
     }
 
 
-    async commitExpiredFreeze(options = {}) {
+    async commitExpiredSubmit(options = {}) {
         try {
             let list = await this.getExpiredFreeze(options)
             let result = []

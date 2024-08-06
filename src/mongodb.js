@@ -298,6 +298,35 @@ const updateOne = async options => {
 	}    
 }
 
+const updateMany = async options => {
+	let client
+	try {
+	
+		let conf = normalize(options.collection)
+		client = await mongo.connect(options.db.url, {
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true
+		})
+	
+	    await client
+	    		.db(conf.dbName)
+	    		.collection(conf.collectionName)
+	    		.updateMany(options.filter, { $set:options.data }, { upsert: true })
+	
+	} catch (e) {
+	
+		console.log(e.toString())
+		throw new Error(e)
+
+	} finally {
+	
+		if(client) client.close()
+	
+	}    
+}
+
+
+
 module.exports =  {
 	aggregate,
 	removeAll,
@@ -308,5 +337,6 @@ module.exports =  {
 	listCollections, 
 	drop,
 	aggregate_raw,
-	deleteMany	
+	deleteMany,
+	updateMany	
 }
