@@ -145,6 +145,7 @@ const getRecordData = async (req, res) => {
         let brancher = await controller.getBrancher(options)
 
         let head = select.userDataHead(brancher, options.recordId, options.user.altname)
+        // console.log(head)
         head = await dataStrategy.task[head.metadata.task_name].get({ 
             options,
             brancher,

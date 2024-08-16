@@ -24,6 +24,9 @@ const { avg, std, quantile, confidenceInterval, min, max } = require("../../util
 
 const Diff = require('jsondiffpatch')
 
+const Polygon = require("./polygon")
+
+
 
 const SEGMENT_TYPES = [
     "S1",
@@ -178,6 +181,8 @@ const parse = segmentation => {
     return sortBy(segments, d => d.start)
 
 }
+
+
 
 const getSegmentationChart = (sa, nonConsistencyIntervals) => {
 
@@ -1237,6 +1242,20 @@ const getPoincareChart = sa => {
     }
 }
 
+const getMurmurPolygons = segmentation => {
+    if(segmentation.Murmur){
+        let polygons = Polygon.array2Polygons(segmentation.Murmur)
+        let merged = Polygon.getPatternForPolygons(polygons)
+        return [{
+            name: "TEST",
+            consistency: merged.consistency, 
+            svg: Polygon.getSVG(merged),
+            metric: merged.metric
+        }]    
+    }
+}
+
+
 
 const getSegmentationAnalysis = segmentation => {
 
@@ -1245,15 +1264,15 @@ const getSegmentationAnalysis = segmentation => {
     }
 
     sa =  getTotals(sa)
-    // console.log("getSegmentationAnalysis", segmentation)
-    
+
     sa.charts = {
         segmentation: getSegmentationChart(sa),
         segmentDurationBoxplot: getSegmentDurationBoxplot(sa),
         systoleDiastoleBars: getSystoleDiastoleBars(sa),
         hfBoxplot: getHFBoxplot(sa),
         systoleDiastoleScatterPlot: getSystoleDiastoleScatterPlot(sa),
-        poincareChart: getPoincareChart(sa)
+        poincareChart: getPoincareChart(sa),
+        murmurPolygons: getMurmurPolygons(segmentation)
     }
 
     return sa

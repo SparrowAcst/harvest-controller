@@ -140,8 +140,10 @@ const init = async (options = {}) => {
             type: "main"
         }))
 
+        console.log(branches)
         let data = await resolveData(extend({}, options, { version: branches }))
-
+        console.log("data", data)
+        
         let commands = branches.map((branch, index) => {
 
             branch.dataView = dataView(data[index])
@@ -306,6 +308,8 @@ const Worker = class {
                         type: "branch"
                     }
 
+                    console.log("Create branch", branch)
+
                     branches.push(branch)
 
                     commands.push({
@@ -391,7 +395,8 @@ const Worker = class {
 
             if (!parent) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
 
-
+            delete parent.data    
+                
             let prevData = await this.resolveData({ version: parent })
 
             let difference = Diff.diff(prevData, data)
@@ -469,7 +474,7 @@ const Worker = class {
 
             dataView = dataView || (d => null)
 
-            freezePeriod = freezePeriod || options.freezePeriod || [7, "days"]
+            freezePeriod = freezePeriod || options.freezePeriod || [1, "minutes"]
 
             let parent = this.resolveVersion({ version: source })
 
@@ -552,7 +557,11 @@ const Worker = class {
             if (!self) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
             if (self.type != "submit") throw new Error(`brancher.submit: source ${source.id || source} not submit`)
 
+            
             let parent = this.resolveVersion({ version: first(self.prev).id })
+
+            console.log(`ROLLBACK for ${self.id} to ${parent.id}`)
+
 
             parent.head = true
             parent.readonly = false

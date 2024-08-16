@@ -17,7 +17,8 @@ const {
     sortBy,
     findIndex,
     flattenDeep,
-    sample
+    sample,
+    groupBy
 } = require("lodash")
 
 const moment = require("moment")
@@ -27,35 +28,25 @@ const createBrancher = require("./data-brancher-5")
 const SETTINGS = {
 
     "1st expert": {
-        // TASK_BUFFER_MIN: 5,
         TASK_BUFFER_MAX: 84,
-        // TASK_QUOTE: 42,
-        // "TASK_QUOTE_PERIOD": [24, "hours"]
     },
 
     "2nd expert": {
-        // TASK_BUFFER_MIN: 5,
         TASK_BUFFER_MAX: 84,
-        // TASK_QUOTE: 42,
-        // "TASK_QUOTE_PERIOD": [24, "hours"]
     },
 
     "CMO": {
-        // TASK_BUFFER_MIN: 5,
         TASK_BUFFER_MAX: 84,
-        // TASK_QUOTE: 42,
-        // "TASK_QUOTE_PERIOD": [24, "hours"]
     },
 
     "admin": {
-        // TASK_BUFFER_MIN: 5,
-        TASK_BUFFER_MAX: 84,
-        // TASK_QUOTE: 42,
-        // "TASK_QUOTE_PERIOD": [24, "hours"]
+        TASK_BUFFER_MAX: 21,
     }
 
 }
 
+
+const TASK_BUFFER_MAX = 21
 
 const Worker = class {
 
@@ -89,6 +80,38 @@ const Worker = class {
         }
 
     }
+
+    async selectTask(options = {}) {
+
+        try {
+            let { db, branchesCollection } = this.context
+            let { matchVersion } = options
+
+            let pipeline = [{
+                    $match: matchVersion || {}
+                },
+                {
+                    $project: {
+                        _id: 0,
+                    },
+                },
+            ]
+
+            let data = await mongodb.aggregate({
+                db,
+                collection: `${db.name}.${branchesCollection}`,
+                pipeline
+            })
+
+            return data
+
+        } catch (e) {
+
+            throw e
+        }
+
+    }
+
 
     async selectMainTask(options = {}) {
 
@@ -175,20 +198,20 @@ const Worker = class {
         try {
 
             let { db, grantCollection, branchesCollection, quoteCollection } = this.context
-            let { employee, version } = options
+            let { matchEmployee, matchVersion } = options
 
-            let p1 = ((employee) ? [{ $match: employee }] : [])
-            let p2 = (version) ? [{
+            let p1 = ((matchEmployee) ? [{ $match: matchEmployee }] : [])
+            let p2 = [{
                 $lookup: {
                     from: branchesCollection,
                     localField: "namedAs",
                     foreignField: "user",
                     pipeline: [{
-                        $match: version
+                        $match: matchVersion || {}
                     }, ],
                     as: "activity",
                 }
-            }] : []
+            }] 
 
             let p3 = []
             let pipeline = p1.concat(p2).concat(p3)
@@ -221,12 +244,13 @@ const Worker = class {
             }
 
             let { db, grantCollection, branchesCollection } = this.context
-            let { employee, version } = options
+            let { matchEmployee, matchVersion } = options
 
             let taskList = await this.getEmployeeActivity({
-                employee: employee || {},
-                version: version || {}
+                matchEmployee: matchEmployee || {},
+                matchVersion: matchVersion || {}
             })
+
 
             let r = taskList.map(t => {
 
@@ -241,8 +265,8 @@ const Worker = class {
                 })
 
                 result.totals.buffer = result.totals.inProgress + result.totals.started
-                result.priority = this.context.employee[t.role].TASK_BUFFER_MAX - result.totals.buffer
-
+                result.priority = TASK_BUFFER_MAX - result.totals.buffer
+                result.free = result.priority
                 return extend({}, t, result)
             })
 
@@ -255,6 +279,83 @@ const Worker = class {
 
         }
 
+    }
+
+
+    async getEmployeeStatByTaskType(options = {}) {
+        try {
+
+            const filters = {
+                assigned: d => d.type == "branch",
+                inProgress: d => d.type == "save" && d.head == true && d.readonly == false,
+                started: d => d.type == "branch" && d.head == true && d.readonly == false,
+                complete: d => {
+                    return d.type == "submit" && d.head == true && moment(new Date(d.expiredAt)).isAfter(moment(new Date()))
+            }   }
+
+            let { db, grantCollection, branchesCollection } = this.context
+            let { matchEmployee, matchVersion } = options
+
+            let taskList = await this.getEmployeeActivity({
+                matchEmployee: matchEmployee || {},
+                matchVersion: matchVersion || {}
+            })
+
+            taskList = taskList.map( u => {
+
+                    let list = groupBy(u.activity, t => t.metadata.task_name)
+                    list = keys(list).map( key => ({name: key, task: list[key]}))
+
+                    let r = list.map(t => {
+
+                        let result = {
+                            task: t.name,
+                            activity: {},
+                            totals: {}
+                        }
+
+                        keys(filters).forEach(key => {
+                            result.activity[key] = t.task.filter(filters[key])
+                            result.totals[key] = result.activity[key].length
+                        })
+
+                        // result.totals.buffer = result.totals.inProgress + result.totals.started
+                        // result.priority = this.context.employee[u.role].TASK_BUFFER_MAX - result.totals.buffer
+                        // result.free = result.priority
+                        return { task: result.task, totals: result.totals }
+                    })
+
+                return { user: u.namedAs, statistics: r }    
+            })
+
+            return taskList  
+
+        } catch (e) {
+
+            throw new Error (`${e.toString()} : ${e.stack}`)
+
+        }
+
+    }
+
+
+    async assignTasks(options = {}){
+        
+        const { user, strategy } = options
+        
+        for( const s of strategy[user.role]){
+            
+            let tasks = await s(user, this)
+            
+            if(tasks.length == 0) continue   
+            
+            let b = await createBrancher(extend({}, this.context, { dataId: tasks.map( t => t.dataId )}))
+            await b.branch({
+                source: tasks,
+                user: user.altname
+            })
+        }
+        
     }
 
 
@@ -462,6 +563,8 @@ const Worker = class {
         dataId = dataId || []
         dataId = (isArray(dataId)) ? dataId : [dataId]
 
+        console.log(dataId, metadata)
+        
         let w = await createBrancher(extend({}, this.context, { dataId, metadata }))
         let result = w.select(v => dataId.includes(v.dataId))
 

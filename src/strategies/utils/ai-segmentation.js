@@ -9,21 +9,25 @@ const AI_SEGMENTATION_API = "https://eu5zfsjntmqmf7o6ycrcxyry4a0rikmc.lambda-url
 
 
 const transformAI2v2 = data => {
+    // console.log(JSON.stringify(data, null, " "))
     let segments = [
         { ai: "s1", v2:"S1"},
         { ai: "s2", v2:"S2"},
-        { ai: "unsegmentable", v2:"unsegmentable"}
+        { ai: "unsegmentable", v2:"unsegmentable"},
+        { ai: "s3", v2: "S3"},
+        { ai: "s4", v2: "S4"}
     ]
 
     let res = {}
+   
     if( data.segmentation ){
         segments.forEach( s => {
             if(data.segmentation[s.ai]){
                 res[s.v2] = data.segmentation[s.ai].map( v => [
                     v.start.toFixed(3),
                     v.end.toFixed(3),
-                    '0.000',
-                    '22050.000'
+                    (["s3", "s4"].includes(s.ai)) ? v.freq_lower.toFixed(3) : '0.000',
+                    (["s3", "s4"].includes(s.ai)) ? v.freq_upper.toFixed(3) : '22050.000'
                 ])
             }    
         })
@@ -33,6 +37,7 @@ const transformAI2v2 = data => {
     res.heart_rate = data.heart_rate
     res.murmur_present = data.murmur_present
     res.quality = data.quality
+    res.afib_present = data.afib_present
 
     return res
 }
@@ -65,11 +70,12 @@ const getAISegmentation = async settings => {
             
             let query
 
-            if( r.Source && r.Source.url && r.Source.mimeType){
+            if( r.Source && r.Source.url){
             
                 query = { 
-                    url: r.Source.url, 
-                    mimeType: r.Source.mimeType 
+                    url: r.Source.url
+                    // , 
+                    // mimeType: r.Source.mimeType 
                 }
             
             } else {
@@ -78,7 +84,7 @@ const getAISegmentation = async settings => {
                 
                 query = {
                     url: `https://firebasestorage.googleapis.com/v0/b/stethophonedata.appspot.com/o/${encodeURIComponent(r.path)}?alt=media&token=${metadata.metadata.firebaseStorageDownloadTokens}`,
-                    mimeType: (metadata.contentType == "audio/x-wav") ? "audio/x-wav" : "application/x-zip"
+                    // mimeType: (metadata.contentType == "audio/x-wav") ? "audio/x-wav" : "application/x-zip"
                 }
             }    
 

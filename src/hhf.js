@@ -2,7 +2,10 @@ const mongodb = require("./mongodb")
 const {extend, sortBy, uniq, flattenDeep, find, difference, isArray, maxBy, keys, first, isUndefined, groupBy, isString} = require("lodash")
 const moment = require("moment") 
 
-const syncOneExamination = require("../../sync-data/src/actions/sync-one-examination")
+// const syncOneExamination = require("../../sync-data/src/actions/sync-one-examination")
+// const { updateAISegmentation } = require("./long-term/ai-segmentation")
+
+const { transferClinicData } = require("./long-term/transfer-clinic-data")
 
 const getDatasetList = async (req, res) => {
 	try {
@@ -677,13 +680,29 @@ const syncExaminations = async (req, res) => {
 const postSubmitOneExamination = async (req, res) => {
 	try {
 		
-		console.log("submit", req.body.settings)
-		await syncOneExamination(req.body.settings)
+		const { settings } = req.body
+
+		if (req.eventHub.listenerCount("transfer-clinic-data") == 0) {
+            req.eventHub.on("transfer-clinic-data", transferClinicData)
+        }
+
+        req.eventHub.emit( "transfer-clinic-data", settings )
+
+		// if (req.eventHub.listenerCount("update-ai-segmentation") == 0) {
+  //           req.eventHub.on("update-ai-segmentation", updateAISegmentation)
+  //       }
+		
+		// console.log("postSubmitOneExamination", req.body.settings)
+		// let result = await syncOneExamination(req.body.settings)
+		
+		// console.log("RESULT", JSON.stringify(result, null, " "))
+		// req.eventHub.emit("update-ai-segmentation", extend( {}, result, {patientId: req.body.settings.patientId}))
+
 		res.status(200).send()
 
 	} catch (e) {
 		res.status(500).send(e.toString()+ e.stack)
-		console.log("postSubmitOneExamination", e.toString())
+		console.log("ERROR: postSubmitOneExamination", e.toString())
 	}
 }
 

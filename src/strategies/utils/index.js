@@ -1,9 +1,8 @@
 const mongodb = require("../../mongodb")
-const getAISegmentation = require("./ai-segmentation")
-const { extend } = require("lodash")
+const { getAISegmentation, transformAI2v2 } = require("../../long-term/ai-segmentation")
+const { extend, sortBy, orderBy, first } = require("lodash")
 
 const resolveSegmentation = async (options, record) => {
-        // console.log("\n\nresolveSegmentation\n\n", `${options.db.name}.${options.segmentCollection}`, record.segmentation)
         if (record.segmentation) {
 
             options = extend({}, options, {
@@ -27,17 +26,13 @@ const resolveSegmentation = async (options, record) => {
                 segmentation = undefined
             }
             
-            // record.segmentation = segmentation
             return segmentation
         }
-
-        // return segmentation
         
 }
 
 
 const resolveAISegmentation = async (options, record) => {
-    // console.log("\n\nresolveAISegmentation\n\n", record.aiSegmentation)
     
     let result
     
@@ -48,9 +43,12 @@ const resolveAISegmentation = async (options, record) => {
         })
 
         segmentation = (segmentation) ? segmentation[0] : undefined
+        // console.log("segmentation", segmentation)        
+        if (segmentation && segmentation.data) {
 
-        if (segmentation) {
-
+            segmentation.data = transformAI2v2(segmentation.data)
+            // console.log("segmentation", segmentation)        
+        
             await mongodb.replaceOne({
 
                 db: options.db,
@@ -80,18 +78,8 @@ const resolveAISegmentation = async (options, record) => {
 
             })
 
-            // record.aiSegmentation = segmentation.data
-            // if(record.aiSegmentation){
-            //     record.aiSegmentation.id = segmentation.id
-            // }   
 
             result = segmentation//.data
-
-
-
-            // if(result){
-            //     result.id = segmentation.id
-            // }   
 
         }
 
@@ -119,28 +107,30 @@ const resolveAISegmentation = async (options, record) => {
             segmentation = undefined
         }
 
-        // segmentation = (segmentation[0]) ? segmentation[0].data.segmentation : undefined
-        // segmentation.id = record.aiSegmentation
-
-        // record.aiSegmentation = segmentation
-
         result = segmentation
 
     }
 
     return result
-    
 
 }
 
 
 const collaboratorHeads = (dataId, user) => version => version.dataId == dataId && version.type != "main" && version.user != user && version.head == true
-const userHead = (dataId, user) => version => version.dataId == dataId && version.user == user && version.head == true
-const mainHead = (dataId, user) => version => version.dataId == dataId && version.type == "main" && version.head == true
+const userHead = (dataId, user) => version => 
+    version.dataId == dataId 
+    && version.user == user 
+    && version.head == true 
+    && version.type != "main"
+
+const mainHead = (dataId, user) => version => 
+    version.dataId == dataId 
+    && version.type == "main" 
+    && version.head == true
 
 const collaboration = (brancher, dataId, user) => brancher.select(collaboratorHeads(dataId, user))
 const userDataHead = (brancher, dataId, user) => {
-    let v1 = brancher.select(userHead(dataId, user))[0]
+    let v1 = first(orderBy(brancher.select(userHead(dataId, user)), ["readonly", "createdAt"], ["asc", "desc"]))
     let v2 = brancher.select(mainHead(dataId, user))[0]
     return (v1) ? v1 : v2
 }

@@ -108,13 +108,15 @@ const updateDiagnosisTags = async (req, res) => {
 	
 		let options = req.body.options
 	
-		console.log("updateDiagnosisTags", "options.form.diagnosis", options.form.diagnosis)
+		console.log("updateDiagnosisTags", options.form.id, options.form.diagnosis)
 
 
 		let result = await mongodb.updateOne({
 		 	db: options.db,
 		 	collection: `${options.db.name}.${options.db.formCollection}`,
-		 	filter: { id: options.form.id },
+		 	filter: { 
+		 		id: options.form.id 
+		 	},
 		 	data: { 
 		 		"data.en.diagnosisTags": options.form.diagnosisTags,
 		 		"data.en.diagnosis": options.form.diagnosis,
@@ -299,7 +301,8 @@ const updateForm = async (req, res) => {
 	try {
 		
 		let options = req.body.options
-		
+		console.log("updateForm", options.form)
+
 		pipeline = [
 			{
 				$match:{
@@ -316,6 +319,8 @@ const updateForm = async (req, res) => {
 		})	
 
 		storedForm = storedForm[0]
+
+		console.log("storedForm", storedForm)
 
 		if(!storedForm) {
 			res.send({

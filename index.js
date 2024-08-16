@@ -193,6 +193,7 @@ const adeClinicDataManagement = require("./src/clinic-data-management")
 router.post("/cdm/get-dataset-list/", adeClinicDataManagement.getDatasetList)
 router.post("/cdm/get-grants/", adeClinicDataManagement.getGrants)
 router.post("/cdm/get-exams/", adeClinicDataManagement.getExams)
+router.post("/cdm/get-state-chart/", adeClinicDataManagement.getStateChart)
 
 
 const userGrants = require("./src/user-grants")

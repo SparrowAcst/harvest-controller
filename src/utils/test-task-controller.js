@@ -70,33 +70,34 @@ let options = {
 
 const initiateData = async controller => {
 
-    let data = require("../../../../TEST-DATASET/TEST.json")
+    let data = require("../../../../TEST-DATASET/!yoda-murmur-temp.json")
 
-    data = data.filter(d => [
-        'Apex', 'Tricuspid', 'Pulmonic', 'Aortic', 'Right Carotid', 'Erb\'s', 'Erb\'s Right'
-    ].includes(d["Body Spot"]))
+    // data = data.filter(d => [
+    //     'Apex', 'Tricuspid', 'Pulmonic', 'Aortic', 'Right Carotid', 'Erb\'s', 'Erb\'s Right'
+    // ].includes(d["Body Spot"]))
+    // data = groupBy(data.map(d => ({
+    //     id: d.id,
+    //     patientId: d["Examination ID"]
+    // })), d => d.patientId)
 
-    data = groupBy(data.map(d => ({
-        id: d.id,
-        patientId: d["Examination ID"]
-    })), d => d.patientId)
+    // data = keys(data).map(key => ({
+    //     patientId: key,
+    //     task: data[key].map(d => d.id)
+    // }))
 
-    data = keys(data).map(key => ({
-        patientId: key,
-        task: data[key].map(d => d.id)
-    }))
-
-    for (patient of data) {
+    // console.log(data)
+    
+    for (const record of data) {
         let res = await controller.initData({
-            dataId: patient.task,
+            dataId: record.id,
             metadata: {
-                patientId: patient.patientId,
+                patientId: record["Examination ID"],
                 task_id: uuid(),
                 task_name: "Labeling",
                 task_state: "initiated"
             }
         })
-        console.log("INIT", patient.patientId)
+        console.log("INIT", record["Examination ID"])
     }
 
 
@@ -121,7 +122,7 @@ const run = async () => {
 	    },
 	    "branchesCollection": "branches",
 	    "grantCollection": "app-grant",
-	    "dataCollection": "TEST",
+	    "dataCollection": "TEST2",
 	    "quoteCollection": "task-quotes",
 	    "taskQuotePeriod": [
 	        24,
@@ -272,40 +273,40 @@ const run = async () => {
 
     await initiateData(controller)
 
-    await controller.startFromMain({
+    // await controller.startFromMain({
 
-        matchVersion: {
-            "metadata.task_state": "initiated",
-            "metadata.task_name": "Labeling",
-            branch: {
-                $exists: false,
-            }
-        },
+    //     matchVersion: {
+    //         "metadata.task_state": "initiated",
+    //         "metadata.task_name": "Labeling",
+    //         branch: {
+    //             $exists: false,
+    //         }
+    //     },
 
-        matchEmployee: {
-            namedAs: "Andrey Boldak"
-        },
+    //     matchEmployee: {
+    //         namedAs: "Andrey Boldak"
+    //     },
 
-        parallel: 1,
+    //     parallel: 1,
 
-        metadata: {
-            task_state: "test started"
-        }
+    //     metadata: {
+    //         task_state: "test started"
+    //     }
 
 
-    })
+    // })
 
-    let taskList = await controller.selectEmployeeTask({
-        matchEmployee: {
-            namedAs: "Andrey Boldak"
-        },
-        matchVersion: {
-            head: true,
-            readonly: false
-        }
-    })
+    // let taskList = await controller.selectEmployeeTask({
+    //     matchEmployee: {
+    //         namedAs: "Andrey Boldak"
+    //     },
+    //     matchVersion: {
+    //         head: true,
+    //         readonly: false
+    //     }
+    // })
 
-    console.log(taskList)
+    // console.log(taskList)
 
     // let taskList = await controller.selectEmployeeTask({
     // 	matchEmployee: {

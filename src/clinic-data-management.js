@@ -112,12 +112,12 @@ const getRecords = async (req, res) => {
                 .concat(options.eventData.filter || [])
                 .concat([
                     //  {
-                    //  	$addFields:{
-                    // 		  "updated at": {
-                    //   	$max: "$tags.createdAt"
+                    //      $addFields:{
+                    //        "updated at": {
+                    //      $max: "$tags.createdAt"
                     //   }
                     // }
-                    //  },	
+                    //  },  
                     {
                         '$project': {
                             '_id': 0
@@ -154,50 +154,128 @@ const getRecords = async (req, res) => {
 }
 
 
+getStateChart = async (req, res) => {
+
+    try {
+
+        let { options } = req.body
+        let matchExaminationPipeline = options.matchExamination || []
+        let pipeline = matchExaminationPipeline.concat(
+            [
+                {
+                    $project: {
+                      state: 1,
+                    },
+                  },
+                  {
+                    $group:
+                      {
+                        _id: "$state",
+                        patients: {
+                          $push: 1,
+                        },
+                      },
+                  },
+                  {
+                    $project:
+                      {
+                        _id: 0,
+                        label: "$_id",
+                        value: {
+                          $size: "$patients",
+                        },
+                      },
+                  }
+            ]      
+        )    
+
+        let data = await mongodb.aggregate({
+            db: options.db,
+            collection: `${options.db.name}.${options.db.examinationCollection}`,
+            pipeline
+        })
+
+        res.send({
+            options,
+            pipeline,
+            values: data
+        })
+
+
+
+
+
+    } catch (e) {
+        res.send({
+            error: e.toString(),
+            requestBody: req.body
+        })
+    }
+
+}    
+
 const getExams = async (req, res) => {
     try {
 
 
         let { options } = req.body
-
-        // state, organization, patientId
-        // {
-        //     $match: {
-        //         state: "accepted",
-        //         org: {
-        //             $regex: "POTASHEV",
+        let matchExaminationPipeline = options.matchExamination || []
+        let limit = options.limit || 100
+        // let pipeline = [{
+        //         '$lookup': {
+        //             'from': options.db.userCollection,
+        //             'localField': 'actorId',
+        //             'foreignField': 'id',
+        //             'as': 'physician'
+        //         }
+        //     }, {
+        //         '$lookup': {
+        //             'from': options.db.organizationCollection,
+        //             'localField': 'organization',
+        //             'foreignField': 'id',
+        //             'as': 'organization'
+        //         }
+        //     },
+        //     {
+        //         $project: {
+        //             _id: 0,
+        //             "Examination ID": "$patientId",
+        //             organization: {
+        //                 $arrayElemAt: ["$organization", 0],
+        //             },
+        //             physician: {
+        //                 $arrayElemAt: ["$physician", 0],
+        //             },
+        //             updatedAt: "$updatedAt",
+        //             synchronizedAt: "$synchronizedAt",
+        //             state: "$state",
+        //             protocol: "$protocol",
+        //             // records: "$records",
+        //             validation: "$_validation",
         //         },
         //     },
-        // },
-
-        let matchExaminationPipeline = options.matchExamination || []
-
-        let timeInterval = options.timeInterval || []
-        timeInterval[0] = (timeInterval[0]) ? new Date(timeInterval[0]) : moment().startOf('month').toDate()
-        timeInterval[1] = (timeInterval[1]) ? new Date(timeInterval[1]) : moment().endOf('month').toDate()
-
-        let matchTimeIntervalPipeline = [{
-            $match: {
-                $expr: {
-                    $and: [{
-                            $gte: [
-                                "$synchronizedAt",
-                                timeInterval[0]
-                            ],
-                        },
-                        {
-                            $lte: [
-                                "$synchronizedAt",
-                                timeInterval[1]
-                            ],
-                        },
-                    ],
+        //     {
+        //         $sort: {
+        //             updatedAt: -1,
+        //             "Examination ID": -1
+        //         }
+        //     },
+        //     {
+        //         $limit: limit
+        //     }
+        // ]
+        let pipeline = matchExaminationPipeline.concat(
+            [
+                {
+                  $sort:{
+                      updatedAt: -1,
+                      patientId: -1
+                  }
                 },
-            },
-        }]
-
-        let pipeline = matchExaminationPipeline.concat(matchTimeIntervalPipeline).concat(
-            [{
+                {
+                    $limit: Number.parseInt(limit) 
+                },
+                {
                     $project: {
                         e_id: "$id",
                         org: "$org",
@@ -210,7 +288,7 @@ const getExams = async (req, res) => {
                 },
                 {
                     $lookup: {
-                        from: "H3",
+                        from: options.db.labelingCollection,
                         localField: "patientId",
                         foreignField: "Examination ID",
                         as: "records",
@@ -238,7 +316,7 @@ const getExams = async (req, res) => {
                 },
                 {
                     $addFields: {
-                        qty: "$records.Recording Informativeness",
+                        qty: "$records.Heart Sound Informativeness",
                     },
                 },
                 {
@@ -380,12 +458,12 @@ const getExams = async (req, res) => {
                         ekgForm: "$ekgForm.data.en",
                     },
                 },
-                // sort result (may be)
-                // {
-                //     $sort: {
-                //         syncAt: -1,
-                //     },
-                // },
+                {
+                  $sort:{
+                      updatedAt: -1,
+                      patientId: -1
+                  }
+                }
             ]
         )
 
@@ -396,7 +474,7 @@ const getExams = async (req, res) => {
         })
 
         res.send({
-            options: extend(options, { timeInterval }),
+            options,
             pipeline,
             collection: data
         })
@@ -459,13 +537,13 @@ const removeLastTag = async (req, res) => {
         let scopeRegEx = new RegExp(options.tagScope || ".*")
 
         // options.tags = (options.tags || []).map( t => ({
-        // 	tag: t,
-        // 	createdAt: new Date(),
-        // 	createdBy: {
-        // 		email: options.user.email,
-        // 		namedAs: options.user.namedAs,
-        // 		photo: options.user.photo
-        // 	}
+        //  tag: t,
+        //  createdAt: new Date(),
+        //  createdBy: {
+        //      email: options.user.email,
+        //      namedAs: options.user.namedAs,
+        //      photo: options.user.photo
+        //  }
         // }))
 
         let records = await mongodb.aggregate({
@@ -860,22 +938,22 @@ const addToTask = async (req, res) => {
         }
 
         // if(options.tags.filter(t => t.startsWith("SOURCE:")).length > 1){
-        // 	res.status(400).send(`only one tag "SOURCE:<source name>" is required in\n${JSON.stringify(req.body, null, " ")}`)
-        // 	return
+        //  res.status(400).send(`only one tag "SOURCE:<source name>" is required in\n${JSON.stringify(req.body, null, " ")}`)
+        //  return
         // }
 
         // let source = find(options.tags, t => t.startsWith("SOURCE:"))
 
         // if(!source) {
-        // 	res.status(400).send(`tag "SOURCE:<source name>" is required in\n${JSON.stringify(req.body, null, " ")}`)
-        // 	return	
+        //  res.status(400).send(`tag "SOURCE:<source name>" is required in\n${JSON.stringify(req.body, null, " ")}`)
+        //  return  
         // }
 
         // source = last(source.split(":")).trim()
 
         // if(!keys(prodSourceEndpoint).includes(source)){
-        // 	res.status(400).send(` unknown "SOURCE:${source}". Available sources: ${keys(prodSourceEndpoint).map(d => "'"+d+"'").join(", ")}`)
-        // 	return	
+        //  res.status(400).send(` unknown "SOURCE:${source}". Available sources: ${keys(prodSourceEndpoint).map(d => "'"+d+"'").join(", ")}`)
+        //  return  
 
         // }
 
@@ -1312,201 +1390,201 @@ const setConsistency = async (req, res) => {
 
 
 // const exportSelection = async (req, res) => {
-// 	try {
+//  try {
 
-// 		let options = extend({}, req.body)
-// 		options.db = CONFIG.db
+//      let options = extend({}, req.body)
+//      options.db = CONFIG.db
 
-// 		options.id = uuid()
-// 		req.body.id = options.id
-// 		options.requestedAt = new Date()
-// 		req.body.requestedAt = options.requestedAt
+//      options.id = uuid()
+//      req.body.id = options.id
+//      options.requestedAt = new Date()
+//      req.body.requestedAt = options.requestedAt
 
-// 		options.hasTags = (options.hasTags) ? options.includeTags || [] : []
-// 		options.hasLastTags = (options.hasLastTag) ? options.hasLastTags || [] : []
-// 		options.withoutTags = (options.withoutTags) ? options.excludeTags || [] : []
-// 		options.regexp = (options.hasText) ? options.search || "" : ""
-// 		options.comment = (options.hasComment) ? options.comment || "" : ""
-// 		options.rid = (options.hasId) ? options.rid || "" : ""
-// 		options.select = options.fields || []
+//      options.hasTags = (options.hasTags) ? options.includeTags || [] : []
+//      options.hasLastTags = (options.hasLastTag) ? options.hasLastTags || [] : []
+//      options.withoutTags = (options.withoutTags) ? options.excludeTags || [] : []
+//      options.regexp = (options.hasText) ? options.search || "" : ""
+//      options.comment = (options.hasComment) ? options.comment || "" : ""
+//      options.rid = (options.hasId) ? options.rid || "" : ""
+//      options.select = options.fields || []
 
-// 		options.download = options.download || false
+//      options.download = options.download || false
 
-// 		if(options.download){
-// 			requestPool[options.id] = options
-// 			res.send(req.body)
-// 			return
-// 		}
+//      if(options.download){
+//          requestPool[options.id] = options
+//          res.send(req.body)
+//          return
+//      }
 
-// 		if(!isArray(options.hasTags)){
-// 			res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isArray(options.hasTags)){
+//          res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isArray(options.withoutTags)){
-// 			res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isArray(options.withoutTags)){
+//          res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isArray(options.select)){
-// 			res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isArray(options.select)){
+//          res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isString(options.regexp)){
-// 			res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isString(options.regexp)){
+//          res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isString(options.comment)){
-// 			res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
-
-
-
-// 		let pipeline = []
+//      if(!isString(options.comment)){
+//          res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
 
-// 		if(options.tagScope){
 
-// 			pipeline.push({
-// 				$match:{
-// 					"tags.tag": {
-// 						$regex: options.tagScope
-// 					}	
-// 				}
-// 			})
-
-// 		}
-
-// 		if(options.hasId && options.rid){
-// 			pipeline.push({
-// 				$match:{
-// 					"id": {
-// 						$regex: options.rid
-// 					}	
-// 				}
-// 			})			
-// 		}
-
-// 		if(options.lastTags.length > 0){
-// 			pipeline = pipeline.concat([
-// 				  {
-// 				    $addFields:
-// 				      {
-// 				        lastTag: {
-// 				          $last: "$tags.tag",
-// 				        },
-// 				      },
-// 				  },
-// 				  {
-// 				    $match:
-// 				      {
-// 				        lastTag: {
-// 				          $in: [
-// 				            "STATE: Murmurs binary: 2nd: finalized",
-// 				          ],
-// 				        },
-// 				      },
-// 				  }
-// 			  ])
-// 		}
+//      let pipeline = []
 
 
-// 		if(options.hasTags.length > 0){
-// 			pipeline.push({
-// 				$match:{
-// 					"tags.tag": {
-// 						$in: options.hasTags
-// 					}	
-// 				}
-// 			})
-// 		}
+//      if(options.tagScope){
 
-// 		if(options.withoutTags.length > 0){
-// 			pipeline.push({
-// 				$match:{
-// 					"tags.tag": {
-// 						$nin: options.withoutTags
-// 					}	
-// 				}
-// 			})
-// 		}
+//          pipeline.push({
+//              $match:{
+//                  "tags.tag": {
+//                      $regex: options.tagScope
+//                  }   
+//              }
+//          })
 
-// 		if(options.regexp){
-// 			pipeline.push({
-// 				$match:{
-// 					$or:[
+//      }
+
+//      if(options.hasId && options.rid){
+//          pipeline.push({
+//              $match:{
+//                  "id": {
+//                      $regex: options.rid
+//                  }   
+//              }
+//          })          
+//      }
+
+//      if(options.lastTags.length > 0){
+//          pipeline = pipeline.concat([
+//                {
+//                  $addFields:
+//                    {
+//                      lastTag: {
+//                        $last: "$tags.tag",
+//                      },
+//                    },
+//                },
+//                {
+//                  $match:
+//                    {
+//                      lastTag: {
+//                        $in: [
+//                          "STATE: Murmurs binary: 2nd: finalized",
+//                        ],
+//                      },
+//                    },
+//                }
+//            ])
+//      }
+
+
+//      if(options.hasTags.length > 0){
+//          pipeline.push({
+//              $match:{
+//                  "tags.tag": {
+//                      $in: options.hasTags
+//                  }   
+//              }
+//          })
+//      }
+
+//      if(options.withoutTags.length > 0){
+//          pipeline.push({
+//              $match:{
+//                  "tags.tag": {
+//                      $nin: options.withoutTags
+//                  }   
+//              }
+//          })
+//      }
+
+//      if(options.regexp){
+//          pipeline.push({
+//              $match:{
+//                  $or:[
 //                         {
-//                         	"tags.tag":{
-//                           		$regex: options.regexp
-//                         	}
+//                          "tags.tag":{
+//                                  $regex: options.regexp
+//                          }
 //                         },
 //                         {
 //                           "tags.createdBy.namedAs":{
-//                           		$regex: options.regexp
-//                         	}
+//                                  $regex: options.regexp
+//                          }
 //                         }
 //                       ]
-// 				}			
-// 			})
-// 		}
+//              }           
+//          })
+//      }
 
-// 		if(options.comment){
-// 			pipeline.push({
+//      if(options.comment){
+//          pipeline.push({
 //                 $match:
 //                     {
 //                         $or:[
 //                             {
-//                             	"Stage Comment":{
-//                               	    $regex: options.comment
-//                             	}
+//                              "Stage Comment":{
+//                                      $regex: options.comment
+//                              }
 //                             },
 //                             {
 //                               "importNote":{
-//                               	    $regex: options.comment
-//                             	}
+//                                      $regex: options.comment
+//                              }
 //                             }
 //                           ]
 //                     }      
 //             })
 //         }    
 
-// 		if(options.select.length > 0){
+//      if(options.select.length > 0){
 
-// 			let projection = {
-// 				_id: 0
-// 			}
+//          let projection = {
+//              _id: 0
+//          }
 
-// 			options.select.forEach( key => {
-// 				projection[key] = 1
-// 			})
+//          options.select.forEach( key => {
+//              projection[key] = 1
+//          })
 
-// 			pipeline.push({
-// 				$project: projection
-// 			})
-// 		}
+//          pipeline.push({
+//              $project: projection
+//          })
+//      }
 
-// 		const response = await mongodb.aggregate({
-// 			db: options.db,
-// 			collection: `${options.db.name}.taged-records`,
-// 			pipeline
-// 		})
-
-
-// 		res.send({
-// 			query: req.body,
-// 			data: response
-// 		})
+//      const response = await mongodb.aggregate({
+//          db: options.db,
+//          collection: `${options.db.name}.taged-records`,
+//          pipeline
+//      })
 
 
-// 	} catch(e) {
-// 		res.status(503).send({ 
-// 			error: e.toString(),
-// 			requestBody: req.body
-// 		})
-// 	}
+//      res.send({
+//          query: req.body,
+//          data: response
+//      })
+
+
+//  } catch(e) {
+//      res.status(503).send({ 
+//          error: e.toString(),
+//          requestBody: req.body
+//      })
+//  }
 // }
 
 
@@ -1516,188 +1594,188 @@ const setConsistency = async (req, res) => {
 
 // const exportFile = async (req, res) => {
 
-// 	try {
+//  try {
 
-// 		let id = req.query.id || req.params.id
-// 		let options = requestPool[id]
-// 		if(!options){
-// 			res.status(404).send()
-// 			return
-// 		}
+//      let id = req.query.id || req.params.id
+//      let options = requestPool[id]
+//      if(!options){
+//          res.status(404).send()
+//          return
+//      }
 
-// 		if(!isArray(options.hasTags)){
-// 			res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isArray(options.hasTags)){
+//          res.status(400).send(`"hasTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isArray(options.withoutTags)){
-// 			res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isArray(options.withoutTags)){
+//          res.status(400).send(`"withoutTags" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isArray(options.select)){
-// 			res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isArray(options.select)){
+//          res.status(400).send(`"select" array expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isString(options.regexp)){
-// 			res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
+//      if(!isString(options.regexp)){
+//          res.status(400).send(`"regexp" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
-// 		if(!isString(options.comment)){
-// 			res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
-// 			return
-// 		}
-
-
-// 		let pipeline = []
-
-// 		if(options.tagScope){
-
-// 			pipeline.push({
-// 				$match:{
-// 					"tags.tag": {
-// 						$regex: options.tagScope
-// 					}	
-// 				}
-// 			})
-
-// 		}
-
-// 		if(options.hasId && options.rid){
-// 			pipeline.push({
-// 				$match:{
-// 					"id": {
-// 						$regex: options.rid
-// 					}	
-// 				}
-// 			})			
-// 		}
-
-// 		if(options.lastTags.length > 0){
-// 			pipeline = pipeline.concat([
-// 				  {
-// 				    $addFields:
-// 				      {
-// 				        lastTag: {
-// 				          $last: "$tags.tag",
-// 				        },
-// 				      },
-// 				  },
-// 				  {
-// 				    $match:
-// 				      {
-// 				        lastTag: {
-// 				          $in: options.lastTags
-// 				        },
-// 				      },
-// 				  }
-// 			  ])
-// 		}
+//      if(!isString(options.comment)){
+//          res.status(400).send(`"comment" string expected in\n${JSON.stringify(req.body, null, " ")}`)
+//          return
+//      }
 
 
-// 		if(options.hasTags.length > 0){
-// 			pipeline.push({
-// 				$match:{
-// 					"tags.tag": {
-// 						$in: options.hasTags
-// 					}	
-// 				}
-// 			})
-// 		}
+//      let pipeline = []
 
-// 		if(options.withoutTags.length > 0){
-// 			pipeline.push({
-// 				$match:{
-// 					"tags.tag": {
-// 						$nin: options.withoutTags
-// 					}	
-// 				}
-// 			})
-// 		}
+//      if(options.tagScope){
 
-// 		if(options.regexp){
-// 			pipeline.push({
-// 				$match:{
-// 					$or:[
+//          pipeline.push({
+//              $match:{
+//                  "tags.tag": {
+//                      $regex: options.tagScope
+//                  }   
+//              }
+//          })
+
+//      }
+
+//      if(options.hasId && options.rid){
+//          pipeline.push({
+//              $match:{
+//                  "id": {
+//                      $regex: options.rid
+//                  }   
+//              }
+//          })          
+//      }
+
+//      if(options.lastTags.length > 0){
+//          pipeline = pipeline.concat([
+//                {
+//                  $addFields:
+//                    {
+//                      lastTag: {
+//                        $last: "$tags.tag",
+//                      },
+//                    },
+//                },
+//                {
+//                  $match:
+//                    {
+//                      lastTag: {
+//                        $in: options.lastTags
+//                      },
+//                    },
+//                }
+//            ])
+//      }
+
+
+//      if(options.hasTags.length > 0){
+//          pipeline.push({
+//              $match:{
+//                  "tags.tag": {
+//                      $in: options.hasTags
+//                  }   
+//              }
+//          })
+//      }
+
+//      if(options.withoutTags.length > 0){
+//          pipeline.push({
+//              $match:{
+//                  "tags.tag": {
+//                      $nin: options.withoutTags
+//                  }   
+//              }
+//          })
+//      }
+
+//      if(options.regexp){
+//          pipeline.push({
+//              $match:{
+//                  $or:[
 //                         {
-//                         	"tags.tag":{
-//                           		$regex: options.regexp
-//                         	}
+//                          "tags.tag":{
+//                                  $regex: options.regexp
+//                          }
 //                         },
 //                         {
 //                           "tags.createdBy.namedAs":{
-//                           		$regex: options.regexp
-//                         	}
+//                                  $regex: options.regexp
+//                          }
 //                         }
 //                       ]
-// 				}			
-// 			})
-// 		}
+//              }           
+//          })
+//      }
 
-// 		if(options.comment){
-// 			pipeline.push({
+//      if(options.comment){
+//          pipeline.push({
 //                 $match:
 //                     {
 //                         $or:[
 //                             {
-//                             	"Stage Comment":{
-//                               	    $regex: options.comment
-//                             	}
+//                              "Stage Comment":{
+//                                      $regex: options.comment
+//                              }
 //                             },
 //                             {
 //                               "importNote":{
-//                               	    $regex: options.comment
-//                             	}
+//                                      $regex: options.comment
+//                              }
 //                             }
 //                           ]
 //                     }      
 //             })
 //         }    
 
-// 		if(options.select.length > 0){
+//      if(options.select.length > 0){
 
-// 			let projection = {
-// 				_id: 0
-// 			}
+//          let projection = {
+//              _id: 0
+//          }
 
-// 			options.select.forEach( key => {
-// 				projection[key] = 1
-// 			})
+//          options.select.forEach( key => {
+//              projection[key] = 1
+//          })
 
-// 			pipeline.push({
-// 				$project: projection
-// 			})
-// 		}
+//          pipeline.push({
+//              $project: projection
+//          })
+//      }
 
-// 		const response = await mongodb.aggregate({
-// 			db: options.db,
-// 			collection: `${options.db.name}.taged-records`,
-// 			pipeline
-// 		})
+//      const response = await mongodb.aggregate({
+//          db: options.db,
+//          collection: `${options.db.name}.taged-records`,
+//          pipeline
+//      })
 
-// 		delete options.db
+//      delete options.db
 
-// 		res.setHeader('Content-disposition', `attachment; filename=${id}.json`);
-//   		res.setHeader('Content-type', "application/json");
+//      res.setHeader('Content-disposition', `attachment; filename=${id}.json`);
+//          res.setHeader('Content-type', "application/json");
 
-// 		res.send({
-// 			query: options,
-// 			pipeline,
-// 			data: response
-// 		})
+//      res.send({
+//          query: options,
+//          pipeline,
+//          data: response
+//      })
 
-// 		delete requestPool[id]
+//      delete requestPool[id]
 
-// 	} catch(e) {
+//  } catch(e) {
 
-// 		res.status(503).send({ 
-// 			error: e.toString(),
-// 			requestBody: req.body
-// 		})
+//      res.status(503).send({ 
+//          error: e.toString(),
+//          requestBody: req.body
+//      })
 
-// 	}	
+//  }   
 // }
 
 
@@ -1759,5 +1837,7 @@ module.exports = {
     addTagsDia,
     removeLastTagDia,
 
-    setConsistency
+    setConsistency,
+    getStateChart
+
 }

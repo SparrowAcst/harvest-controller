@@ -17,7 +17,7 @@ const get = async context => {
 	    let aiSegmentation = await resolveAISegmentation(options, version.data)
 	    let segmentation = await resolveSegmentation(options, version.data)
 
-	    if(!segmentation){
+	    if(!segmentation && aiSegmentation && aiSegmentation.data){
 	    	// console.log("Clone AI segmentation")
 	    	segmentation = JSON.parse(JSON.stringify(aiSegmentation))
 	    	segmentation.id = uuid()
@@ -55,10 +55,15 @@ const get = async context => {
 	        sa = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
 	    }
 
-	    if(aiSegmentation.data) aiSegmentation.data.id = version.data.aiSegmentation
-	    version.data.aiSegmentation = aiSegmentation.data
-	    version.data.segmentation = segmentation.data
-	    version.data.segmentationAnalysis = sa
+	    if(aiSegmentation && aiSegmentation.data) {
+	    	aiSegmentation.data.id = version.data.aiSegmentation
+		    version.data.aiSegmentation = aiSegmentation.data
+		}    
+	    
+	    if(segmentation && segmentation.data){
+		    version.data.segmentation = segmentation.data
+		    version.data.segmentationAnalysis = sa
+		}    
 	
 	    return version
 }
