@@ -181,6 +181,39 @@ const getExams = async (req, res) => {
 	        pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
 	    })
 
+	    const statPipeline = [
+	    	{
+			    $lookup:
+			      {
+			        from: options.db.labelingCollection,
+			        localField: "patientId",
+			        foreignField: "Examination ID",
+			        as: "result",
+			        pipeline:[{
+			        	$match:{
+			        		'Body Spot': {
+					            '$in': [
+					              'Apex', 'Tricuspid', 'Pulmonic', 'Aortic', 'Right Carotid', 'Left Carotid', 'Erb\'s', 'Erb\'s Right'
+					            ]
+					          }
+			        	}
+			        }]
+			      },
+			  },
+			  {
+			    $addFields:
+			      {
+			        todos: "$result.TODO",
+			      },
+			  },
+			  {
+			    $project:
+			      {
+			        result: 0,
+			      },
+			  }
+	    ]
+
 	    const pipeline = []
 						.concat(options.valueFilter || [])
 						.concat(options.eventData.filter || [])
@@ -206,6 +239,7 @@ const getExams = async (req, res) => {
 				            '$limit': options.eventData.limit
 				          }
 				        ])
+				        .concat(statPipeline)
 
 		let data = await mongodb.aggregate({
 			db: options.db,
