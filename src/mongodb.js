@@ -298,6 +298,34 @@ const updateOne = async options => {
 	}    
 }
 
+const deleteOne = async options => {
+	let client
+	try {
+	
+		let conf = normalize(options.collection)
+		client = await mongo.connect(options.db.url, {
+		    useNewUrlParser: true,
+		    useUnifiedTopology: true
+		})
+	
+	    await client
+	    		.db(conf.dbName)
+	    		.collection(conf.collectionName)
+	    		.deleteOne(options.filter)
+	
+	} catch (e) {
+	
+		console.log(e.toString())
+		throw new Error(e)
+
+	} finally {
+	
+		if(client) client.close()
+	
+	}    
+}
+
+
 const updateMany = async options => {
 	let client
 	try {
@@ -333,6 +361,7 @@ module.exports =  {
 	insertAll,
 	replaceOne,
 	updateOne,
+	deleteOne,
 	bulkWrite,
 	listCollections, 
 	drop,

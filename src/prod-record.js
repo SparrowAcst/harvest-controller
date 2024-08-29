@@ -163,6 +163,19 @@ const getExams = async (req, res) => {
 
 		let options = req.body.options
 
+		options.bodySpots = options.bodySpots || [
+			"Apex",
+            "Tricuspid",
+            "Pulmonic",
+            "Aortic",
+            "Right Carotid",
+            "Left Carotid",
+            "Erb's",
+            "Erb's Right",
+            "unknown",
+            "Left Clavicule"
+		]
+
 		let count = await mongodb.aggregate({
 			db: options.db,
 			collection: `${options.db.name}.${options.db.examinationCollection}`,
@@ -192,9 +205,17 @@ const getExams = async (req, res) => {
 			        pipeline:[{
 			        	$match:{
 			        		'Body Spot': {
-					            '$in': [
-					              'Apex', 'Tricuspid', 'Pulmonic', 'Aortic', 'Right Carotid', 'Left Carotid', 'Erb\'s', 'Erb\'s Right'
-					            ]
+					            '$in': options.bodySpots
+					            // [
+					            //   // 'Apex', 
+					            //   // 'Tricuspid', 
+					            //   // 'Pulmonic', 
+					            //   // 'Aortic', 
+					            //   // 'Right Carotid', 
+					            //   // 'Left Carotid', 
+					            //   // 'Erb\'s', 
+					            //   // 'Erb\'s Right'
+					            // ]
 					          }
 			        	}
 			        }]

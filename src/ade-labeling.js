@@ -21,151 +21,22 @@ const dataView = d => ({
     "Complete": d.complete
 })
 
-// const resolveSegmentation = async (options, record) => {
-
-//     if (record.segmentation) {
-
-//         options = extend({}, options, {
-//             collection: `${options.db.name}.${options.segmentCollection}`,
-//             pipeline: [{
-//                     $match: {
-//                         id: record.segmentation
-//                     }
-//                 },
-//                 {
-//                     $project: { _id: 0 }
-//                 }
-//             ]
-//         })
-
-//         let segmentation = await mongodb.aggregate(options)
-//         segmentation = (segmentation[0]) ? segmentation[0].data : undefined
-//         segmentation.id = record.segmentation
-//         record.segmentation = segmentation
-//     }
-
-//     return record
-// }
-
-
-// const resolveAISegmentation = async (options, record) => {
-
-//     if (!record.aiSegmentation) {
-
-//         let segmentation = await getAISegmentation({
-//             records: [record]
-//         })
-
-//         segmentation = (segmentation) ? segmentation[0] : undefined
-
-//         if (segmentation) {
-
-//             await mongodb.replaceOne({
-
-//                 db: options.db,
-//                 collection: `${options.db.name}.${options.segmentCollection}`,
-//                 filter: {
-//                     id: segmentation.id
-//                 },
-
-//                 data: segmentation
-
-//             })
-
-
-//             record.aiSegmentation = segmentation.id
-
-//             await mongodb.updateMany({
-
-//                 db: options.db,
-//                 collection: `${options.db.name}.${options.dataCollection}`,
-//                 filter: {
-//                     id: record.id
-//                 },
-
-//                 data: {
-//                     aiSegmentation: segmentation.id
-//                 }
-
-//             })
-
-//             record.aiSegmentation = segmentation.data
-//             record.aiSegmentation.id = segmentation.id
-//         }
-
-//     } else {
-
-//         options = extend({}, options, {
-//             collection: `${options.db.name}.${options.segmentCollection}`,
-//             pipeline: [{
-//                     $match: {
-//                         id: record.aiSegmentation
-//                     }
-//                 },
-//                 {
-//                     $project: { _id: 0 }
-//                 }
-//             ]
-//         })
-
-//         let segmentation = await mongodb.aggregate(options)
-//         segmentation = (segmentation[0]) ? segmentation[0].data : undefined
-//         segmentation.id = record.aiSegmentation 
-//         record.aiSegmentation = segmentation
-//     }
-
-//     return record
-
-// }
-
-
-// const collaboratorHeads = (dataId, user) => version => version.dataId == dataId && version.type != "main" && version.user != user && version.head == true
-// const userHead = (dataId, user) => version => version.dataId == dataId && version.user == user && version.head == true
-// const mainHead = (dataId, user) => version => version.dataId == dataId && version.type == "main" && version.head == true
-// const getCollaboration = (brancher, dataId, user) => brancher.select(collaboratorHeads(dataId, user))
-
-// const getDataHead = (brancher, dataId, user) => {
-//     let v1 = brancher.select(userHead(dataId, user))[0]
-//     let v2 = brancher.select(mainHead(dataId, user))[0]
-//     return (v1) ? v1 : v2
-// }
-
 
 const getRecordData = async (req, res) => {
     try {
 
-        const { select } = dataStrategy.version
-        
         let { options } = req.body
         options = extend(options, req.body.cache.currentDataset, { dataView })
+       
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].get : undefined
+        let result
+        if(handler){
+            result = await handler(options)
+        } else {
+            result = {}
+        }
 
-        options.dataId = [options.recordId]
-
-        const controller = createTaskController(options)
-        let brancher = await controller.getBrancher(options)
-
-        let head = select.userDataHead(brancher, options.recordId, options.user.altname)
-        // console.log(head)
-        head = await dataStrategy.task[head.metadata.task_name].get({ 
-            options,
-            brancher,
-            version: head,
-            mongodb
-        })
-
-        // head.data = await brancher.resolveData({ version: head })
-
-        // head.data = await resolveSegmentation(options, head.data)
-
-        // if (head.data.segmentation) {
-        //     head.data.segmentationAnalysis = getSegmentationAnalysis(head.data.segmentation)
-        // }
-
-        // head.data = await resolveAISegmentation(options, head.data)
-
-        // head.collaboration = getCollaboration(brancher, options.recordId, options.user.altname)
-
-        res.send(head)
+        res.send(result)
 
     } catch (e) {
 
@@ -177,28 +48,56 @@ const getRecordData = async (req, res) => {
 }
 
 
+// const saveRecordData = async (req, res) => {
+//     try {
+
+//         let { options } = req.body
+//         options = extend(options, req.body.cache.currentDataset)
+
+//         options = extend({}, options, { dataView })
+
+//         const controller = createTaskController(options)
+//         let brancher = await controller.getBrancher(options)
+
+//         let result = await brancher.save(options)
+
+//         res.send(result)
+
+//     } catch (e) {
+//         res.send({
+//             error: e.toString(),
+//             requestBody: req.body
+//         })
+//     }
+// }
+
 const saveRecordData = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset)
-
-        options = extend({}, options, { dataView })
-
-        const controller = createTaskController(options)
-        let brancher = await controller.getBrancher(options)
-
-        let result = await brancher.save(options)
+        options = extend(options, req.body.cache.currentDataset, { dataView })
+       
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].save : undefined
+        let result
+        if(handler){
+            result = await handler(options)
+        } else {
+            result = {}
+        }
 
         res.send(result)
 
     } catch (e) {
+
         res.send({
-            error: e.toString(),
+            error: `${e.toString()}\n${e.stack}`,
             requestBody: req.body
         })
     }
+
 }
+
+
 
 const submitRecordData = async (req, res) => {
     try {
@@ -482,40 +381,26 @@ const getChangelog = async (req, res) => {
 const getSegmentation = async (req, res) => {
     try {
 
-        let options = req.body.options
-        let { db } = req.body.cache.currentDataset
+        let { options } = req.body
+        options = extend(options, req.body.cache.currentDataset, { dataView })
+        console.log(dataStrategy[options.strategy], "options", options)
 
-        let data = await mongodb.aggregate({
-            db,
-            collection: `${db.name}.segmentation-history`,
-            pipeline: [{
-                    $match: {
-                        collection: db.labelingCollection,
-                        recordId: options.recordId
-                    }
-                },
-                {
-                    $sort: {
-                        updatedAt: -1
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0
-                    }
-                }
-            ]
-        })
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].getSegmentation : undefined
+        let result
+        if(handler){
+            result = await handler(options)
+        } else {
+            result = {}
+        }
 
-        res.send(data)
+        res.send(result)
 
     } catch (e) {
 
-        res.status(503).send({
-            error: e.toString(),
+        res.send({
+            error: `${e.toString()}\n${e.stack}`,
             requestBody: req.body
         })
-
     }
 }
 

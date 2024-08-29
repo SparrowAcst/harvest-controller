@@ -186,6 +186,7 @@ router.post("/ade-labeling/get-metadata/", [DBCache, adeLabeling.getMetadata])
 router.post("/ade-labeling/get-forms/", [DBCache, adeLabeling.getForms])
 router.post("/ade-labeling/changelog/", [DBCache, adeLabeling.getChangelog])
 router.post("/ade-labeling/get-records/", [DBCache, adeLabeling.getRecords])
+router.post("/ade-labeling/segment/", [DBCache, adeLabeling.getSegmentation])
 
 
 

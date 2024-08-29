@@ -100,6 +100,7 @@ const merge = polygons => {
     let c = point(avg(centroids.map(c => c.x)), avg(centroids.map(c => c.y))) //centroid(intersection)
     let points = getPointArray(polygons)
     points = sortCW(points, c)
+    
     let segments = points.map(p => segment(c, p))
     let rays = segments.map(s => ray(c, s.tangentInStart().rotate90CCW()))
 
@@ -285,13 +286,19 @@ const getSVG = ({ polygons, patterns, svgOptions }) => {
 
 }
 
-const array2Polygons = a => a.map(d => polygon(d[1].map((x, i) => point([x, d[2][i]]))))
+// const array2Polygons = a => a.map(d => polygon(d[1].map((x, i) => point([x, d[2][i]]))))
+
+const array2Polygons = a => a.map(d => polygon(d.map(v => point(v))))
 
 const polygon2Array = polygon => getPointArray([polygon]).map(p => [p.x, p.y])
 
-
+const create = data => {
+    // console.log(data)
+    return polygon(data.map(d => point(d)))
+}    
 
 module.exports = {
+    create,
     array2Polygons,
     polygon2Array,
     getIntersection,

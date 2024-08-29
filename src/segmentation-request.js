@@ -14,68 +14,33 @@ const globalDB= {
 }
 
 
+const { closeSegmentationRequest } = require("./long-term/close-segmentation-request")
+
+
+
 const openRequest =  async (req, res) => {
 	try {
 
 		let options = req.body.options
         options = extend({}, options, req.body.cache.currentDataset)
-
-        let { db, segmentCollection, version, user } = options
-
-        
-		let existed = await mongodb.aggregate({
-			db: globalDB,
-			collection: `${globalDB.name}.segmentation-requests`,
-			pipeline: [
-				{
-					$match: {
-						version: version.id,
-					}
-				},   
-	            {
-	                $project:{ _id: 0 }
-	            }
-	        ] 
+        // let { db, segmentCollection, version, user, strategy } = options
+        options.strategy = options.strategy || "test"
+        options.configDB = globalDB
+		console.log("!!!!!!!!!!!!!!!!!!", options.strategy)
+		console.log("!!!!!!!!!!!!!!!!!!", options)
+		
+		let request = await requestStrategy[options.strategy].openRequest(options)
+		
+		res.status(200).send({
+			id: request.id,
+			user: request.user,
+			opened: request.opened,
+			updatedAt: request.updatedAt
 		})
-
-		if( existed.length > 0) {
-			res.send({
-				id: null
-			})
-			return
-		}
-
-		let request = {
-			id: uuid(),
-			user: user.altname,
-			version: version.id,
-			dataId: version.data.id,
-			db,
-			collection: segmentCollection,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			requestData: (await requestStrategy.task[version.metadata.task_name].openRequest(options)),
-			responseData: null 
-		}
-
-		await mongodb.replaceOne({
-			db: globalDB,
-			collection: `${globalDB.name}.segmentation-requests`,
-			filter: {
-				id: request.id
-			},
-			data: request
-		})
-
-		res.send({
-			id: request.id
-		})
-
 	
 	} catch (e) {
 		
 		delete req.body.cache
-		
 		res.status(503).send({ 
 			error: `${e.toString()}\n${e.stack}`,
 			requestBody: req.body
@@ -85,35 +50,23 @@ const openRequest =  async (req, res) => {
 }
 
 const closeRequest =  async (req, res) => {
-	try {
-		
+
 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
 		
-		console.log("Close", requestId)
-		await mongodb.updateOne({
-			db: globalDB,
-			collection: `${globalDB.name}.segmentation-requests`,
-			filter:{
-				id: requestId
-			},
-			data:{
-				closedAt: new Date()
-			}
-		})
-
-		res.status(200).send()
-	
-	} catch (e) {
-	
-		delete req.body.cache
+		let options = {
+			requestId,
+			configDB: globalDB
+		}	
 		
-		res.status(503).send({ 
-			error: `${e.toString()}\n${e.stack}`,
-			requestBody: req.body
-		})
-	
-	}
-}
+		if (req.eventHub.listenerCount("close-segmentation-request") == 0) {
+            req.eventHub.on("close-segmentation-request", closeSegmentationRequest)
+        }
+
+        req.eventHub.emit( "close-segmentation-request", options )
+
+        res.status(200).send("ok")
+
+}	
 
 
 const getSegmentationData =  async (req, res) => {
@@ -135,6 +88,8 @@ const getSegmentationData =  async (req, res) => {
 				}
 			]
 		})
+
+		// console.log(`${globalDB.name}.segmentation-requests`, result)
 
 		if(result.length > 0){
 			res.status(200).send(result[0].requestData)
