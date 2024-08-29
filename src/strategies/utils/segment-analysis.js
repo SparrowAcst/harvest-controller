@@ -771,7 +771,8 @@ const getSystoleDiastole = sa => {
         const sysPattern = ["S1", "S2"]
         const diaPattern = ["S2", "S1"]
 
-        
+        let segments = select(sa, "S1","S2","unsegmentable")
+
         const sysSegments = splitByPattern(segments, sysPattern).map(d => ({
             type: "systole",
             start: d[0].end,
@@ -784,7 +785,7 @@ const getSystoleDiastole = sa => {
             end: d[1].start
         }))
 
-        sa.segments = sa.segments.concat(sysSegments).concat(diaSegments)
+        sa.segmentation.segments = sa.segmentation.segments.concat(sysSegments).concat(diaSegments)
 
         return getSystoleDiastole(sa)
 
