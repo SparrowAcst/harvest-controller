@@ -121,10 +121,12 @@ const resolveSegmentations = async options => {
 const openRequest = async options => {
 
     let { configDB, db, version, segmentCollection, user, strategy } = options
+    
+    console.log("configDB", configDB, db)
 
     let existed = await mongodb.aggregate({
-        db,
-        collection: `sparrow.segmentation-requests`,
+        db: configDB,
+        collection: `settings.segmentation-requests`,
         pipeline: [{
                 $match: {
                     dataId: version.dataId,
@@ -203,8 +205,8 @@ const openRequest = async options => {
     }
 
     await mongodb.replaceOne({
-        db,
-        collection: `sparrow.segmentation-requests`,
+        db: configDB,
+        collection: `settings.segmentation-requests`,
         filter: {
             id: request.id
         },
@@ -220,21 +222,21 @@ const closeRequest = async options => {
 
     console.log(`linear_workflow strategy CLOSE REQUEST:  ${options.requestId}`)
 
-    let { configDB, requestId } = options
+    let { configDB, requestId, request } = options
 
-    let request = await mongodb.aggregate({
-        db,
-        collection: `sparrow.segmentation-requests`,
-        pipeline: [{
-            $match: {
-                id: requestId
-            }
-        }]
-    })
+    // let request = await mongodb.aggregate({
+    //     db: configDB,
+    //     collection: `settings.segmentation-requests`,
+    //     pipeline: [{
+    //         $match: {
+    //             id: requestId
+    //         }
+    //     }]
+    // })
 
-    request = request[0]
+    // request = request[0]
 
-    if (!request) return
+    // if (!request) return
 
     let { db, collection, responseData, requestData, dataId, user } = request
 
@@ -247,8 +249,8 @@ const closeRequest = async options => {
     // })
 
     await mongodb.updateOne({
-            db,
-            collection: `sparrow.segmentation-requests`,
+            db: configDB,
+            collection: `settings.segmentation-requests`,
             filter:{
                 id: requestId
             },

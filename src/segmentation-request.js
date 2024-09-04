@@ -8,6 +8,7 @@ const mongodb = require("./mongodb")
 const requestStrategy = require("./strategies/segmentation-request")
 
 const config = loadYaml(path.join(__dirname, "../../sync-data/.config/db/mongodb.conf.yml"))
+
 const globalDB= {
     url: config.db.url,
     name: config.db.name
@@ -24,6 +25,7 @@ const openRequest =  async (req, res) => {
 		let options = req.body.options
         options = extend({}, options, req.body.cache.currentDataset)
         options.strategy = options.strategy || "test"
+        options.configDB = globalDB
         
         if( requestStrategy[options.strategy] && requestStrategy[options.strategy].openRequest ){
         	let request 

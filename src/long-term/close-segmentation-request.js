@@ -25,10 +25,13 @@ const closeSegmentationRequestOperation = async settings => {
         ]
     })
 
+    console.log(configDB, request)
     if(request.length == 0) return
 
     request = request[0]
     request.strategy = request.strategy || "test"
+    
+    settings.request = request
     
     let handler = (requestStrategies[request.strategy]) 
     	? requestStrategies[request.strategy].closeRequest 
