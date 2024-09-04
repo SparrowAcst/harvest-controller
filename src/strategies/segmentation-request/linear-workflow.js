@@ -123,8 +123,8 @@ const openRequest = async options => {
     let { configDB, db, version, segmentCollection, user, strategy } = options
 
     let existed = await mongodb.aggregate({
-        db: configDB,
-        collection: `${configDB.name}.segmentation-requests`,
+        db,
+        collection: `sparrow.segmentation-requests`,
         pipeline: [{
                 $match: {
                     dataId: version.dataId,
@@ -203,8 +203,8 @@ const openRequest = async options => {
     }
 
     await mongodb.replaceOne({
-        db: configDB,
-        collection: `${configDB.name}.segmentation-requests`,
+        db,
+        collection: `sparrow.segmentation-requests`,
         filter: {
             id: request.id
         },
@@ -223,8 +223,8 @@ const closeRequest = async options => {
     let { configDB, requestId } = options
 
     let request = await mongodb.aggregate({
-        db: configDB,
-        collection: `${configDB.name}.segmentation-requests`,
+        db,
+        collection: `sparrow.segmentation-requests`,
         pipeline: [{
             $match: {
                 id: requestId
@@ -247,8 +247,8 @@ const closeRequest = async options => {
     // })
 
     await mongodb.updateOne({
-            db: configDB,
-            collection: `${configDB.name}.segmentation-requests`,
+            db,
+            collection: `sparrow.segmentation-requests`,
             filter:{
                 id: requestId
             },

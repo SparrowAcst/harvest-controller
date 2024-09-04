@@ -269,11 +269,13 @@ const parse = segmentation => {
 const getSegmentationChart = (sa, nonConsistencyIntervals) => {
 
     let segments = JSON.parse(JSON.stringify(sa.segmentation.segments))
+    
+    console.log("segments", segments)
 
     nonConsistencyIntervals = nonConsistencyIntervals || []
 
     let murmurCategories = uniqBy(segments.map(s => s.type)).filter(d => !SEGMENT_TYPES.includes(d))
-
+    murmurCategories = murmurCategories.filter( d => d != "Murmur")
 
 
     let m = SEGMENT_TYPES.map(type => max(segments.filter(s => s.type == type).map(s => s.hf)) || 1)
@@ -1416,11 +1418,11 @@ const getSegmentationAnalysis = segmentation => {
 
 const TOLERANCE = {
     segment:{
-        "S1": [0.05, 0.05, Infinity, Infinity],
-        "S2": [0.05, 0.05, Infinity, Infinity],
-        "S3": [0.05, 0.05, Infinity, 20],
-        "S4": [0.05, 0.05, Infinity, 20],
-        "unsegmentable": [0.05, 0.05, Infinity, Infinity],
+        "S1": [0.03, 0.03, Infinity, Infinity],
+        "S2": [0.03, 0.03, Infinity, Infinity],
+        "S3": [0.02, 0.02, Infinity, 20],
+        "S4": [0.02, 0.02, Infinity, 20],
+        "unsegmentable": [0.03, 0.03, Infinity, Infinity],
         "Inhale": [0.5, 0.5, Infinity, Infinity],
         "systole": [Infinity, Infinity, Infinity, Infinity],
         "diastole": [Infinity, Infinity, Infinity, Infinity],
@@ -1523,7 +1525,7 @@ const getNonConsistencyIntervalsForSegments = diffs => {
     pool = sortBy(
         uniqWith(
             pool.map(d => ({
-                start: Math.round(d.start),
+                start: Math.round(d.start-1),
                 end: Math.round(d.end + 1)
             })),
             isEqual
@@ -1663,6 +1665,7 @@ const mergePolygons = (...polygonSets) => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = {
+    parse,
     getSegmentationChart,
     getMultiSegmentationChart,
     getPairSegmentsDiff,

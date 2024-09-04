@@ -142,6 +142,7 @@ module.exports = {
     resolveSegmentation,
     resolveAISegmentation,
     segmentationAnalysis: require("./segment-analysis"),
+    dataDiff: require("./data-diff"),
     version:{
         select:{
             collaboration,

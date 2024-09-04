@@ -27,6 +27,8 @@ const getRecordData = async (req, res) => {
 
         let { options } = req.body
         options = extend(options, req.body.cache.currentDataset, { dataView })
+
+        options.eventHub = req.eventHub
        
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].get : undefined
         let result
@@ -77,6 +79,8 @@ const saveRecordData = async (req, res) => {
         let { options } = req.body
         options = extend(options, req.body.cache.currentDataset, { dataView })
        
+        options.eventHub = req.eventHub
+       
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].save : undefined
         let result
         if(handler){
@@ -103,48 +107,79 @@ const submitRecordData = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset)
-
-        options = extend({}, options, { dataView })
-
-        const controller = createTaskController(options)
-        let brancher = await controller.getBrancher(options)
-
-        options.source = await brancher.save(options)
-        let result = await brancher.submit(options)
+        options = extend(options, req.body.cache.currentDataset, { dataView })
+        
+        options.eventHub = req.eventHub
+       
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].submit : undefined
+        let result
+        if(handler){
+            result = await handler(options)
+        } else {
+            result = {}
+        }
 
         res.send(result)
 
     } catch (e) {
+
         res.send({
-            error: e.toString(),
+            error: `${e.toString()}\n${e.stack}`,
             requestBody: req.body
         })
     }
+
 }
 
 
 const rollbackRecordData = async (req, res) => {
+
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset)
-
-        options = extend({}, options, { dataView, dataId: options.recordId })
-
-        const controller = createTaskController(options)
-        let brancher = await controller.getBrancher(options)
-
-        let result = await brancher.rollback(options)
+        options = extend(options, req.body.cache.currentDataset, { dataView })
+        
+        options.eventHub = req.eventHub
+       
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].rollback : undefined
+        let result
+        if(handler){
+            result = await handler(options)
+        } else {
+            result = {}
+        }
 
         res.send(result)
 
     } catch (e) {
+
         res.send({
-            error: e.toString(),
+            error: `${e.toString()}\n${e.stack}`,
             requestBody: req.body
         })
     }
+
+
+    // try {
+
+    //     let { options } = req.body
+    //     options = extend(options, req.body.cache.currentDataset)
+
+    //     options = extend({}, options, { dataView, dataId: options.recordId })
+
+    //     const controller = createTaskController(options)
+    //     let brancher = await controller.getBrancher(options)
+
+    //     let result = await brancher.rollback(options)
+
+    //     res.send(result)
+
+    // } catch (e) {
+    //     res.send({
+    //         error: e.toString(),
+    //         requestBody: req.body
+    //     })
+    // }
 }
 
 
@@ -181,7 +216,7 @@ const getMetadata = async (req, res) => {
 
         const result = await mongodb.aggregate({
             db,
-            collection: `${db.name}.${db.metadataCollection}`,
+            collection: `settings.metadata`,
             pipeline: [{
                     $project: { _id: 0 }
                 }
@@ -208,28 +243,28 @@ const getForms = async (req, res) => {
 
         let data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.${db.examinationCollection}`,
+            collection: `${db.name}.examinations`,
             pipeline: [{
                 '$match': {
                     'patientId': options.patientId
                 }
             }, {
                 '$lookup': {
-                    'from': db.formCollection,
+                    'from': "forms",
                     'localField': 'id',
                     'foreignField': 'examinationId',
                     'as': 'forms'
                 }
             }, {
                 '$lookup': {
-                    'from': db.userCollection,
+                    'from': "actors",
                     'localField': 'actorId',
                     'foreignField': 'id',
                     'as': 'physician'
                 }
             }, {
                 '$lookup': {
-                    'from': db.labelingCollection,
+                    'from': "labels",
                     'localField': 'id',
                     'foreignField': 'Examination ID',
                     'as': 'records'
@@ -275,7 +310,7 @@ const getForms = async (req, res) => {
                     if (patientForm.diagnosisTags.tags) {
                         let tags = await mongodb.aggregate({
                             db,
-                            collection: `${db.name}.tags`,
+                            collection: `settings.tags`,
                             pipeline: [{
                                     $match: {
                                         id: {
@@ -422,7 +457,7 @@ const getRecords = async (req, res) => {
 
         const data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.${db.labelingCollection}`,
+            collection: `${db.name}.labels`,
             pipeline
         })
 

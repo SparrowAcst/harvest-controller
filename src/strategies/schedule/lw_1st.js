@@ -39,3 +39,23 @@ module.exports = async ( user, taskController) => {
 
 }
 
+
+
+
+{
+	metadata:{
+		task:{
+			
+			labeling_1st:{
+				id: 1,
+				status: "open" // "process" "done"
+			},
+			
+			finalized_murmur_2nd:{
+				id: 2,
+				status: "open"
+			}
+			
+		}
+	}
+}

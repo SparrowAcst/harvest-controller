@@ -1,22 +1,8 @@
-const task = {
-    "Labeling": require("./labeling-1st"),
-    "labeling_2nd": require("./labeling-2nd"),
-}
 
 module.exports = {
     
-    "1st expert": [
-        task["Labeling"]
-    ],
-
-    "admin": [
-        task["Labeling"],
-        task["labeling_2nd"]
-    ],
-
-    "2nd expert": [
-        task["labeling_2nd"],
-        task["Labeling"]
-    ]
-
+    Check_S3_Segmentation: require("./Check_S3_Segmentation"),
+    Base_Labeling_1st: require("./Base_Labeling_1st"),
+    Base_Labeling_2nd: require("./Base_Labeling_2nd"),
+    Cross_Validation_2nd: require("./Cross_Validation_2nd"),
 }

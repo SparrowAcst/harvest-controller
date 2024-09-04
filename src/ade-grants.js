@@ -29,7 +29,7 @@ const getGrants = async (req, res) => {
 
         options = extend({}, options, {
             db,
-            collection: `${db.name}.${grantCollection}`,
+            collection: `settings.app-grant`,
             pipeline: [
               {
                 $match:
@@ -40,7 +40,7 @@ const getGrants = async (req, res) => {
               {
                 $lookup:
                   {
-                    from: profileCollection,
+                    from: "profile",
                     localField: "profile",
                     foreignField: "name",
                     as: "result",

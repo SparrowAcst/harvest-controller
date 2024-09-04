@@ -1,10 +1,11 @@
 const {extend} = require("lodash")
+const LongTerm = require("../utils/long-term-queue")
 const mongodb = require("../mongodb")
 const requestStrategies = require("../strategies/segmentation-request")
 
 
 
-const closeSegmentationRequest = async settings => {
+const closeSegmentationRequestOperation = async settings => {
 
     console.log(`LONG-TERM: closeSegmentationRequest: started`)
 
@@ -12,7 +13,7 @@ const closeSegmentationRequest = async settings => {
     
     let request = await mongodb.aggregate({
         db: configDB,
-        collection: `${configDB.name}.segmentation-requests`,
+        collection: `settings.segmentation-requests`,
         pipeline: [{
                 $match: {
                     id: requestId
@@ -41,6 +42,16 @@ const closeSegmentationRequest = async settings => {
     console.log(`LONG-TERM: closeSegmentationRequest: done`)
 
 }
+
+
+const closeSegmentationRequest = (settings = {}) => {
+    console.log("CALL closeSegmentationRequest")
+    LongTerm.execute( async () => {
+        await closeSegmentationRequestOperation(settings)     
+    })
+}
+
+
 
 module.exports = {
     closeSegmentationRequest

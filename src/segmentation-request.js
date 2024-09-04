@@ -23,20 +23,20 @@ const openRequest =  async (req, res) => {
 
 		let options = req.body.options
         options = extend({}, options, req.body.cache.currentDataset)
-        // let { db, segmentCollection, version, user, strategy } = options
         options.strategy = options.strategy || "test"
-        options.configDB = globalDB
-		console.log("!!!!!!!!!!!!!!!!!!", options.strategy)
-		console.log("!!!!!!!!!!!!!!!!!!", options)
-		
-		let request = await requestStrategy[options.strategy].openRequest(options)
-		
-		res.status(200).send({
-			id: request.id,
-			user: request.user,
-			opened: request.opened,
-			updatedAt: request.updatedAt
-		})
+        
+        if( requestStrategy[options.strategy] && requestStrategy[options.strategy].openRequest ){
+        	let request 
+        	request = await requestStrategy[options.strategy].openRequest(options)
+        	res.status(200).send({
+				id: request.id,
+				user: request.user,
+				opened: request.opened,
+				updatedAt: request.updatedAt
+			})
+		} else {
+			throw new Error(`No openRequest for ${options.strategy}`)
+		}
 	
 	} catch (e) {
 		
@@ -74,7 +74,7 @@ const getSegmentationData =  async (req, res) => {
 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
 		let result = await mongodb.aggregate({
 			db: globalDB,
-			collection: `${globalDB.name}.segmentation-requests`,
+			collection: `settings.segmentation-requests`,
 			pipeline:[
 				{
 					$match: {
@@ -114,7 +114,7 @@ const getSegmentationDataRaw =  async (req, res) => {
 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
 		let result = await mongodb.aggregate({
 			db: globalDB,
-			collection: `${globalDB.name}.segmentation-requests`,
+			collection: `settings.segmentation-requests`,
 			pipeline:[
 				{
 					$match: {
@@ -156,7 +156,7 @@ const updateSegmentationData =  async (req, res) => {
 		
 		await mongodb.updateOne({
 			db: globalDB,
-			collection: `${globalDB.name}.segmentation-requests`,
+			collection: `settings.segmentation-requests`,
 			filter:{
 				id: requestId
 			},

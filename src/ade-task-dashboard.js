@@ -34,6 +34,8 @@ const getActiveTask = async (req, res) => {
         }
 
         options = extend(options, req.body.cache.currentDataset)
+        options.dataView = dataView
+
         const controller = createTaskController(options)
 
         req.eventHub.emit("assign-tasks", options)
@@ -46,20 +48,35 @@ const getActiveTask = async (req, res) => {
 
             matchVersion: {
                 head: true,
+                
                 type: {
                     $in: ["submit", "branch", "commit", "save"]
                 },
-                $or: [{
-                        expiredAt: {
-                            $gte: new Date()
-                        },
-                    },
-                    {
-                        expiredAt: {
-                            $exists: false
-                        }
-                    }
-                ]
+
+                branch:{
+                    $exists: false
+                },
+                save:{
+                    $exists: false
+                },
+                commit:{
+                    $exists: false
+                },
+                submit:{
+                    $exists: false
+                },
+
+                // $or: [{
+                //         expiredAt: {
+                //             $gte: new Date()
+                //         },
+                //     },
+                //     {
+                //         expiredAt: {
+                //             $exists: false
+                //         }
+                //     }
+                // ]
             }
 
         })
@@ -200,6 +217,39 @@ const getEmployeeStat = async (req, res) => {
 
             matchEmployee: {
                 namedAs: options.user.altname
+            },
+
+            matchVersion: {
+                head: true,
+                
+                type: {
+                    $in: ["submit", "branch", "commit", "save"]
+                },
+
+                branch:{
+                    $exists: false
+                },
+                save:{
+                    $exists: false
+                },
+                commit:{
+                    $exists: false
+                },
+                submit:{
+                    $exists: false
+                },
+
+                // $or: [{
+                //         expiredAt: {
+                //             $gte: new Date()
+                //         },
+                //     },
+                //     {
+                //         expiredAt: {
+                //             $exists: false
+                //         }
+                //     }
+                // ]
             }
         })
 

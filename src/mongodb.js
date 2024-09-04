@@ -72,9 +72,13 @@ const listCollections = async options => {
 
 
 const aggregate = async options => {
+
+	options.retry = (options.retry || 0) + 1
+	
 	let client
+	
 	try {
-		
+
 		const conf = normalize(options.collection)
 		const pipeline = options.pipeline || []
 	    
@@ -93,7 +97,15 @@ const aggregate = async options => {
 	} catch (e) {
 		
 		console.log(e.toString())
-		throw new Error(e)
+
+		if(options.retry == 1){
+			console.log(`Retry aggregate operation`)
+			if(client) client.close()
+			const res = await aggregate(options)	
+			return res
+		} else {
+			throw new Error(e)	
+		}
 	
 	} finally {
 	

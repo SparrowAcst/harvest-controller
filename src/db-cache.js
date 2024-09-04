@@ -20,10 +20,19 @@ const init = async () => {
 
     DATASET_CACHE = await mongodb.aggregate({
         db,
-        collection: `${db.name}.dataset`,
-        pipeline: [{
-            $project: { _id: 0 }
-        }]
+        collection: `settings.dataset`,
+        pipeline: [
+            {
+                $match:{
+                    closed:{
+                        $exists: false
+                    }
+                }
+            },
+            {
+                $project: { _id: 0 }
+            }
+        ]
     })
 
 

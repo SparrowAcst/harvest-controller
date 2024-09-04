@@ -16,7 +16,9 @@ const {
     findIndex,
     difference,
     values,
-    flattenDeep
+    flattenDeep,
+    set,
+    isUndefined
 } = require("lodash")
 
 const Diff = require('jsondiffpatch')
@@ -85,7 +87,7 @@ const resolveData = async (options = {}) => {
 
     try {
 
-        let { db, dataCollection, version } = options
+        let { db, version } = options
 
         if (!version) throw new Error(`brancher.resolveData: version ${version.id} not found`)
 
@@ -95,7 +97,7 @@ const resolveData = async (options = {}) => {
 
         let data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.${dataCollection}`,
+            collection: `${db.name}.labels`,
             pipeline: [{
                 $match: {
                     id: {
@@ -125,9 +127,12 @@ const init = async (options = {}) => {
 
     try {
 
-        let { db, branchesCollection, dataId, metadata, dataView } = options
+        let { db, dataId, metadata, dataView } = options
 
         dataView = dataView || (d => null)
+
+
+        // console.log("init", dataId)
 
         let branches = dataId.map(did => ({
             id: uuid(),
@@ -135,15 +140,15 @@ const init = async (options = {}) => {
             patches: [],
             head: true,
             createdAt: new Date(),
-            metadata,
+            metadata: updateMetadata({}, metadata),
             readonly: true,
             type: "main"
         }))
 
-        console.log(branches)
+        // console.log(branches)
         let data = await resolveData(extend({}, options, { version: branches }))
-        console.log("data", data)
-        
+        // console.log("data", data)
+
         let commands = branches.map((branch, index) => {
 
             branch.dataView = dataView(data[index])
@@ -163,7 +168,7 @@ const init = async (options = {}) => {
         if (commands.length > 0) {
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands
             })
         }
@@ -174,6 +179,18 @@ const init = async (options = {}) => {
 
 }
 
+
+const updateMetadata = (sourceMetadata, ops) => {
+    if(!ops) return sourceMetadata
+    let result = JSON.parse(JSON.stringify(sourceMetadata))    
+    keys(ops).map( key => {
+        if(!isUndefined(ops[key])){
+            // console.log(key, ops[key])
+            set(result, key, ops[key])    
+        }
+    })
+    return result    
+}
 
 const Worker = class {
 
@@ -212,9 +229,10 @@ const Worker = class {
 
             let { cache } = this.context
             let { version } = options
-            let result = (version.id) 
-                ? version //find(flattenDeep(values(cache)), d => d.id == version.id) 
-                : find(flattenDeep(values(cache)), d => d.id == version)
+            let result = (version.id) ?
+                version //find(flattenDeep(values(cache)), d => d.id == version.id) 
+                :
+                find(flattenDeep(values(cache)), d => d.id == version)
 
             if (result) {
                 delete result._id
@@ -232,7 +250,7 @@ const Worker = class {
 
         try {
 
-            let { db, dataCollection } = this.context
+            let { db } = this.context
             let { version } = options
 
             version = this.resolveVersion({ version })
@@ -243,11 +261,13 @@ const Worker = class {
 
             let data = await mongodb.aggregate({
                 db,
-                collection: `${db.name}.${dataCollection}`,
+                collection: `${db.name}.labels`,
                 pipeline: [{ $match: { id: dataId } }]
             })
 
             data = data[0]
+
+            // console.log(version)
 
             version.patches.forEach(p => {
                 Diff.patch(data, p)
@@ -266,7 +286,7 @@ const Worker = class {
 
         try {
 
-            let { db, branchesCollection, cache } = this.context
+            let { db, cache } = this.context
 
             let { user, source, metadata, task } = options
 
@@ -302,7 +322,7 @@ const Worker = class {
                         head: true,
                         patches: parent.patches,
                         createdAt: new Date(),
-                        metadata: extend({}, parent.metadata, metadata),
+                        metadata: updateMetadata(parent.metadata || {}, metadata), //extend({}, parent.metadata, metadata),
                         readonly: false,
                         dataView: parent.dataView,
                         type: "branch"
@@ -370,7 +390,7 @@ const Worker = class {
 
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands
             })
 
@@ -386,7 +406,7 @@ const Worker = class {
 
         try {
 
-            let { db, branchesCollection, cache, dataView } = this.context
+            let { db, cache, dataView } = this.context
             let { user, source, data, metadata } = options
 
             dataView = dataView || (d => null)
@@ -395,13 +415,13 @@ const Worker = class {
 
             if (!parent) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
 
-            delete parent.data    
-                
+            delete parent.data
+
             let prevData = await this.resolveData({ version: parent })
 
             let difference = Diff.diff(prevData, data)
 
-            if( !difference ) {
+            if (!difference) {
                 return parent
             }
 
@@ -417,7 +437,7 @@ const Worker = class {
                 prev: [{
                     id: parent.id
                 }],
-                metadata: extend({}, parent.metadata, metadata),
+                metadata: updateMetadata(parent.metadata || {}, metadata), //extend({}, parent.metadata, metadata),
                 head: true,
                 createdAt: new Date(),
                 patches: parent.patches.concat([Diff.diff(prevData, data)]).filter(d => d),
@@ -437,7 +457,7 @@ const Worker = class {
 
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands: [{
                         insertOne: {
                             document: newVersion
@@ -469,7 +489,7 @@ const Worker = class {
 
         try {
 
-            let { db, branchesCollection, cache, freezePeriod, dataView } = this.context
+            let { db, cache, freezePeriod, dataView } = this.context
             let { user, source, data, metadata } = options
 
             dataView = dataView || (d => null)
@@ -495,7 +515,7 @@ const Worker = class {
                 prev: [{
                     id: parent.id
                 }],
-                metadata: extend({}, parent.metadata, metadata),
+                metadata: updateMetadata(parent.metadata || {}, metadata), //extend({}, parent.metadata, metadata),
                 head: true,
                 createdAt: new Date(),
                 patches: parent.patches.concat([Diff.diff(prevData, data)]).filter(d => d),
@@ -508,7 +528,9 @@ const Worker = class {
             parent.head = false
             parent.readonly = true
             parent.submit = newVersion.id
-
+            if(parent.data){
+                delete parent.data
+            }
 
             this.updateInCache({ version: newVersion })
             this.updateInCache({ version: parent })
@@ -516,7 +538,7 @@ const Worker = class {
 
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands: [{
                         insertOne: {
                             document: newVersion
@@ -548,7 +570,7 @@ const Worker = class {
 
         try {
 
-            let { db, branchesCollection, cache, freezePeriod } = this.context
+            let { db, cache, freezePeriod } = this.context
             let { source } = options
 
             let self = this.resolveVersion({ version: source })
@@ -557,7 +579,7 @@ const Worker = class {
             if (!self) throw new Error(`brancher.initDataVersion: source ${source.id || source} not found`)
             if (self.type != "submit") throw new Error(`brancher.submit: source ${source.id || source} not submit`)
 
-            
+
             let parent = this.resolveVersion({ version: first(self.prev).id })
 
             console.log(`ROLLBACK for ${self.id} to ${parent.id}`)
@@ -572,7 +594,7 @@ const Worker = class {
 
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands: [{
                         replaceOne: {
                             filter: {
@@ -607,7 +629,7 @@ const Worker = class {
 
         try {
 
-            let { db, branchesCollection, dataCollection, cache, dataView } = this.context
+            let { db, cache, dataView } = this.context
 
             let { user, source, data, metadata } = options
 
@@ -630,7 +652,7 @@ const Worker = class {
                 prev: [{
                     id: parent.id
                 }],
-                metadata: extend({}, parent.metadata, metadata),
+                metadata: updateMetadata(parent.metadata || {}, metadata), //extend({}, parent.metadata, metadata),
                 patches: [],
                 head: true,
                 createdAt: new Date(),
@@ -705,14 +727,14 @@ const Worker = class {
 
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands
             })
 
 
             await mongodb.replaceOne({
                 db: db,
-                collection: `${db.name}.${dataCollection}`,
+                collection: `${db.name}.labels`,
                 filter: {
                     'id': dataId
                 },
@@ -733,7 +755,7 @@ const Worker = class {
 
         try {
 
-            let { db, branchesCollection, cache, dataView } = this.context
+            let { db, cache, dataView } = this.context
 
             let { user, sources, data, metadata } = options
 
@@ -762,7 +784,7 @@ const Worker = class {
                 task: parents[0].task,
                 user,
                 prev,
-                metadata,
+                metadata: updateMetadata({}, metadata), // metadata,
                 patches: [],
                 head: true,
                 createdAt: new Date(),
@@ -805,7 +827,7 @@ const Worker = class {
 
             await mongodb.bulkWrite({
                 db: db,
-                collection: `${db.name}.${branchesCollection}`,
+                collection: `${db.name}.savepoints`,
                 commands
             })
 
@@ -822,23 +844,40 @@ const Worker = class {
 
         try {
 
-            let context = contextPool[contextId]
-            if (!context) throw new Error(`brancher.updateVersion: context ${contextId} not found`)
+            // let context = contextPool[contextId]
+            // if (!context) throw new Error(`brancher.updateVersion: context ${contextId} not found`)
 
-            let { db, branchesCollection, dataId } = this.context
+            let { db } = this.context
             let { version } = options
+            
+            version = version || []
+            version = (isArray(version)) ? version : [version]
 
-            this.updateInCache({ version })
+            let commands = version.map( v => {
 
-            await mongodb.replaceOne({
-                db,
-                collection: `${db.name}.${branchesCollection}`,
-                filter: {
-                    'id': version.id
-                },
-                data: version
+                this.updateInCache({ version: v })
+
+                return {
+                    replaceOne: {
+                        filter: {
+                            id: v.id,
+                            dataId: v.dataId
+                        },
+                        replacement: v,
+                        upsert: true
+                    }
+                }
+    
             })
 
+            if(commands.length > 0) {
+                await mongodb.bulkWrite({
+                    db: db,
+                    collection: `${db.name}.savepoints`,
+                    commands
+                })
+            }
+            
         } catch (e) {
             throw e
         }
@@ -1175,7 +1214,7 @@ const Worker = class {
 
 const createWorker = async options => {
 
-    let { db, branchesCollection, dataId } = options
+    let { db, dataId } = options
 
     dataId = dataId || []
 
@@ -1183,9 +1222,10 @@ const createWorker = async options => {
 
     options.dataId = dataId
 
+
     let data = await mongodb.aggregate({
         db,
-        collection: `${db.name}.${branchesCollection}`,
+        collection: `${db.name}.savepoints`,
         pipeline: [{
                 $match: {
                     dataId: {
@@ -1210,7 +1250,7 @@ const createWorker = async options => {
 
     data = await mongodb.aggregate({
         db,
-        collection: `${db.name}.${branchesCollection}`,
+        collection: `${db.name}.savepoints`,
         pipeline: [{
                 $match: {
                     dataId: {
