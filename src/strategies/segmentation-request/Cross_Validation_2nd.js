@@ -62,59 +62,61 @@ const openRequest = async options => {
     let data = await controller.resolveData({ version })
     let segmentation = await resolveSegmentation(options, data.segmentation)
 
+    let segmentationSource = segmentation
+    console.log("segmentationSource", segmentationSource)
 
     let altVersions = await controller.selectTask({
-            matchVersion: {
-                
-                id:{
-                    $ne: version.id
-                },
+        matchVersion: {
 
-                "metadata.task.Cross_Validation_2nd.id": version.metadata.task.Cross_Validation_2nd.id,
-                head: true,
-                
-                save:{
-                    $exists: false
-                },
-                
-                submit:{
-                    $exists: false
-                },
-                
-                branch:{
-                    $exists: false
-                },
+            id: {
+                $ne: version.id
+            },
 
-                commit:{
-                    $exists: false
-                } 
-            }
-        })
+            "metadata.task.Cross_Validation_2nd.id": version.metadata.task.Cross_Validation_2nd.id,
+            head: true,
 
-        for( let alt of altVersions){
-            alt.data = await controller.resolveData({version: alt})
-            alt.segmentation = await resolveSegmentation(options, alt.data.segmentation)
-            if(alt.segmentation){
-                alt.segmentation = segmentationAnalysis.parse(alt.segmentation.data)
+            save: {
+                $exists: false
+            },
+
+            submit: {
+                $exists: false
+            },
+
+            branch: {
+                $exists: false
+            },
+
+            commit: {
+                $exists: false
             }
         }
+    })
 
-        
-        altVersions = altVersions.filter( v => v.segmentation)
-
-        let inconsistency = []
-
-        if (segmentation) {
-
-            version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
-            let segmentations = [segmentationAnalysis.parse(segmentation.data).segments]
-                                    .concat(altVersions.map(v => v.segmentation.segments))
-
-            let diff = segmentationAnalysis.getSegmentsDiff(segmentations)
-            inconsistency = segmentationAnalysis.getNonConsistencyIntervalsForSegments(diff)
-            inconsistency = inconsistency.map( d => [d.start.toFixed(3), d.end.toFixed(3)])
-            
+    for (let alt of altVersions) {
+        alt.data = await controller.resolveData({ version: alt })
+        alt.segmentation = await resolveSegmentation(options, alt.data.segmentation)
+        if (alt.segmentation) {
+            alt.segmentation = segmentationAnalysis.parse(alt.segmentation.data)
         }
+    }
+
+
+    altVersions = altVersions.filter(v => v.segmentation)
+
+    let inconsistency = []
+
+    if (segmentation) {
+
+        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
+        let segmentations = [segmentationAnalysis.parse(segmentation.data).segments]
+            .concat(altVersions.map(v => v.segmentation.segments))
+
+        let diff = segmentationAnalysis.getSegmentsDiff(segmentations)
+        inconsistency = segmentationAnalysis.getNonConsistencyIntervalsForSegments(diff)
+        inconsistency = inconsistency.map(d => [d.start.toFixed(3), d.end.toFixed(3)])
+
+    }
 
 
     let requestData = {
@@ -146,7 +148,7 @@ const openRequest = async options => {
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,
-        responseData: null
+        responseData: (segmentationSource) ? { segmentation: segmentationSource.data } : undefined
     }
 
     await mongodb.replaceOne({
@@ -163,47 +165,14 @@ const openRequest = async options => {
 }
 
 
-const closeRequest = async options => {
+const updateRequest = async options => {
 
-    console.log(`>> Cross_Validation_2nd: CLOSE REQUEST ${options.requestId}`)
+    console.log(`>> Cross_Validation_2nd: UPDATE REQUEST ${options.requestId}: START`)
 
-    let { configDB, requestId } = options
-
-    let request = await mongodb.aggregate({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        pipeline: [{
-            $match: {
-                id: requestId
-            }
-        }]
-    })
-
-    request = request[0]
-
-    if (!request) return
+    let { requestId, request } = options
 
     let { db, collection, responseData, requestData, dataId, versionId, user } = request
 
-    // await mongodb.deleteOne({
-    //     db: configDB,
-    //     collection: `${configDB.name}.segmentation-requests`,
-    //     filter: {
-    //         id: requestId
-    //     }
-    // })
-
-    await mongodb.updateOne({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        filter: {
-            id: requestId
-        },
-        data: {
-            closed: true,
-            closedAt: new Date()
-        }
-    })
 
     if (!responseData) return
     if (!responseData.segmentation) return
@@ -225,7 +194,7 @@ const closeRequest = async options => {
         data: responseData.segmentation
     }
 
-    
+
     data.segmentation = segmentation.id
 
     const brancher = await controller.getBrancher(options)
@@ -251,10 +220,11 @@ const closeRequest = async options => {
         data: segmentation
     })
 
+    console.log(`>> Cross_Validation_2nd: UPDATE REQUEST ${options.requestId}: DONE`)
 
 }
 
 module.exports = {
     openRequest,
-    closeRequest
+    updateRequest
 }

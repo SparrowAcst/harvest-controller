@@ -191,28 +191,52 @@ const getNormalizedTranslateVector = polygons => {
 
 }
 
+// const getPatternForPolygons = (polygons, factor) => {
+
+//     factor = factor || 0.001
+//     polygons = fit(polygons)
+//     let pattern = simplify(merge(polygons), factor)
+
+//     let a = pattern.area()
+//     let metric = Math.sqrt(sum(polygons.map(p => (p.area() - a) * (p.area() - a))) / polygons.length / (polygons.length - 1)) / a
+
+//     let consistency = polygons.map(p => getIntersection([pattern, p]).area() / getUnion([pattern, p]).area())
+//     consistency = avg(consistency)
+
+
+
+//     return {
+//         polygons,
+//         patterns: [pattern],
+//         metric: Number.parseFloat(metric.toFixed(3)),
+//         consistency: Number.parseFloat(consistency.toFixed(3)),
+//     }
+
+// }
+
 const getPatternForPolygons = (polygons, factor) => {
 
     factor = factor || 0.001
     polygons = fit(polygons)
-    let pattern = simplify(merge(polygons), factor)
+    // let pattern = simplify(merge(polygons), factor)
 
-    let a = pattern.area()
-    let metric = Math.sqrt(sum(polygons.map(p => (p.area() - a) * (p.area() - a))) / polygons.length / (polygons.length - 1)) / a
+    // let a = pattern.area()
+    // let metric = Math.sqrt(sum(polygons.map(p => (p.area() - a) * (p.area() - a))) / polygons.length / (polygons.length - 1)) / a
 
-    let consistency = polygons.map(p => getIntersection([pattern, p]).area() / getUnion([pattern, p]).area())
-    consistency = avg(consistency)
+    // let consistency = polygons.map(p => getIntersection([pattern, p]).area() / getUnion([pattern, p]).area())
+    // consistency = avg(consistency)
 
 
 
     return {
         polygons,
-        patterns: [pattern],
-        metric: Number.parseFloat(metric.toFixed(3)),
-        consistency: Number.parseFloat(consistency.toFixed(3)),
+        // patterns: [pattern],
+        // metric: Number.parseFloat(metric.toFixed(3)),
+        // consistency: Number.parseFloat(consistency.toFixed(3)),
     }
 
 }
+
 
 const getSVG = ({ polygons, patterns, svgOptions }) => {
 

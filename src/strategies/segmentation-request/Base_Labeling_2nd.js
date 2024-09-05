@@ -60,7 +60,17 @@ const openRequest = async options => {
     options.dataId = [version.dataId]
     const controller = createTaskController(options)
     let data = await controller.resolveData({ version })
-    let segmentation = await resolveSegmentation(options, data.segmentation)
+
+    let seg = await resolveSegmentation(options, data.segmentation)
+
+    let segmentationData = (seg) ? {
+            user: user.altname,
+            readonly: false,
+            segmentation: seg.data
+        } :
+        undefined
+
+
     let requestData = {
         "patientId": data["Examination ID"],
         "recordId": version.dataId,
@@ -72,11 +82,7 @@ const openRequest = async options => {
         "Diastolic murmurs": data["Diastolic murmurs"],
         "Other murmurs": data["Other murmurs"],
         "inconsistency": [],
-        "data": (segmentation) ? [{
-            user: user.altname,
-            readonly: false,
-            segmentation: segmentation.data
-        }] : []
+        "data": (segmentationData) ? [segmentationData] : []
 
     }
 
@@ -90,7 +96,7 @@ const openRequest = async options => {
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,
-        responseData: null
+        responseData: (segmentationData) ? { segmentation: segmentationData.segmentation } : undefined
     }
 
     await mongodb.replaceOne({
@@ -107,47 +113,13 @@ const openRequest = async options => {
 }
 
 
-const closeRequest = async options => {
+const updateRequest = async options => {
 
-    console.log(`>> Base_Labeling_2nd: CLOSE REQUEST ${options.requestId}`)
+    console.log(`>> Base_Labeling_2nd: UPDATE REQUEST ${options.requestId}: START`)
 
-    let { configDB, requestId } = options
-
-    let request = await mongodb.aggregate({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        pipeline: [{
-            $match: {
-                id: requestId
-            }
-        }]
-    })
-
-    request = request[0]
-
-    if (!request) return
+    let { requestId, request } = options
 
     let { db, collection, responseData, requestData, dataId, versionId, user } = request
-
-    // await mongodb.deleteOne({
-    //     db: configDB,
-    //     collection: `${configDB.name}.segmentation-requests`,
-    //     filter: {
-    //         id: requestId
-    //     }
-    // })
-
-    await mongodb.updateOne({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        filter: {
-            id: requestId
-        },
-        data: {
-            closed: true,
-            closedAt: new Date()
-        }
-    })
 
     if (!responseData) return
     if (!responseData.segmentation) return
@@ -169,7 +141,7 @@ const closeRequest = async options => {
         data: responseData.segmentation
     }
 
-    
+
     data.segmentation = segmentation.id
 
     const brancher = await controller.getBrancher(options)
@@ -195,10 +167,12 @@ const closeRequest = async options => {
         data: segmentation
     })
 
+    console.log(`>> Base_Labeling_2nd: UPDATE REQUEST ${options.requestId}: DONE`)
+
 
 }
 
 module.exports = {
     openRequest,
-    closeRequest
+    updateRequest
 }

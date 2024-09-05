@@ -34,6 +34,9 @@ module.exports = async (user, taskController) => {
 
     // select user activity
     let activity = await taskController.getEmployeeStat({ matchEmployee: { namedAs: user.altname } })
+    
+    console.log("activity", activity)
+
     activity = activity[0]
     if (!activity) return []
     if (activity.priority == 0) return { version: [] }
@@ -66,6 +69,9 @@ module.exports = async (user, taskController) => {
             }
         }
     })
+
+    console.log("tasks", tasks)
+
 
     tasks = tasks.slice(0, activity.priority)
 

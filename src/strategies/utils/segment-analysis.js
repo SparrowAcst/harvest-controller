@@ -270,7 +270,7 @@ const getSegmentationChart = (sa, nonConsistencyIntervals) => {
 
     let segments = JSON.parse(JSON.stringify(sa.segmentation.segments))
     
-    console.log("segments", segments)
+    // console.log("segments", segments)
 
     nonConsistencyIntervals = nonConsistencyIntervals || []
 
@@ -1345,7 +1345,7 @@ const getMurmurPolygons = sa => {
         let merged = Polygon.getPatternForPolygons(d.shapes)
         return {
             name: d.name,
-            consistency: merged.consistency,
+            // consistency: merged.consistency,
             timeBoundary: sortBy(d.shapes.map(v => {
                 let b = Polygon.getPointArray([v]).map(v => v.x)
                 return [
@@ -1355,7 +1355,7 @@ const getMurmurPolygons = sa => {
             }), d => d[0]),
 
             svg: Polygon.getSVG(merged),
-            metric: merged.metric
+            // metric: merged.metric
         }
     })
 

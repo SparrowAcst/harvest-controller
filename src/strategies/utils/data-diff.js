@@ -22,10 +22,10 @@ const checkedFields = [
 
 const checker = jsondiffpatch.create({
     objectHash: (d, index)  => {
-        console.log("CHECK", d)
+        // console.log("CHECK", d)
         let c = JSON.parse(JSON.stringify(d))
         delete c.grade
-        console.log(">> ",JSON.stringify(c))
+        // console.log(">> ",JSON.stringify(c))
         return JSON.stringify(c)
     },
 
