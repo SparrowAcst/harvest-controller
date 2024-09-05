@@ -5,62 +5,6 @@ const mongodb = require("../../mongodb")
 
 const isUUID = data => isString(data) && isValidUUID(data)
 
-// const resolveSegmentations = async options => {
-
-//     let { db, dataId, segmentCollection, data } = options
-
-//     let result = {}
-
-//     if (!data) return result
-
-//     let segmentation = data.segmentation
-//     let aiSegmentation = data.aiSegmentation
-
-//     if (isUUID(segmentation)) {
-//         let d = await mongodb.aggregate({
-//             db,
-//             collection: `${db.name}.${segmentCollection}`,
-//             pipeline: [{
-//                 $match: {
-//                     id: {
-//                         $in: [segmentation, aiSegmentation]
-//                     }
-//                 }
-//             }]
-//         })
-
-//         let s = find(d, v => !v.user || (v.user && v.user.name != "AI"))
-//         let ais = find(d, v => v.user && v.user.name == "AI")
-
-//         result = {
-//             segmentation: (s) ? s.data : undefined,
-//             aiSegmentation: (ais) ? ais.data : undefined
-//         }
-
-//     } else {
-
-//         let d = await mongodb.aggregate({
-//             db,
-//             collection: `${db.name}.${segmentCollection}`,
-//             pipeline: [{
-//                 $match: {
-//                     id: aiSegmentation
-//                 }
-//             }]
-//         })
-
-//         result = {
-//             segmentation,
-//             aiSegmentation: d[0] ? d[0].data : undefined
-//         }
-
-//     }
-
-//     return result
-
-// }
-
-
 const resolveSegmentations = async options => {
 
     let { db, dataId, segmentCollection, data } = options
@@ -70,8 +14,6 @@ const resolveSegmentations = async options => {
     if (!data) return result
 
     let segmentation = data.segmentation
-    // let aiSegmentation = data.aiSegmentation
-
     if(!segmentation) return
 
     if (isUUID(segmentation)) {
@@ -88,7 +30,6 @@ const resolveSegmentations = async options => {
         })
 
         let s = find(d, v => !v.user || (v.user && v.user.name != "AI"))
-        // let ais = find(d, v => v.user && v.user.name == "AI")
 
         result = {
             segmentation: (s) ? s.data : undefined,
@@ -97,19 +38,8 @@ const resolveSegmentations = async options => {
 
     } else {
 
-        // let d = await mongodb.aggregate({
-        //     db,
-        //     collection: `${db.name}.${segmentCollection}`,
-        //     pipeline: [{
-        //         $match: {
-        //             id: aiSegmentation
-        //         }
-        //     }]
-        // })
-
         result = {
-            segmentation,
-            // aiSegmentation: d[0] ? d[0].data : undefined
+            segmentation
         }
 
     }
@@ -165,6 +95,14 @@ const openRequest = async options => {
 
     let seg = await resolveSegmentations(options)
 
+    let segmentationData = (seg) 
+        ? {
+                user: user.altname,
+                readonly: false,
+                segmentation: seg.segmentation
+            }
+        : undefined    
+
     let requestData = {
         "patientId": data["Examination ID"],
         "recordId": version.dataId,
@@ -176,19 +114,7 @@ const openRequest = async options => {
         "Diastolic murmurs": data["Diastolic murmurs"],
         "Other murmurs": data["Other murmurs"],
         "inconsistency": [],
-        "data": (seg) ?[{
-                user: user.altname,
-                readonly: false,
-                segmentation: seg.segmentation
-            }
-            // ,
-            // {
-            //     user: "AI",
-            //     readonly: true,
-            //     segmentation: seg.aiSegmentation
-            // }
-        ] : []
-
+        "data": (segmentationData) ? [segmentationData] : []
     }
 
     let request = {
@@ -201,7 +127,7 @@ const openRequest = async options => {
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,
-        responseData: null
+        responseData: (segmentationData) ? { segmentation: segmentationData.segmentation } : undefined
     }
 
     await mongodb.replaceOne({
@@ -218,47 +144,13 @@ const openRequest = async options => {
 }
 
 
-const closeRequest = async options => {
+const updateRequest = async options => {
 
-    console.log(`linear_workflow strategy CLOSE REQUEST:  ${options.requestId}`)
+    console.log(`>> linear_workflow: UPDATE REQUEST:  ${options.requestId}: START`)
 
-    let { configDB, requestId, request } = options
-
-    // let request = await mongodb.aggregate({
-    //     db: configDB,
-    //     collection: `settings.segmentation-requests`,
-    //     pipeline: [{
-    //         $match: {
-    //             id: requestId
-    //         }
-    //     }]
-    // })
-
-    // request = request[0]
-
-    // if (!request) return
+    let {request} = options 
 
     let { db, collection, responseData, requestData, dataId, user } = request
-
-    // await mongodb.deleteOne({
-    //     db: configDB,
-    //     collection: `${configDB.name}.segmentation-requests`,
-    //     filter: {
-    //         id: requestId
-    //     }
-    // })
-
-    await mongodb.updateOne({
-            db: configDB,
-            collection: `settings.segmentation-requests`,
-            filter:{
-                id: requestId
-            },
-            data:{
-                closed: true,
-                closedAt: new Date()
-            }
-        })
 
     if (!responseData) return
     if (!responseData.segmentation) return    
@@ -275,53 +167,12 @@ const closeRequest = async options => {
         }
     })
 
-    const seg_hist = {
-        id: uuid(),
-        collection,
-        recordId: dataId,
-        updatedAt: new Date(),
-        updatedBy: user,
-        segmentation: responseData
-    }
+    console.log(`>> linear_workflow: UPDATE REQUEST:  ${options.requestId}: DONE`)
 
-    await mongodb.replaceOne({
-        db,
-        collection: `${db.name}.segmentation-history`,
-        filter: {
-            id: seg_hist.id
-        },
-
-        data: seg_hist
-
-    })
-
-    const event = {
-        id: uuid(),
-        type: "update segmentation",
-        collection: `${db.name}.${db.labelingCollection}`,
-        recordingId: dataId,
-        examinationId: requestData.patientId,
-        path: requestData.path,
-        segmentation: responseData.segmentation,
-        startedAt: new Date(),
-        stoppedAt: new Date()
-    }
-
-    await mongodb.replaceOne({
-        db,
-        collection: `${db.name}.changelog-recordings`,
-        filter: {
-            id: event.id
-        },
-
-        data: event
-    })
-
-
-
+    
 }
 
 module.exports = {
     openRequest,
-    closeRequest
+    updateRequest
 }

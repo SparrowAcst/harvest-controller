@@ -25,13 +25,36 @@ const closeSegmentationRequestOperation = async settings => {
         ]
     })
 
-    console.log(configDB, request)
     if(request.length == 0) return
 
     request = request[0]
     request.strategy = request.strategy || "test"
     
     settings.request = request
+
+
+    let { db } = request
+
+    // await mongodb.deleteOne({
+    //     db: configDB,
+    //     collection: `${configDB.name}.segmentation-requests`,
+    //     filter: {
+    //         id: requestId
+    //     }
+    // })
+
+    await mongodb.updateOne({
+            db: configDB,
+            collection: `settings.segmentation-requests`,
+            filter:{
+                id: requestId
+            },
+            data:{
+                closed: true,
+                closedAt: new Date()
+            }
+        })
+
     
     let handler = (requestStrategies[request.strategy]) 
     	? requestStrategies[request.strategy].closeRequest 

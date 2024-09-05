@@ -16,6 +16,7 @@ const globalDB= {
 
 
 const { closeSegmentationRequest } = require("./long-term/close-segmentation-request")
+const { updateSegmentationRequest } = require("./long-term/update-segmentation-request")
 
 
 
@@ -26,7 +27,7 @@ const openRequest =  async (req, res) => {
         options = extend({}, options, req.body.cache.currentDataset)
         options.strategy = options.strategy || "test"
         options.configDB = globalDB
-        
+
         if( requestStrategy[options.strategy] && requestStrategy[options.strategy].openRequest ){
         	let request 
         	request = await requestStrategy[options.strategy].openRequest(options)
@@ -150,37 +151,61 @@ const getSegmentationDataRaw =  async (req, res) => {
 	}
 }
 
-const updateSegmentationData =  async (req, res) => {
-	try {
-		
-		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
-		let data = req.body
-		
-		await mongodb.updateOne({
-			db: globalDB,
-			collection: `settings.segmentation-requests`,
-			filter:{
-				id: requestId
-			},
-			data:{
-				responseData: data,
-				updatedAt: new Date()
-			}
-		})
 
-		res.status(200).send()
-	
-	} catch (e) {
-	
-		delete req.body.cache
+
+const updateSegmentationData =  async (req, res) => {
+
+		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
 		
-		res.status(503).send({ 
-			error: `${e.toString()}\n${e.stack}`,
-			requestBody: req.body
-		})
+		let options = {
+			data: req.body,
+			requestId,
+			configDB: globalDB
+		}	
+		
+		if (req.eventHub.listenerCount("update-segmentation-request") == 0) {
+            req.eventHub.on("update-segmentation-request", updateSegmentationRequest)
+        }
+
+        req.eventHub.emit( "update-segmentation-request", options )
+
+        res.status(200).send("ok")
+
+}	
+
+
+
+// const updateSegmentationData =  async (req, res) => {
+// 	try {
+		
+// 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
+// 		let data = req.body
+		
+// 		await mongodb.updateOne({
+// 			db: globalDB,
+// 			collection: `settings.segmentation-requests`,
+// 			filter:{
+// 				id: requestId
+// 			},
+// 			data:{
+// 				responseData: data,
+// 				updatedAt: new Date()
+// 			}
+// 		})
+
+// 		res.status(200).send()
 	
-	}
-}
+// 	} catch (e) {
+	
+// 		delete req.body.cache
+		
+// 		res.status(503).send({ 
+// 			error: `${e.toString()}\n${e.stack}`,
+// 			requestBody: req.body
+// 		})
+	
+// 	}
+// }
 
 
 
