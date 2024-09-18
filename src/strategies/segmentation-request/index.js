@@ -4,6 +4,8 @@ module.exports = {
 	Basic_Labeling_2nd: require("./Basic_Labeling_2nd"),
 	Cross_Validation_2nd: require("./Cross_Validation_2nd"),
 	Manual_merging: require("./Manual_merging"),
-	linear_workflow: require("./linear_workflow")
+	
+	linear_workflow: require("./linear_workflow"),
+	tagged_record: require("./tagged_record")
 
 }

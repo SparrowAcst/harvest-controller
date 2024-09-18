@@ -51,8 +51,15 @@ const getTagList = async (req, res) => {
 	try {
 
 		let options = req.body.options
+		options.db = req.body.cache.currentDataset.db
 
-		let scope = (!isUndefined(options.tagScope) && !isNull(options.tagScope) && options.tagScope && options.tagScope != "null") ? [{$match:{ "name": { $regex: options.tagScope}}}] : []
+		let scope = (
+			!isUndefined(options.tagScope) && 
+			!isNull(options.tagScope) && 
+			options.tagScope && 
+			options.tagScope != "null") ? 
+				[{$match:{ "name": { $regex: options.tagScope}}}] : 
+				[]
 		
 		options = extend( {}, options, {
 			collection: `${options.db.name}.taged-tags`,

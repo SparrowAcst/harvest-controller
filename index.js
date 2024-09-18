@@ -146,7 +146,7 @@ router.post("/pr/get-exams/", pr.getExams)
 router.post("/pr/select-exams/", pr.selectExams)
 
 
-router.post("/pr/get-tag-list/", pr.getTagList)
+router.post("/pr/get-tag-list/", [DBCache,pr.getTagList])
 router.post("/pr/add-tags/", pr.addTags)
 router.post("/pr/remove-tag/", pr.removeLastTag)
 
