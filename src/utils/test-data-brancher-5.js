@@ -4,7 +4,7 @@ const { extend, first } = require("lodash")
 let options = {
 	db: {
 	  url: "mongodb+srv://jace:jace@jace.llb8spm.mongodb.net/?retryWrites=true&w=majority",
-  	  name: "dj-storage"
+  	  name: "wf-test"
   	},  
 
   	branchesCollection: "branches",
@@ -14,6 +14,13 @@ let options = {
 
 
 const activeUserHead = version => version.user && version.head == true && !version.save && !version.branch 
+const activeHeads = version => version.head == true 
+								&& !version.branch
+								&& !version.commit
+
+
+
+
 const userHead = user => version => version.user == user && version.head == true 
 const mainHead = version => !version.user && version.head == true 
 const getHead = (worker, user) => {
@@ -165,11 +172,27 @@ const createTestData = async dataId => {
 
 const run = async () => {
 
-	const dataId = [4, 5]
+	const dataId = ["e09b97e1-7de4-472c-b02e-c73b7b080e2f"]
 	
-	await createTestData(dataId)
+	// await createTestData(dataId)
 	
 	let w = await createWorker(extend({}, options, {dataId}))
+
+	let versions = w.select(activeHeads)
+
+	console.log(versions)
+	console.log(w.getHistory({
+		version: versions[0],
+		stopAt: version => version.type == "branch"
+	}))
+	console.log("--------------------------------------")
+	console.log(w.getHistory({
+		version: versions[1],
+		stopAt: version => version.type == "branch"
+	}))
+
+
+
 	
 	// console.log( w )
 

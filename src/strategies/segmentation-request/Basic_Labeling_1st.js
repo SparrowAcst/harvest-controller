@@ -15,9 +15,7 @@ const resolveSegmentation = async (options, segmentation) => {
     if (!segmentation) return
 
     if (isUUID(segmentation)) {
-
         let d = await mongodb.aggregate({
-            comment: "open request: resolve segmentation",
             db,
             collection: `${db.name}.segmentations`,
             pipeline: [{
@@ -60,64 +58,18 @@ const openRequest = async options => {
     }
 
     options.dataId = [version.dataId]
-
     const controller = createTaskController(options)
     let data = await controller.resolveData({ version })
-    let segmentation = await resolveSegmentation(options, data.segmentation)
 
-    let segmentationSource = segmentation
+    let seg = await resolveSegmentation(options, data.segmentation)
 
-    let altVersions = await controller.selectTask({
-        matchVersion: {
-
-            id: {
-                $ne: version.id
-            },
-
-            "metadata.task.Cross_Validation_2nd.id": version.metadata.task.Cross_Validation_2nd.id,
-            head: true,
-
-            save: {
-                $exists: false
-            },
-
-            submit: {
-                $exists: false
-            },
-
-            branch: {
-                $exists: false
-            },
-
-            commit: {
-                $exists: false
-            }
-        }
-    })
-
-    for (let alt of altVersions) {
-        alt.data = await controller.resolveData({ version: alt })
-        alt.segmentation = await resolveSegmentation(options, alt.data.segmentation)
-        if (alt.segmentation) {
-            alt.segmentation = segmentationAnalysis.parse(alt.segmentation.data)
-        }
-    }
-
-    altVersions = altVersions.filter(v => v.segmentation)
-
-    let inconsistency = []
-
-    if (segmentation) {
-
-        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
-        let segmentations = [segmentationAnalysis.parse(segmentation.data).segments]
-            .concat(altVersions.map(v => v.segmentation.segments))
-
-        let diff = segmentationAnalysis.getSegmentsDiff(segmentations)
-        inconsistency = segmentationAnalysis.getNonConsistencyIntervalsForSegments(diff)
-        inconsistency = inconsistency.map(d => [d.start.toFixed(3), d.end.toFixed(3)])
-
-    }
+    let segmentationData = (seg) ?
+        {
+            user: user.altname,
+            readonly: false,
+            segmentation: seg.data
+        } :
+        undefined
 
     let requestData = {
         "patientId": data["Examination ID"],
@@ -129,13 +81,8 @@ const openRequest = async options => {
         "Systolic murmurs": data["Systolic murmurs"],
         "Diastolic murmurs": data["Diastolic murmurs"],
         "Other murmurs": data["Other murmurs"],
-        inconsistency,
-        "data": (segmentation) ? [{
-            user: user.altname,
-            readonly: false,
-            segmentation: segmentation.data
-        }] : []
-
+        "inconsistency": [],
+        "data": (segmentationData) ? [segmentationData] : []
     }
 
     let request = {
@@ -143,12 +90,12 @@ const openRequest = async options => {
         user: user.altname,
         versionId: version.id,
         dataId: version.dataId,
-        strategy: "Cross_Validation_2nd",
+        strategy: "Basic_Labeling_1st",
         db,
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,
-        responseData: (segmentationSource) ? { segmentation: segmentationSource.data } : undefined
+        responseData: (segmentationData) ? { segmentation: segmentationData.segmentation } : undefined
     }
 
     await mongodb.replaceOne({
@@ -167,12 +114,11 @@ const openRequest = async options => {
 
 const updateRequest = async options => {
 
-    console.log(`>> Cross_Validation_2nd: UPDATE REQUEST ${options.requestId}: START`)
+    console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: START`)
 
     let { requestId, request } = options
 
     let { db, collection, responseData, requestData, dataId, versionId, user } = request
-
 
     if (!responseData) return
     if (!responseData.segmentation) return
@@ -203,9 +149,10 @@ const updateRequest = async options => {
         user,
         data,
         metadata: {
-            "task.Cross_Validation_2nd.status": "in progress",
-            "task.Cross_Validation_2nd.updatedAt": new Date(),
-            "actual_status": "segmentation changes have been saved",
+            "task.Basic_Labeling_1st.status": "process",
+            "task.Basic_Labeling_1st.reason": "Update Segmentation",
+            "task.Basic_Labeling_1st.updatedAt": new Date(),
+            "actual_status": "segmentation changes have been saved"
         }
     })
 
@@ -220,7 +167,8 @@ const updateRequest = async options => {
         data: segmentation
     })
 
-    console.log(`>> Cross_Validation_2nd: UPDATE REQUEST ${options.requestId}: DONE`)
+    console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: DONE`)
+
 
 }
 

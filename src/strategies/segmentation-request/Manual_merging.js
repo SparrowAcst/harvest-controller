@@ -16,6 +16,7 @@ const resolveSegmentation = async (options, segmentation) => {
 
     if (isUUID(segmentation)) {
         let d = await mongodb.aggregate({
+            comment: "open request: resolve segmentation",
             db,
             collection: `${db.name}.segmentations`,
             pipeline: [{
@@ -25,7 +26,7 @@ const resolveSegmentation = async (options, segmentation) => {
             }]
         })
 
-        return d[0]
+        return d[0] || null
 
     }
 }
@@ -39,7 +40,7 @@ const openRequest = async options => {
         collection: `settings.segmentation-requests`,
         pipeline: [{
                 $match: {
-                    dataId: version.dataId,
+                    versionId: version.id,
                     closed: {
                         $exists: false
                     }
@@ -58,9 +59,69 @@ const openRequest = async options => {
     }
 
     options.dataId = [version.dataId]
+
     const controller = createTaskController(options)
     let data = await controller.resolveData({ version })
     let segmentation = await resolveSegmentation(options, data.segmentation)
+
+    let segmentationSource = segmentation
+
+    let altVersions = await controller.selectTask({
+        matchVersion: v =>
+            version.metadata.task.Manual_merging.versions.includes(v.id)
+    })
+
+    // let altVersions = await controller.selectTask({
+    //     matchVersion: {
+    //         id: {
+    //             $in: version.metadata.task.Manual_merging.versions
+    //         }
+    //     }
+    // })
+
+    for (let alt of altVersions) {
+        alt.data = await controller.resolveData({ version: alt })
+        alt.data.segmentation = await resolveSegmentation(options, alt.data.segmentation)
+        
+        if (alt.data.segmentation) {
+            alt.data.segmentation = alt.data.segmentation.data
+            alt.data.segmentationAnalysis = segmentationAnalysis.parse(alt.data.segmentation)
+        }
+    }
+
+    // altVersions = altVersions.filter(v => v.segmentation)
+
+    let inconsistency = []
+
+    if (segmentation) {
+
+        version.data.segmentationAnalysis = segmentationAnalysis.parse(segmentation.data)
+        let segmentations = [version.data.segmentationAnalysis.segments]
+            .concat(altVersions.map(v => v.data.segmentationAnalysis.segments))
+
+        let diff = segmentationAnalysis.getSegmentsDiff(segmentations)
+        inconsistency = segmentationAnalysis.getNonConsistencyIntervalsForSegments(diff)
+        inconsistency = inconsistency.map(d => [d.start.toFixed(3), d.end.toFixed(3)])
+        segmentation = segmentation.data
+        
+    } else {
+
+        let segmentations = altVersions.map(v => v.data.segmentationAnalysis.segments)
+
+        let diff = segmentationAnalysis.getSegmentsDiff(segmentations)
+        inconsistency = segmentationAnalysis.getNonConsistencyIntervalsForSegments(diff)
+        inconsistency = inconsistency.map(d => [d.start.toFixed(3), d.end.toFixed(3)])
+
+    }
+
+    version.strategy = "Manual_merging"
+
+    // console.log("altVersions", altVersions.map( v => ({
+    //         user: v.user,
+    //         readonly: false,
+    //         segmentation: v.data
+    //     })))
+
     let requestData = {
         "patientId": data["Examination ID"],
         "recordId": version.dataId,
@@ -71,12 +132,16 @@ const openRequest = async options => {
         "Systolic murmurs": data["Systolic murmurs"],
         "Diastolic murmurs": data["Diastolic murmurs"],
         "Other murmurs": data["Other murmurs"],
-        "inconsistency": [],
-        "data": (segmentation) ? [{
-            user: user.altname,
+        inconsistency,
+        "data": [{
+            user: version.user,
             readonly: false,
-            segmentation: segmentation.data
-        }] : []
+            segmentation: segmentation
+        }].concat(altVersions.map( v => ({
+            user: v.user,
+            readonly: false,
+            segmentation: v.data.segmentation
+        })))
 
     }
 
@@ -85,12 +150,12 @@ const openRequest = async options => {
         user: user.altname,
         versionId: version.id,
         dataId: version.dataId,
-        strategy: "Check_S3_Segmentation",
+        strategy: "Manual_merging",
         db,
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,
-        responseData: null
+        responseData: (segmentationSource) ? { segmentation: segmentationSource.data } : undefined
     }
 
     await mongodb.replaceOne({
@@ -107,47 +172,14 @@ const openRequest = async options => {
 }
 
 
-const closeRequest = async options => {
+const updateRequest = async options => {
 
-    console.log(`>> Check_S3_Segmentation: CLOSE REQUEST ${options.requestId}`)
+    console.log(`>> Manual_merging: UPDATE REQUEST ${options.requestId}: START`)
 
-    let { configDB, requestId } = options
-
-    let request = await mongodb.aggregate({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        pipeline: [{
-            $match: {
-                id: requestId
-            }
-        }]
-    })
-
-    request = request[0]
-
-    if (!request) return
+    let { requestId, request } = options
 
     let { db, collection, responseData, requestData, dataId, versionId, user } = request
 
-    // await mongodb.deleteOne({
-    //     db: configDB,
-    //     collection: `${configDB.name}.segmentation-requests`,
-    //     filter: {
-    //         id: requestId
-    //     }
-    // })
-
-    await mongodb.updateOne({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        filter: {
-            id: requestId
-        },
-        data: {
-            closed: true,
-            closedAt: new Date()
-        }
-    })
 
     if (!responseData) return
     if (!responseData.segmentation) return
@@ -169,7 +201,7 @@ const closeRequest = async options => {
         data: responseData.segmentation
     }
 
-    
+
     data.segmentation = segmentation.id
 
     const brancher = await controller.getBrancher(options)
@@ -178,9 +210,9 @@ const closeRequest = async options => {
         user,
         data,
         metadata: {
-            "task.Check_S3_Segmentation.status": "process",
-            "task.Check_S3_Segmentation.reason": "Update Segmentation",
-            "task.Check_S3_Segmentation.updatedAt": new Date(),
+            "task.Manual_merging.status": "in progress",
+            "task.Manual_merging.updatedAt": new Date(),
+            "actual_status": "segmentation changes have been saved",
         }
     })
 
@@ -195,10 +227,11 @@ const closeRequest = async options => {
         data: segmentation
     })
 
+    console.log(`>> Manual_merging: UPDATE REQUEST ${options.requestId}: DONE`)
 
 }
 
 module.exports = {
     openRequest,
-    closeRequest
+    updateRequest
 }

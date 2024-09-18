@@ -44,8 +44,7 @@ const get = async context => {
 	        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
 	    }
 
-	    version.strategy = "Base_Labeling_2nd"
-	    
+	    version.strategy = "none"
 	    return version
 }
 
@@ -61,59 +60,8 @@ const getSegmentation = async context => {
 }
 
 
-const save = async context => {
-
-	let { data, source, user, recordId } = context
-    context.dataId = [ recordId ]
-    const controller = createTaskController(context)
-	const brancher = await controller.getBrancher(context)	 
-	await brancher.save({
-		user,
-		source,
-		data,
-		metadata:{
-			"task.Base_Labeling_2nd.status": "process",
-			"task.Base_Labeling_2nd.updatedAt": new Date()
-		}
-	})
-
-}
-
-const submit = async context => {
-
-	let { data, source, user, recordId } = context
-    context.dataId = [ recordId ]
-    const controller = createTaskController(context)
-	const brancher = await controller.getBrancher(context)	 
-	await brancher.submit({
-		user,
-		source,
-		data,
-		metadata:{
-			"task.Base_Labeling_2nd.status": "submit",
-			"task.Base_Labeling_2nd.updatedAt": new Date()
-		}
-	})
-
-}
-
-const rollback = async context => {
-
-	let { source, user, recordId } = context
-    context.dataId = [ recordId ]
-    const controller = createTaskController(context)
-	const brancher = await controller.getBrancher(context)	 
-	await brancher.rollback({
-		source
-	})
-
-}
-
 
 module.exports = {
     get,
-    save,
-    submit,
-    rollback,
     getSegmentation
 }

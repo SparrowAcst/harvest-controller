@@ -44,8 +44,7 @@ const get = async context => {
 	        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
 	    }
 
-	    version.strategy = "Check_S3_Segmentation"
-	    
+	    version.strategy = "Basic_Labeling_1st"
 	    return version
 }
 
@@ -72,8 +71,9 @@ const save = async context => {
 		source,
 		data,
 		metadata:{
-			"task.Check_S3_Segmentation.status": "process",
-			"task.Check_S3_Segmentation.updatedAt": new Date()
+			"task.Basic_Labeling_1st.status": "in progress",
+			"task.Basic_Labeling_1st.updatedAt": new Date(),
+			"actual_status": "label changes have been saved"
 		}
 	})
 
@@ -90,8 +90,9 @@ const submit = async context => {
 		source,
 		data,
 		metadata:{
-			"task.Check_S3_Segmentation.status": "submit",
-			"task.Check_S3_Segmentation.updatedAt": new Date()
+			"task.Basic_Labeling_1st.status": "submit",
+			"task.Basic_Labeling_1st.updatedAt": new Date(),
+			"actual_status": "changes to labels and segmentation have been submitted"
 		}
 	})
 

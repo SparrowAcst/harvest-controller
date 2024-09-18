@@ -52,16 +52,16 @@ const TASK_BUFFER_MAX = 21
 const LIMIT = 100
 
 const collaboratorHeads = (dataId, user) => version => version.dataId == dataId && version.type != "main" && version.user != user && version.head == true
-const userHead = (dataId, user) => version => 
-    version.dataId == dataId 
-    && version.user == user 
-    && version.head == true 
-    && version.type != "main"
+const userHead = (dataId, user) => version =>
+    version.dataId == dataId &&
+    version.user == user &&
+    version.head == true &&
+    version.type != "main"
 
-const mainHead = (dataId, user) => version => 
-    version.dataId == dataId 
-    && version.type == "main" 
-    && version.head == true
+const mainHead = (dataId, user) => version =>
+    version.dataId == dataId &&
+    version.type == "main" &&
+    version.head == true
 
 const collaboration = (brancher, dataId, user) => brancher.select(collaboratorHeads(dataId, user))
 const userDataHead = (brancher, dataId, user) => {
@@ -77,20 +77,32 @@ const Worker = class {
     constructor(options) {
         this.context = extend({}, options)
         this.context.employee = this.context.employee || SETTINGS
+        this.brancherDataId = null
     }
 
 
     async getBrancher(options) {
-        let res = await createBrancher(options || this.context)
-        return res
+        console.log("options.dataId", (options) ? options.dataId : "undefined")
+        
+        if(options && options.dataId != this.brancherDataId){
+            this.brancher = await createBrancher(options)
+            return this.brancher
+        }
+
+        this.brancher = (this.brancher) ?
+            this.brancher :
+            await createBrancher(options || this.context)
+        return this.brancher
+    
     }
 
 
-    async getActualVersion (options = {}){
+    async getActualVersion(options = {}) {
         let { user, dataId } = options
-        const brancher = await this.getBrancher(this.context)
-        let version = userDataHead(brancher, dataId, user.altname )
-        version.data = await brancher.resolveData({version})        
+        // console.log("getActualVersion")
+        const brancher = await this.getBrancher()
+        let version = userDataHead(brancher, dataId, user.altname)
+        version.data = await brancher.resolveData({ version })
         return version
     }
 
@@ -102,50 +114,106 @@ const Worker = class {
             let { db } = this.context
             let { version } = options
 
-            let dataId = version.dataId || this.context.dataId
-            dataId = (isArray(dataId)) ? dataId : [dataId]
+            // let dataId = version.dataId || this.context.dataId
+            // dataId = (isArray(dataId)) ? dataId : [dataId]
 
-            let w = await createBrancher(extend({}, this.context, { dataId }))
-            let result = await w.resolveData({ version })
+            let brancher = await this.getBrancher() //extend({}, this.context, { dataId }))
+            let result = await brancher.resolveData({ version })
 
             return result
 
         } catch (e) {
-
+            console.log(e.toString(), e.stack)
             throw e
         }
 
     }
 
+    // async selectTask(options = {}) {
+    //     // console.log("selectTask")
+
+    //     try {
+    //         let { db } = this.context
+    //         let { matchVersion } = options
+
+    //         let pipeline = [{
+    //                 $match: matchVersion || {}
+    //             },
+    //             {
+    //                 $project: {
+    //                     _id: 0,
+    //                 },
+    //             },
+    //             {
+    //                 $limit: LIMIT
+    //             }
+    //         ]
+
+    //         let data = await mongodb.aggregate({
+    //             comment: "selectTask",
+    //             db,
+    //             collection: `${db.name}.savepoints`,
+    //             pipeline
+    //         })
+
+    //         return data
+
+    //     } catch (e) {
+
+    //         throw e
+    //     }
+
+    // }
+
+
     async selectTask(options = {}) {
+        // console.log("selectTaskfromCache")
 
         try {
-            let { db } = this.context
+
             let { matchVersion } = options
+            matchVersion = matchVersion || (version => true)
+            if (isFunction(matchVersion)) {
+                let brancher = await this.getBrancher()
 
-            let pipeline = [{
-                    $match: matchVersion || {}
-                },
-                {
-                    $project: {
-                        _id: 0,
+                let data = brancher.select(matchVersion)
+
+                return data
+
+            } else {
+
+                let { db } = this.context
+
+                let pipeline = [{
+                        $match: matchVersion || {}
                     },
-                },
-                {
-                    $limit: LIMIT
-                }
-            ]
+                    {
+                        $sort: {
+                            createdAt: 1
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                        },
+                    },
+                    {
+                        $limit: LIMIT
+                    }
+                ]
 
-            let data = await mongodb.aggregate({
-                db,
-                collection: `${db.name}.savepoints`,
-                pipeline
-            })
+                let data = await mongodb.aggregate({
+                    comment: "selectTask",
+                    db,
+                    collection: `${db.name}.savepoints`,
+                    pipeline
+                })
 
-            return data
+                return data
+            }
 
         } catch (e) {
-
+            console.log(e.toString(), e.stack)
             throw e
         }
 
@@ -180,7 +248,7 @@ const Worker = class {
             return data
 
         } catch (e) {
-
+            console.log(e.toString(), e.stack)
             throw e
         }
 
@@ -193,16 +261,12 @@ const Worker = class {
             let { db } = this.context
             let { matchEmployee, matchVersion } = options
 
-            matchEmployee = (matchEmployee) 
-                ? [
-                    { $match: matchEmployee },
-                    { $limit: LIMIT }
-                  ] 
-                : [{ $limit: LIMIT }]
-            matchVersion = (matchVersion) ? [{ $match: matchVersion }] : []
-            
-            // console.log("matchVersion", matchVersion)    
+            matchEmployee = (matchEmployee) ? [
+                { $match: matchEmployee },
+                { $limit: LIMIT }
+            ] : [{ $limit: LIMIT }]
 
+            matchVersion = (matchVersion) ? [{ $match: matchVersion }] : []
 
             let employes = await mongodb.aggregate({
                 db,
@@ -218,49 +282,17 @@ const Worker = class {
 
             let data = []
 
-            // if (employes.length > 0) {
-                
-                data = employes.map(e => {
-                    let v = versions.filter(d => d.user == e.namedAs)
-                    return v.map(d => extend({}, e, { version: d }))
-                })
-
-            // } else {
-            //     if (versions.length > 0) {
-            //         data = versions.map(v => {
-            //             let e = employes.filter(d => v.user == d.namedAs)
-            //             return e.map(d => extend({}, d, { version: v }))
-            //         })
-            //     }
-            // }
-
+            data = employes.map(e => {
+                let v = versions.filter(d => d.user == e.namedAs)
+                return v.map(d => extend({}, e, { version: d }))
+            })
 
             data = flatten(data)
 
-            // let p3 = [{
-            //         $unwind: {
-            //             path: "$version"
-            //         }
-            //     },
-            //     {
-            //         $project: {
-            //             _id: 0
-            //         }
-            //     }
-            // ]
-
-            // let pipeline = p1.concat(p2).concat(p3)
-            // // console.log(JSON.stringify(pipeline, null, " "))
-            // let data = await mongodb.aggregate({
-            //     db,
-            //     collection: `${db.name}.${grantCollection}`,
-            //     pipeline
-            // })
-            // console.log(data)
             return data
 
         } catch (e) {
-
+            console.log(e.toString(), e.stack)
             throw e
 
         }
@@ -268,24 +300,89 @@ const Worker = class {
     }
 
 
-    async getEmployeeActivity(options = {}) {
+    // async getEmployeeActivity(options = {}) {
 
-        let marker = uuid()
-        // console.log(`Start getEmployeeActivity ${marker}`)
+    //     try {
+
+    //         let { db } = this.context
+    //         let { matchEmployee, matchVersion } = options
+
+    //         matchEmployee = (matchEmployee) ? [{ $match: matchEmployee }, { $limit: LIMIT }] : [{ $limit: LIMIT }]
+    //         matchVersion = (matchVersion) ? [{ $match: matchVersion }, { $limit: LIMIT }] : [{ $limit: LIMIT }]
+
+    //         let employes = await mongodb.aggregate({
+    //             db,
+    //             collection: `settings.app-grant`,
+    //             pipeline: matchEmployee
+    //         })
+
+    //         let versions = await mongodb.aggregate({
+    //             db,
+    //             collection: `${db.name}.savepoints`,
+    //             pipeline: matchVersion
+    //         })
+
+
+    //         let data = []
+
+    //         data = employes.map(e => {
+    //             return extend({}, e, { activity: versions.filter(d => d.user == e.namedAs) })
+    //         })
+
+    //         return data
+
+    //     } catch (e) {
+    //         throw e
+    //     }
+
+    // }
+
+    async getEmployeeActivity(options = {}) {
 
         try {
 
-            let { db } = this.context
+            let { db, userProfiles } = this.context
             let { matchEmployee, matchVersion } = options
 
-            matchEmployee = (matchEmployee) ? [{ $match: matchEmployee }, { $limit: LIMIT }] : [{ $limit: LIMIT }]
-            matchVersion = (matchVersion) ? [{ $match: matchVersion }, { $limit: LIMIT }] : [{ $limit: LIMIT }]
+            // console.log("userProfiles", userProfiles)
+            // console.log("this.context", this.context)
 
-            let employes = await mongodb.aggregate({
-                db,
-                collection: `settings.app-grant`,
-                pipeline: matchEmployee
-            })
+            matchEmployee = matchEmployee || (u => true)
+
+            let employes = userProfiles.filter(matchEmployee)
+
+            matchVersion = (matchVersion) ? [{
+                    $match: {
+                        user: {
+                            $in: employes.map(u => u.namedAs)
+                        }
+                    }
+                },
+                {
+                    $match: matchVersion
+                },
+                {
+                    $sort: { createdAt: 1 }
+                },
+                {
+                    $limit: LIMIT
+                }
+            ] : [{
+                    $match: {
+                        user: {
+                            $in: employes.map(u => u.namedAs)
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        createdAt: 1
+                    }
+                },
+                {
+                    $limit: LIMIT
+                }
+            ]
 
             let versions = await mongodb.aggregate({
                 db,
@@ -300,15 +397,11 @@ const Worker = class {
                 return extend({}, e, { activity: versions.filter(d => d.user == e.namedAs) })
             })
 
-            // console.log(`Done getEmployeeActivity ${marker}`)
-
             return data
 
         } catch (e) {
-            // console.log(`Error getEmployeeActivity ${marker}`)
-
+            console.log(e.toString(), e.stack)
             throw e
-
         }
 
     }
@@ -355,7 +448,7 @@ const Worker = class {
 
 
         } catch (e) {
-
+            console.log(e.toString(), e.stack)
             throw e
 
         }
@@ -379,10 +472,10 @@ const Worker = class {
             let { matchEmployee, matchVersion } = options
 
             let taskList = await this.getEmployeeActivity({
-                matchEmployee: matchEmployee || {},
-                matchVersion: matchVersion || {}
+                matchEmployee,
+                matchVersion
             })
-            
+
             // console.log("getEmployeeStatByTaskType", matchEmployee, matchVersion)
             // console.log(JSON.stringify(taskList, null, " "))
 
@@ -418,7 +511,7 @@ const Worker = class {
             return taskList
 
         } catch (e) {
-
+            console.log(e.toString(), e.stack)
             throw new Error(`${e.toString()} : ${e.stack}`)
 
         }
@@ -428,20 +521,25 @@ const Worker = class {
 
     async assignTasks(options = {}) {
 
-        const { user, schedule } = options
-        
-        for (const s of schedule) {
+        try {
+            const { user, schedule } = options
 
-            let tasks = await s(user, this)
+            for (const s of schedule) {
 
-            if (tasks.version.length == 0) continue
+                let tasks = await s(user, this)
+                tasks = tasks || { version: [] }
 
-            let b = await createBrancher(extend({}, this.context, { dataId: tasks.version.map(t => t.dataId) }))
-            await b.branch({
-                source: tasks.version,
-                user: user.altname,
-                metadata: tasks.metadata
-            })
+                if (tasks.version.length == 0) continue
+
+                let b = await this.getBrancher(extend({}, this.context, { dataId: tasks.version.map(t => t.dataId) }))
+                await b.branch({
+                    source: tasks.version,
+                    user: user.altname,
+                    metadata: tasks.metadata
+                })
+            }
+        } catch (e) {
+            console.log(e.toString(), e.stack)
         }
 
     }
@@ -653,7 +751,7 @@ const Worker = class {
 
         // console.log(dataId, metadata)
 
-        let w = await createBrancher(extend({}, this.context, { dataId, metadata }))
+        let w = await this.getBrancher(extend({}, this.context, { dataId, metadata }))
         let result = w.select(v => dataId.includes(v.dataId))
 
         return result
@@ -661,18 +759,21 @@ const Worker = class {
     }
 
     async updateVersion(options = {}) {
+        try {
+            let { version } = options
 
-        let { version } = options
+            version = version || []
+            version = (isArray(version)) ? version : [version]
 
-        version = version || []
-        version = (isArray(version)) ? version : [version]
+            let dataId = version.map(v => v.dataId)
 
-        let dataId = version.map(v => v.dataId)
+            let w = await this.getBrancher(extend({}, this.context, { dataId }))
 
-        let w = await createBrancher(extend({}, this.context, { dataId }))
+            await w.updateVersion({ version })
+        } catch (e) {
+            console.log(e.toString(), e.stack)
 
-        await w.updateVersion({ version })
-
+        }
     }
 
     async getMainVersionByPatient(options = {}) {
@@ -711,6 +812,7 @@ const Worker = class {
             return data
 
         } catch (e) {
+            console.log(e.toString(), e.stack)
 
             throw e
         }
@@ -764,7 +866,7 @@ const Worker = class {
 
                     }
 
-                    let brancher = await createBrancher(extend({}, this.context, { dataId: group.task.map(d => d.dataId) }))
+                    let brancher = await this.getBrancher(extend({}, this.context, { dataId: group.task.map(d => d.dataId) }))
 
                     // console.log("Create task:", group.patientId, user.map(d => d.user), group.task)
 
@@ -779,6 +881,7 @@ const Worker = class {
             }
 
         } catch (e) {
+            console.log(e.toString(), e.stack)
 
             throw e
         }

@@ -4,18 +4,18 @@ const moment = require("moment")
 
 const createTaskController = require("./utils/task-controller")
 
-const dataView = d => ({
-    "Patient ID": d["Examination ID"],
-    "Device": d.model,
-    "Body Spot": d["Body Spot"],
-    "S3": (d.segmentation && d.segmentation.S3 && d.segmentation.S3.length > 0) ? "present" : " ",
-    "Murmurs": (
-        (d["Systolic murmurs"].filter(d => d != "No systolic murmurs").length +
-            d["Diastolic murmurs"].filter(d => d != "No diastolic murmurs").length +
-            d["Other murmurs"].filter(d => d != "No Other Murmurs").length) > 0
-    ) ? "present" : " ",
-    "Complete": d.complete
-})
+// const dataView = d => ({
+//     "Patient ID": d["Examination ID"],
+//     "Device": d.model,
+//     "Body Spot": d["Body Spot"],
+//     "S3": (d.segmentation && d.segmentation.S3 && d.segmentation.S3.length > 0) ? "present" : " ",
+//     "Murmurs": (
+//         (d["Systolic murmurs"].filter(d => d != "No systolic murmurs").length +
+//             d["Diastolic murmurs"].filter(d => d != "No diastolic murmurs").length +
+//             d["Other murmurs"].filter(d => d != "No Other Murmurs").length) > 0
+//     ) ? "present" : " ",
+//     "Complete": d.complete
+// })
 
 
 
@@ -28,13 +28,18 @@ const getActiveTask = async (req, res) => {
         // console.log("Events", req.eventHub)
         let { options } = req.body
 
+        // console.log("options", options)
 
         if (req.eventHub.listenerCount("assign-tasks") == 0) {
             req.eventHub.on("assign-tasks", assignTasks)
         }
 
-        options = extend(options, req.body.cache.currentDataset)
-        options.dataView = dataView
+        options = extend(
+            options, 
+            req.body.cache.currentDataset,
+            { userProfiles: req.body.cache.userProfiles}
+        )
+        // options.dataView = dataView
 
         const controller = createTaskController(options)
 
@@ -87,6 +92,7 @@ const getActiveTask = async (req, res) => {
         })
 
     } catch (e) {
+        console.log(e.toString(), e.stack)
         res.send({
             error: `${e.toString()}\n${e.stack}`,
             requestBody: req.body
@@ -209,15 +215,17 @@ const getEmployeeStat = async (req, res) => {
 
         let { options } = req.body
 
-        options = extend(options, req.body.cache.currentDataset)
-
+        options = extend(
+            options, 
+            req.body.cache.currentDataset,
+            { userProfiles: req.body.cache.userProfiles}
+        )
+        
         const controller = createTaskController(options)
 
         let result = await controller.getEmployeeStatByTaskType({
 
-            matchEmployee: {
-                namedAs: options.user.altname
-            },
+            matchEmployee: v => v.namedAs == options.user.altname,
 
             matchVersion: {
                 head: true,

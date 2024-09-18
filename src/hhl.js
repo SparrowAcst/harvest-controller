@@ -589,7 +589,7 @@ const seglog = data => {
 const updateSegmentation = async (req, res) => {
 	try {
 
-		let dataPath = req.body.path
+		let dataPath = req.body.path || req.body.name
 		let segmentation = req.body.segmentation
 		let query = (req.body.url) ? url.parse(req.body.url, true).query : {}
 		let collection = query.c || ""

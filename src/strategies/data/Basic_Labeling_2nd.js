@@ -1,4 +1,4 @@
-const { isString } = require("lodash")
+const { isString, last } = require("lodash")
 
 const uuid = require("uuid").v4
 const isValidUUID = require("uuid").validate
@@ -44,7 +44,8 @@ const get = async context => {
 	        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
 	    }
 
-	    version.strategy = "Base_Labeling_1st"
+	    version.strategy = "Basic_Labeling_2nd"
+	    
 	    return version
 }
 
@@ -71,8 +72,47 @@ const save = async context => {
 		source,
 		data,
 		metadata:{
-			"task.Base_Labeling_1st.status": "process",
-			"task.Base_Labeling_1st.updatedAt": new Date()
+			"task.Basic_Labeling_2nd.status": "process",
+			"task.Basic_Labeling_2nd.updatedAt": new Date(),
+			"actual_status": "label changes have been saved"
+		}
+	})
+
+}
+
+
+const reject = async context => {
+
+	let { data, source, user, recordId } = context
+    context.dataId = [ recordId ]
+    const controller = createTaskController(context)
+	const brancher = await controller.getBrancher(context)	 
+	
+	// find 1st expert
+	
+	let expertVersion = brancher.getHistory({
+		version: source,
+		stopAt: v => v.user != user
+	})
+
+	console.log("expertVersion", expertVersion)
+	expertVersion = last(expertVersion)
+	let expert = (expertVersion) ? expertVersion.user : null 
+
+	// submit rejection
+	
+	await brancher.submit({
+		user,
+		source,
+		data,
+		metadata:{
+			"task.Basic_Labeling_1st.status": "done",
+			"task.Basic_Labeling_2nd.updatedAt": new Date(),
+			"actual_status": "labeling is rejected, the data must be clarified by a 1st expert",
+
+			"task.Basic_Relabeling_1st.status": "open",
+			"task.Basic_Relabeling_1st.expert": expert,
+			"task.Basic_Relabeling_1st.updatedAt": new Date()
 		}
 	})
 
@@ -89,8 +129,9 @@ const submit = async context => {
 		source,
 		data,
 		metadata:{
-			"task.Base_Labeling_1st.status": "submit",
-			"task.Base_Labeling_1st.updatedAt": new Date()
+			"task.Basic_Labeling_2nd.status": "submit",
+			"task.Basic_Labeling_2nd.updatedAt": new Date(),
+			"actual_status": "changes to labels and segmentation have been submitted"
 		}
 	})
 
@@ -112,6 +153,7 @@ const rollback = async context => {
 module.exports = {
     get,
     save,
+    reject,
     submit,
     rollback,
     getSegmentation

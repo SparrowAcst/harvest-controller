@@ -33,7 +33,7 @@ const run = async () => {
             {
                 $match:{
                     id:{
-                        $in:["e09b97e1-7de4-472c-b02e-c73b7b080e2f"] //, "ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"]
+                        $in:["ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"] //, "ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"]
                     }
                     // "S3":{
                     //     $ne: "No"
@@ -60,6 +60,8 @@ const run = async () => {
 
         let task = (d.metadata) ? d.metadata.task || {} : {}
         task = extend({}, task, {
+        actual_task: "none",
+        actual_status: "none",
         Cross_Validation_2nd:{
             id: uuid(),
             status:"open",

@@ -169,7 +169,7 @@ const parse = segmentation => {
     let segments = []
     if (isArray(segmentation)) {
         segments = parseAI(segmentation)
-    } else if (segmentation && (segmentation.S1 || segmentation.S2 || segmentation.unsegmentable)) {
+    } else if (segmentation && segmentation.v2 == true){  //(segmentation.S1 || segmentation.S2 || segmentation.unsegmentable)) {
         segments = parseV2(segmentation)
     } else if (segmentation) segments = parseV1(segmentation)
     return sortBy(segments, d => d.start)

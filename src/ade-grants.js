@@ -21,58 +21,9 @@ const getDatasetList = async (req, res) => {
 const getGrants = async (req, res) => {
     try {
 
-        let options = req.body.options
-
-        let { user } = options 
-
-        let { db, grantCollection, profileCollection } = req.body.cache.currentDataset
-
-        options = extend({}, options, {
-            db,
-            collection: `settings.app-grant`,
-            pipeline: [
-              {
-                $match:
-                  {
-                    email: user.email,
-                  },
-              },
-              {
-                $lookup:
-                  {
-                    from: "profile",
-                    localField: "profile",
-                    foreignField: "name",
-                    as: "result",
-                    pipeline: [
-                      {
-                        $project: {
-                          _id: 0,
-                        },
-                      },
-                    ],
-                  },
-              },
-              {
-                $addFields:
-                  {
-                    profile: {
-                      $first: "$result",
-                    },
-                  },
-              },
-              {
-                $project:
-                  {
-                    _id: 0,
-                    result: 0,
-                  },
-              },
-            ]
-        })
-
-
-        const result = await mongodb.aggregate(options)
+        let userProfiles = req.body.cache.userProfiles
+        let { user } = req.body.options 
+        let result = userProfiles.filter(p => p.email.includes(user.email))
         res.send(result)
 
     } catch (e) {

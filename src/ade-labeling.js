@@ -2,37 +2,26 @@ const mongodb = require("./mongodb")
 const { extend, find } = require("lodash")
 const moment = require("moment")
 const createTaskController = require("./utils/task-controller")
-// const { getSegmentationAnalysis } = require("./utils/segment-analysis")
-// const getAISegmentation = require("./utils/ai-segmentation")
 
 const dataStrategy = require("./strategies/data")
 
-
-const dataView = d => ({
-    "Patient ID": d["Examination ID"],
-    "Device": d.model,
-    "Body Spot": d["Body Spot"],
-    "S3": (d.segmentation && d.segmentation.S3 && d.segmentation.S3.length > 0) ? "present" : " ",
-    "Murmurs": (
-        (d["Systolic murmurs"].filter(d => d != "No systolic murmurs").length +
-            d["Diastolic murmurs"].filter(d => d != "No diastolic murmurs").length +
-            d["Other murmurs"].filter(d => d != "No Other Murmurs").length) > 0
-    ) ? "present" : " ",
-    "Complete": d.complete
-})
 
 
 const getRecordData = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset, { dataView })
+
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
 
         options.eventHub = req.eventHub
-       
-        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].get : undefined
+
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].get : dataStrategy.Default.get
         let result
-        if(handler){
+        if (handler) {
             result = await handler(options)
         } else {
             result = {}
@@ -49,41 +38,22 @@ const getRecordData = async (req, res) => {
     }
 }
 
-
-// const saveRecordData = async (req, res) => {
-//     try {
-
-//         let { options } = req.body
-//         options = extend(options, req.body.cache.currentDataset)
-
-//         options = extend({}, options, { dataView })
-
-//         const controller = createTaskController(options)
-//         let brancher = await controller.getBrancher(options)
-
-//         let result = await brancher.save(options)
-
-//         res.send(result)
-
-//     } catch (e) {
-//         res.send({
-//             error: e.toString(),
-//             requestBody: req.body
-//         })
-//     }
-// }
 
 const saveRecordData = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset, { dataView })
-       
+
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
+
         options.eventHub = req.eventHub
-       
+
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].save : undefined
         let result
-        if(handler){
+        if (handler) {
             result = await handler(options)
         } else {
             result = {}
@@ -101,19 +71,55 @@ const saveRecordData = async (req, res) => {
 
 }
 
+
+const rejectRecordData = async (req, res) => {
+    try {
+
+        let { options } = req.body
+
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
+
+        options.eventHub = req.eventHub
+
+        let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].reject : undefined
+        let result
+        if (handler) {
+            result = await handler(options)
+        } else {
+            result = {}
+        }
+
+        res.send(result)
+
+    } catch (e) {
+
+        res.send({
+            error: `${e.toString()}\n${e.stack}`,
+            requestBody: req.body
+        })
+    }
+
+}
 
 
 const submitRecordData = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset, { dataView })
-        
+
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
+
         options.eventHub = req.eventHub
-       
+
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].submit : undefined
         let result
-        if(handler){
+        if (handler) {
             result = await handler(options)
         } else {
             result = {}
@@ -137,13 +143,17 @@ const rollbackRecordData = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset, { dataView })
-        
+
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
+
         options.eventHub = req.eventHub
-       
+
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].rollback : undefined
         let result
-        if(handler){
+        if (handler) {
             result = await handler(options)
         } else {
             result = {}
@@ -159,27 +169,6 @@ const rollbackRecordData = async (req, res) => {
         })
     }
 
-
-    // try {
-
-    //     let { options } = req.body
-    //     options = extend(options, req.body.cache.currentDataset)
-
-    //     options = extend({}, options, { dataView, dataId: options.recordId })
-
-    //     const controller = createTaskController(options)
-    //     let brancher = await controller.getBrancher(options)
-
-    //     let result = await brancher.rollback(options)
-
-    //     res.send(result)
-
-    // } catch (e) {
-    //     res.send({
-    //         error: e.toString(),
-    //         requestBody: req.body
-    //     })
-    // }
 }
 
 
@@ -187,9 +176,11 @@ const getVersionChart = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset)
 
-        options = extend({}, options, { dataView })
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
 
         const controller = createTaskController(options)
         let brancher = await controller.getBrancher(options)
@@ -210,21 +201,7 @@ const getVersionChart = async (req, res) => {
 const getMetadata = async (req, res) => {
     try {
 
-        let options = req.body.options
-        let { db } = req.body.cache.currentDataset
-
-
-        const result = await mongodb.aggregate({
-            db,
-            collection: `settings.metadata`,
-            pipeline: [{
-                    $project: { _id: 0 }
-                }
-
-            ]
-        })
-
-        res.send(result)
+        res.send(req.body.cache.metadata)
 
     } catch (e) {
         res.send({
@@ -239,7 +216,6 @@ const getForms = async (req, res) => {
 
         let options = req.body.options
         let { db } = req.body.cache.currentDataset
-
 
         let data = await mongodb.aggregate({
             db,
@@ -417,12 +393,15 @@ const getSegmentation = async (req, res) => {
     try {
 
         let { options } = req.body
-        options = extend(options, req.body.cache.currentDataset, { dataView })
-        console.log(dataStrategy[options.strategy], "options", options)
+
+        options = extend(
+            options,
+            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+        )
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].getSegmentation : undefined
         let result
-        if(handler){
+        if (handler) {
             result = await handler(options)
         } else {
             result = {}
@@ -481,6 +460,7 @@ const getRecords = async (req, res) => {
 module.exports = {
     getRecordData,
     saveRecordData,
+    rejectRecordData,
     submitRecordData,
     rollbackRecordData,
     getVersionChart,

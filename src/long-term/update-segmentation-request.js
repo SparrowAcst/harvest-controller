@@ -11,7 +11,7 @@ const checker = jsondiffpatch.create({
 })
 
 const updateSegmentationRequestOperation = async settings => {
-
+try {
     console.log(`LONG-TERM: updateSegmentationRequest: started`)
 
     let { requestId, configDB, data } = settings
@@ -34,6 +34,8 @@ const updateSegmentationRequestOperation = async settings => {
     if(request.length == 0) return
 
     request = request[0]
+    
+    request.responseData = request.responseData || {segmentation: null}
     
     if( !checker.diff(request.responseData.segmentation, data.segmentation) ){
         console.log(`LONG-TERM: updateSegmentationRequest: no changes`)
@@ -69,7 +71,11 @@ const updateSegmentationRequestOperation = async settings => {
     }
 
     console.log(`LONG-TERM: updateSegmentationRequest: done`)
+} catch(e) {
+    console.log(`LONG-TERM: updateSegmentationRequest:`)
+    console.log(e.toString(), e.stack)
 
+}
 }
 
 

@@ -39,7 +39,7 @@ const openRequest = async options => {
         collection: `settings.segmentation-requests`,
         pipeline: [{
                 $match: {
-                    dataId: version.dataId,
+                    versionId: version.id,
                     closed: {
                         $exists: false
                     }
@@ -63,16 +63,13 @@ const openRequest = async options => {
 
     let seg = await resolveSegmentation(options, data.segmentation)
 
-    console.log("seg", seg)
-
-
-    let segmentationData = (seg) ?
-        {
+    let segmentationData = (seg) ? {
             user: user.altname,
             readonly: false,
             segmentation: seg.data
         } :
         undefined
+
 
     let requestData = {
         "patientId": data["Examination ID"],
@@ -86,6 +83,7 @@ const openRequest = async options => {
         "Other murmurs": data["Other murmurs"],
         "inconsistency": [],
         "data": (segmentationData) ? [segmentationData] : []
+
     }
 
     let request = {
@@ -93,7 +91,7 @@ const openRequest = async options => {
         user: user.altname,
         versionId: version.id,
         dataId: version.dataId,
-        strategy: "Base_Labeling_1st",
+        strategy: "Basic_Labeling_2nd",
         db,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -117,7 +115,7 @@ const openRequest = async options => {
 
 const updateRequest = async options => {
 
-    console.log(`>> Base_Labeling_1st: UPDATE REQUEST ${options.requestId}: START`)
+    console.log(`>> Basic_Labeling_2nd: UPDATE REQUEST ${options.requestId}: START`)
 
     let { requestId, request } = options
 
@@ -152,9 +150,10 @@ const updateRequest = async options => {
         user,
         data,
         metadata: {
-            "task.Base_Labeling_1st.status": "process",
-            "task.Base_Labeling_1st.reason": "Update Segmentation",
-            "task.Base_Labeling_1st.updatedAt": new Date(),
+            "task.Basic_Labeling_2nd.status": "process",
+            "task.Basic_Labeling_2nd.reason": "Update Segmentation",
+            "task.Basic_Labeling_2nd.updatedAt": new Date(),
+            "actual_status": "segmentation changes have been saved"
         }
     })
 
@@ -169,7 +168,7 @@ const updateRequest = async options => {
         data: segmentation
     })
 
-    console.log(`>> Base_Labeling_1st: UPDATE REQUEST ${options.requestId}: DONE`)
+    console.log(`>> Basic_Labeling_2nd: UPDATE REQUEST ${options.requestId}: DONE`)
 
 
 }

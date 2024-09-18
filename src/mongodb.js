@@ -1,5 +1,6 @@
 const mongo = require('mongodb').MongoClient
 
+let clients = 0
 
 
 const normalize = str => {
@@ -13,7 +14,7 @@ const normalize = str => {
 
 const drop = async options => {
 	let client
-
+	clients++
 	try {
 		
 		const conf = normalize(options.collection)
@@ -35,12 +36,13 @@ const drop = async options => {
 	} finally {
 	
 		if(client) client.close()
-	
+		clients--
 	}    
 } 
 
 const listCollections = async options => {
 	let client
+	clients++
 	try {
 		
 		const conf = normalize(options.db.name)
@@ -64,6 +66,7 @@ const listCollections = async options => {
 	} finally {
 	
 		if(client) client.close()
+		clients--	
 	
 	}
 
@@ -72,7 +75,10 @@ const listCollections = async options => {
 
 
 const aggregate = async options => {
-
+	clients++
+	console.log(">>>> A", clients)
+	// console.log("options", JSON.stringify(options, null, " "))
+		
 	options.retry = (options.retry || 0) + 1
 	
 	let client
@@ -96,11 +102,14 @@ const aggregate = async options => {
 
 	} catch (e) {
 		
-		console.log(e.toString())
+		console.log(e.toString(), e.stack)
+		if(client) {
+			client.close()
+			clients--
+		}	
 
 		if(options.retry == 1){
 			console.log(`Retry aggregate operation`)
-			if(client) client.close()
 			const res = await aggregate(options)	
 			return res
 		} else {
@@ -110,7 +119,8 @@ const aggregate = async options => {
 	} finally {
 	
 		if(client) client.close()
-	
+		clients--
+		// console.log("<<<<<< A")
 	}   
 }
 
@@ -231,6 +241,8 @@ const insertAll = async options => {
 
 const bulkWrite = async options => {
 	let client
+	clients++
+	console.log(">>>> B", clients)
 	try {
 		
 		const conf = normalize(options.collection)
@@ -252,12 +264,16 @@ const bulkWrite = async options => {
 	} finally {
 	
 		if(client) client.close()
+		clients--	
 	
 	}	
 }
 
 const replaceOne = async options => {
 	let client
+	clients++
+	console.log(">>>> RO", clients)
+	
 	try {
 
 		const conf = normalize(options.collection)
@@ -279,12 +295,15 @@ const replaceOne = async options => {
 	} finally {
 	
 		if(client) client.close()
-	
+		clients--
 	}    
 }
 
 const updateOne = async options => {
 	let client
+	clients++
+	console.log(">>>> UO", clients)
+	
 	try {
 	
 		let conf = normalize(options.collection)
@@ -306,7 +325,7 @@ const updateOne = async options => {
 	} finally {
 	
 		if(client) client.close()
-	
+		clients--
 	}    
 }
 

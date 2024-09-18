@@ -179,6 +179,7 @@ router.post("/ade-task-dashboard/get-employee-stat/", [DBCache, adeTaskDashboard
 // router.post("/ade-task-dashboard/cancel-employee-quote/", adeTaskDashboard.cancelQuote)
 router.post("/ade-labeling/get-record/", [DBCache, adeLabeling.getRecordData])
 router.post("/ade-labeling/save-record/", [DBCache, adeLabeling.saveRecordData])
+router.post("/ade-labeling/reject-record/", [DBCache, adeLabeling.rejectRecordData])
 router.post("/ade-labeling/submit-record/", [DBCache, adeLabeling.submitRecordData])
 router.post("/ade-labeling/rollback-record/", [DBCache, adeLabeling.rollbackRecordData])
 router.post("/ade-labeling/get-version-chart/", [DBCache, adeLabeling.getVersionChart])
