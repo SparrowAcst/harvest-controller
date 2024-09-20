@@ -76,7 +76,7 @@ const listCollections = async options => {
 
 const aggregate = async options => {
 	clients++
-	console.log(">>>> A", clients)
+	// console.log(">>>> A", clients)
 	// console.log("options", JSON.stringify(options, null, " "))
 		
 	options.retry = (options.retry || 0) + 1
@@ -103,11 +103,17 @@ const aggregate = async options => {
 	} catch (e) {
 		
 		console.log(e.toString(), e.stack)
+		console.log("> db client count:", clients)
+			
 		if(client) {
+			console.log(">> close client")
+			
 			client.close()
 			clients--
 		}	
 
+		console.log(">>> db client count:", clients)
+		
 		if(options.retry == 1){
 			console.log(`Retry aggregate operation`)
 			const res = await aggregate(options)	
@@ -242,7 +248,7 @@ const insertAll = async options => {
 const bulkWrite = async options => {
 	let client
 	clients++
-	console.log(">>>> B", clients)
+	// console.log(">>>> B", clients)
 	try {
 		
 		const conf = normalize(options.collection)
@@ -272,7 +278,7 @@ const bulkWrite = async options => {
 const replaceOne = async options => {
 	let client
 	clients++
-	console.log(">>>> RO", clients)
+	// console.log(">>>> RO", clients)
 	
 	try {
 
@@ -302,7 +308,7 @@ const replaceOne = async options => {
 const updateOne = async options => {
 	let client
 	clients++
-	console.log(">>>> UO", clients)
+	// console.log(">>>> UO", clients)
 	
 	try {
 	

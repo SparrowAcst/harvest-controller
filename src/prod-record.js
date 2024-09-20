@@ -1622,5 +1622,3 @@ module.exports = {
 	setConsistency
 }
 
-
-

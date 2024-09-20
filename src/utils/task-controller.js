@@ -532,6 +532,7 @@ const Worker = class {
                 if (tasks.version.length == 0) continue
 
                 let b = await this.getBrancher(extend({}, this.context, { dataId: tasks.version.map(t => t.dataId) }))
+                
                 await b.branch({
                     source: tasks.version,
                     user: user.altname,

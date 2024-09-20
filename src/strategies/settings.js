@@ -1,4 +1,8 @@
 module.exports = {
+    
+    segmentator: {
+        requestExpiration: [2, "hours"]
+    },
 
     strategy: {
 

@@ -11,7 +11,7 @@ const commitSubmitedTasks = async taskController => {
 
                 head: true,
                 type: "submit",
-                "metadata.task.Basic_Labeling_1st.status": "submit",
+                "metadata.task.Basic_Relabeling_1st.status": "submit",
                 expiredAt: {
                     $lt: new Date()
                 }
@@ -27,7 +27,7 @@ const commitSubmitedTasks = async taskController => {
             const brancher = await taskController.getBrancher(options)
 
             version.lockRollback = true
-            version.metadata.actual_status = "done"
+            // version.metadata.actual_status = "done"
 
             await brancher.updateVersion({ version })
         }
@@ -40,7 +40,7 @@ const commitSubmitedTasks = async taskController => {
 
 module.exports = async (user, taskController) => {
 
-    console.log(`>> Basic_Labeling_1st for ${user.altname}`)
+    console.log(`>> Basic_Relabeling_1st for ${user.altname}`)
 
     await commitSubmitedTasks(taskController)
 
@@ -54,9 +54,9 @@ module.exports = async (user, taskController) => {
 
     let tasks = await taskController.selectTask({
         matchVersion: {
-            "metadata.task.Basic_Labeling_1st.status": "open",
-            "type": "main",
-            "head": true,
+            head: true,
+            type: "submit",
+            "metadata.task.Basic_Relabeling_1st.status": "open",
             "branch": {
                 $exists: false
             }
@@ -65,14 +65,14 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, activity.priority)
 
-    console.log(`>> Basic_Labeling_1st for ${user.altname}: assign ${tasks.length} tasks`)
+    console.log(`>> Basic_Relabeling_1st for ${user.altname}: assign ${tasks.length} tasks`)
     return {
         version: tasks,
         metadata: {
-            "actual_task": "Basic_Labeling_1st",
+            "actual_task": "Basic_Relabeling_1st",
             "actual_status": "waiting for the start",
-            "task.Basic_Labeling_1st.status": "start",
-            "task.Basic_Labeling_1st.updatedAt": new Date(),
+            "task.Basic_Relabeling_1st.status": "start",
+            "task.Basic_Relabeling_1st.updatedAt": new Date(),
         }
     }
 

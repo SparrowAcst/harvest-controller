@@ -980,6 +980,8 @@ const Worker = class {
             d.x = moment(d.createdAt).format("YYYY-MM-DD HH:mm:ss")
             d.y = d.user || "main"
             d.value = 1
+            d.comment = d.metadata.actual_status || ""
+                
             return d
         })
 
@@ -1163,7 +1165,7 @@ const Worker = class {
                 }
             },
             tooltip: {
-                formatter: "params => {\n\tif (params.dataType == \"edge\") return\n\treturn `<b>${params.data.category}</b><br/>User: ${(params.data.value[1] == \"main\") ? \"\" : params.data.value[1]}<br/>Created at: ${params.data.x}<br/>${(params.data.readonly) ? \"Read only\" : \"\"}`\n}",
+                formatter: "params => {\n\tif (params.dataType == \"edge\") return\n\treturn `<b>${params.data.category}</b><br/>User: ${(params.data.value[1] == \"main\") ? \"\" : params.data.value[1]}<br/>${params.data.comment}<br/>Created at: ${params.data.x}<br/>${(params.data.readonly) ? \"Read only\" : \"\"}`\n}",
                 textStyle: {
                     fontSize: 10
                 }
@@ -1275,7 +1277,8 @@ const Worker = class {
                     readonly: d.readonly, //!!d.branch || !!d.save || !!d.commit,
                     head: d.head,
                     category: d.type,
-
+                    comment: d.comment,
+                
                     label: {
                         position: (d.type == "branch")
                                     ? "top"

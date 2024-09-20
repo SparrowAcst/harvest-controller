@@ -106,12 +106,13 @@ const reject = async context => {
 		source,
 		data,
 		metadata:{
-			"task.Basic_Labeling_1st.status": "done",
+			"task.Basic_Labeling_2nd.status": "done",
 			"task.Basic_Labeling_2nd.updatedAt": new Date(),
-			"actual_status": "labeling is rejected, the data must be clarified by a 1st expert",
+			"actual_status": `labeling is rejected by 2nd expert ${user}, the data must be clarified by a 1st expert ${expert}`,
 
 			"task.Basic_Relabeling_1st.status": "open",
 			"task.Basic_Relabeling_1st.expert": expert,
+			"task.Basic_Relabeling_1st.initiator": user,
 			"task.Basic_Relabeling_1st.updatedAt": new Date()
 		}
 	})

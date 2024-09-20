@@ -3,11 +3,15 @@ const uuid = require("uuid").v4
 const isValidUUID = require("uuid").validate
 const mongodb = require("../../mongodb")
 
+const settings = require("../settings").segmentator
+
+
 const isUUID = data => isString(data) && isValidUUID(data)
 
 const resolveSegmentations = async options => {
 
     let { db, dataId, segmentCollection, data } = options
+
 
     let result = {}
 
@@ -52,7 +56,7 @@ const openRequest = async options => {
 
     let { configDB, db, version, segmentCollection, user, strategy } = options
     
-    console.log("configDB", configDB, db)
+    // console.log("configDB", configDB, db)
 
     let existed = await mongodb.aggregate({
         db: configDB,
@@ -73,8 +77,28 @@ const openRequest = async options => {
 
     if (existed.length > 0) {
         existed = existed[0]
-        existed.opened = true
-        return existed
+        
+        if(
+            moment(existed.updatedAt)
+                .add(...settings.requestExpiration)
+                .isSameOrBefore(moment(new Date()))
+        ){
+            console.log(`>> linear_workflow: force close request ${existed.id} (${existed.user})`)
+            existed.closed = true
+            existed.closedAt = new Date()
+            existed.force = true
+            await mongodb.replaceOne({
+                db: configDB,
+                collection: `settings.segmentation-requests`,
+                filter: {
+                    id: existed.id
+                },
+                data: existed
+            })
+        } else {
+            existed.opened = true
+            return existed    
+        }
     }
 
     let data = await mongodb.aggregate({
@@ -123,7 +147,7 @@ const openRequest = async options => {
         dataId: version.dataId,
         strategy: "linear_workflow",
         db,
-        collection: segmentCollection,
+        collection: segmentCollection || db.labelingCollection,
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,

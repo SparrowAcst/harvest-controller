@@ -2,6 +2,10 @@ const { isString, find } = require("lodash")
 const uuid = require("uuid").v4
 const isValidUUID = require("uuid").validate
 const mongodb = require("../../mongodb")
+const moment = require("moment")
+
+const settings = require("../settings").segmentator
+
 
 const isUUID = data => isString(data) && isValidUUID(data)
 
@@ -52,7 +56,7 @@ const openRequest = async options => {
 
     let { configDB, db, version, segmentCollection, user, strategy } = options
     
-    console.log("configDB", configDB, db)
+    // console.log("configDB", configDB, db)
 
     let existed = await mongodb.aggregate({
         db: configDB,
@@ -73,8 +77,28 @@ const openRequest = async options => {
 
     if (existed.length > 0) {
         existed = existed[0]
-        existed.opened = true
-        return existed
+        
+        if(
+            moment(existed.updatedAt)
+                .add(...settings.requestExpiration)
+                .isSameOrBefore(moment(new Date()))
+        ){
+            console.log(`>> tagged_records: force close request ${existed.id} (${existed.user})`)
+            existed.closed = true
+            existed.closedAt = new Date()
+            existed.force = true
+            await mongodb.replaceOne({
+                db: configDB,
+                collection: `settings.segmentation-requests`,
+                filter: {
+                    id: existed.id
+                },
+                data: existed
+            })
+        } else {
+            existed.opened = true
+            return existed    
+        }
     }
 
     let data = await mongodb.aggregate({
@@ -117,13 +141,14 @@ const openRequest = async options => {
         "data": (segmentationData) ? [segmentationData] : []
     }
 
+    // console.log("collection", segmentCollection || db.labelingCollection)
     let request = {
         id: uuid(),
         user: user.altname,
         dataId: version.dataId,
-        strategy: "linear_workflow",
+        strategy: "tagged_record",
         db,
-        collection: segmentCollection,
+        collection: segmentCollection || db.labelingCollection,
         createdAt: new Date(),
         updatedAt: new Date(),
         requestData,
@@ -146,7 +171,7 @@ const openRequest = async options => {
 
 const updateRequest = async options => {
 
-    console.log(`>> linear_workflow: UPDATE REQUEST:  ${options.requestId}: START`)
+    console.log(`>> tagged_record: UPDATE REQUEST:  ${options.requestId}: START`)
 
     let {request} = options 
 
@@ -167,7 +192,7 @@ const updateRequest = async options => {
         }
     })
 
-    console.log(`>> linear_workflow: UPDATE REQUEST:  ${options.requestId}: DONE`)
+    console.log(`>> tagged_record: UPDATE REQUEST:  ${options.requestId}: DONE`)
 
     
 }

@@ -27,7 +27,7 @@ const commitSubmitedTasks = async taskController => {
             const brancher = await taskController.getBrancher(options)
 
             version.lockRollback = true
-            version.metadata.actual_status = "done"
+            // version.metadata.actual_status = "done"
 
             await brancher.updateVersion({ version })
         }

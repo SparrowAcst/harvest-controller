@@ -3,7 +3,7 @@ const { groupBy, keys, first, uniqBy } = require("lodash")
 
 // const commitSubmitedTasks = async taskController => {
 
-//     console.log(">> Basic_Labeling_2nd: Commit submited tasks")
+//     console.log(">> Basic_Finalization: Commit submited tasks")
 
 //     let commitedTasks = await taskController.selectTask({
 //         matchVersion: {
@@ -12,7 +12,7 @@ const { groupBy, keys, first, uniqBy } = require("lodash")
 
 //             type: "submit",
 
-//             "metadata.task.Basic_Labeling_2nd.status": "submit",
+//             "metadata.task.Basic_Finalization.status": "submit",
 
 //             branch: {
 //                 $exists: false
@@ -43,8 +43,8 @@ const { groupBy, keys, first, uniqBy } = require("lodash")
 //         await brancher.commit({
 //             source: version,
 //             metadata: {
-//                 "task.Basic_Labeling_2nd.status": "done",
-//                 "task.Basic_Labeling_2nd.updatedAt": new Date(),
+//                 "task.Basic_Finalization.status": "done",
+//                 "task.Basic_Finalization.updatedAt": new Date(),
 //                 "actual_task": "none",
 //                 "actual_status": "none"
 //             }
@@ -57,7 +57,7 @@ const { groupBy, keys, first, uniqBy } = require("lodash")
 
 module.exports = async (user, taskController) => {
 
-    console.log(`>> Basic_Labeling_2nd for ${user.altname}`)
+    console.log(`>> Basic_Finalization for ${user.altname}`)
 
     // await commitSubmitedTasks(taskController)
 
@@ -79,8 +79,8 @@ module.exports = async (user, taskController) => {
 
             type: "submit",
 
-            "metadata.task.Basic_Relabeling_1st.status": "submit",
-            "metadata.task.Basic_Relabeling_1st.initiator": user.altname,
+            "metadata.task.Basic_Relabeling_2nd.status": "submit",
+            "metadata.task.Basic_Relabeling_2nd.initiator": user.altname,
 
             branch: {
                 $exists: false
@@ -109,7 +109,7 @@ module.exports = async (user, taskController) => {
 
                 type: "submit",
 
-                "metadata.task.Basic_Labeling_1st.status": "submit",
+                "metadata.task.Basic_Labeling_2nd.status": "submit",
 
                 branch: {
                     $exists: false
@@ -133,14 +133,15 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, activity.priority)
 
-    console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+    console.log(`>> Basic_Finalization for ${user.altname}: assign ${tasks.length} tasks`)
     return {
         version: tasks,
         metadata: {
-            "actual_task": "Basic_Labeling_2nd",
+            "actual_task": "Basic_Finalization",
             "actual_status": "waiting for the start",
-            "task.Basic_Labeling_2nd.status": "start",
-            "task.Basic_Labeling_2nd.updatedAt": new Date(),
+            "task.Basic_Finalization.status": "start",
+            "task.Basic_Finalization.updatedAt": new Date(),
+
         }
     }
 
