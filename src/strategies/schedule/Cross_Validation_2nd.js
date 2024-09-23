@@ -35,8 +35,7 @@ const selectCandidates = (collaborators, count, exclusion) => {
 
 const assignTasks = async (user, taskController) => {
     try {
-        console.log(`>> Schedule: Cross_Validation_2nd: Assign tasks for ${user.altname}`)
-
+        
         let pool = await taskController.getEmployeeStat({
             matchEmployee: u => u.schedule && u.schedule.includes("Cross_Validation_2nd")
         })
@@ -159,7 +158,9 @@ const assignTasks = async (user, taskController) => {
         }
 
         return { version: [] }
+    
     } catch (e) {
+        
         console.log(e.toString(), e.trace)
     }
 }
@@ -168,7 +169,7 @@ const assignTasks = async (user, taskController) => {
 const reassignTasks = async (user, taskController) => {
     try {
 
-        console.log(`>> Schedule: Cross_Validation_2nd: Reassign tasks initiated by ${user.altname}`)
+        // console.log(`>> Schedule: Cross_Validation_2nd: Reassign tasks initiated by ${user.altname}`)
 
         let pool = await taskController.getEmployeeStat({
             matchEmployee: u => u.schedule && u.schedule.includes("Cross_Validation_2nd")

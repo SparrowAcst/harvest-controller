@@ -61,7 +61,7 @@ const commitSubmitedTasks = async taskController => {
 
 module.exports = async (user, taskController) => {
 
-    console.log(`>> Manual_merging for ${user.altname}`)
+    // console.log(`>> Manual_merging for ${user.altname}`)
 
     await commitSubmitedTasks(taskController)
 
@@ -100,7 +100,7 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, activity.priority)
 
-    console.log(`>> Manual_merging for ${user.altname}: assign ${tasks.length} tasks`)
+    // console.log(`>> Manual_merging for ${user.altname}: assign ${tasks.length} tasks`)
     return {
         version: tasks,
         metadata: {

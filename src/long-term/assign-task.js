@@ -1,9 +1,10 @@
 const createTaskController = require("../utils/task-controller")
 const LongTerm = require("../utils/long-term-queue")
 const strategy = require("../strategies/schedule")
+const { uniqBy } = require("lodash")
+
 
 const POOL = {}
-
 
 const assignTasksOperation = async (options = {}) => {
     try {
@@ -15,9 +16,17 @@ const assignTasksOperation = async (options = {}) => {
     options.strategy = strategy
 
 
-    let schedules = user.grants.schedule || ((user.grants.profile) ? user.grants.profile.schedule : undefined) || []
+    let schedules = uniqBy(
+                        (user.grants.schedule || [])
+                        .concat(
+                            ((user.grants.profile) ? user.grants.profile.schedule : []) || []
+                        )
+                    )    
     
+    console.log(user.altname, schedules)
+
     options.schedule = schedules.map( s => strategy[s]).filter( s => s )
+    
     
     if(options.schedule.length > 0){
     	const controller = createTaskController(options)

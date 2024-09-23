@@ -80,11 +80,11 @@ const getForms = async (req, res) => {
 
         if (data) {
 
-            let formType = ["patient", "echo", "ekg"]
+            let formType = ["patient", "echo", "ekg", "attachements"]
             let forms = formType.map(type => {
                 let f = find(data.forms, d => d.type == type)
                 if (f && f.data) {
-                    let form = f.data.en || f.data.uk
+                    let form = f.data.en || f.data.uk || f.data
                     if (form) return extend(form, { formType: type })
                 }
             }).filter(f => f)
@@ -146,6 +146,7 @@ const getForms = async (req, res) => {
                 patient: find(forms, f => f.formType == "patient"),
                 ekg: find(forms, f => f.formType == "ekg"),
                 echo: find(forms, f => f.formType == "echo"),
+                attachements: find(forms, f => f.formType == "attachements"),
             }
         } else {
             result = {}
@@ -221,9 +222,6 @@ const getRecords = async (req, res) => {
             }
 
         }
-
-
-
 
         let pipeline = options.excludeFilter
             .concat(options.valueFilter)

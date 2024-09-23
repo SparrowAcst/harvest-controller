@@ -44,7 +44,7 @@ const get = async context => {
 	    version = version[0]
 	    version.data = await controller.resolveData({ version})
 
-	    let segmentation = await resolveSegmentation(context, version.data.segmentation)
+	    let segmentation = await resolveSegmentation(context, version.data.segmentation || version.data.aiSegmentation)
 
 	    if (segmentation) {
 	        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)

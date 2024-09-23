@@ -1,47 +1,6 @@
 const { groupBy, keys, first } = require("lodash")
 const uuid = require("uuid").v4
 
-// const commitSubmitedTasks = async taskController => {
-//     try {
-
-//         console.log(">> Basic_Relabeling_1st: Commit submited tasks")
-
-//         let commitedTasks = await taskController.selectTask({
-//             matchVersion: {
-
-//                 head: true,
-//                 type: "submit",
-//                 "metadata.actual_task": "Basic_Relabeling_1st",
-//                 "metadata.task.Basic_Relabeling_1st.status": "submit",
-//                 expiredAt: {
-//                     $lt: new Date()
-//                 }
-//             }
-//         })
-
-//         for (let version of commitedTasks) {
-//             console.log(">> create task for ",version.id)
-//             let options = taskController.context
-//             options.dataId = [version.dataId]
-
-//             const brancher = await taskController.getBrancher(options)
-
-//             version.lockRollback = true
-            
-//             // version.metadata.task.Basic_Labeling_2nd = {
-//             //     id: uuid(),
-//             //     status: "open",
-//             //     reason: "The relabeling by the 1st expert is completed. Data verification from a 2nd expert is required.",
-//             //     createdAt: new Date()
-//             // }
-
-//             await brancher.updateVersion({ version })
-//         }
-
-//     } catch (e) {
-//         console.log(e.toString(), e.stack)
-//     }
-// }
 
 
 module.exports = async (user, taskController) => {
@@ -75,7 +34,7 @@ module.exports = async (user, taskController) => {
         }
     })
 
-    tasks = tasks.slice(0, activity.priority)
+    // tasks = tasks.slice(0, activity.priority)
 
     if(tasks.length > 0){
         console.log(`>> Basic_Relabeling_1st for ${user.altname}: assign ${tasks.length} tasks`)

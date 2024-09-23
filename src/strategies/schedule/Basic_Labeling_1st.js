@@ -12,6 +12,8 @@ module.exports = async (user, taskController) => {
     })
 
     activity = activity[0]
+    console.log("activity", activity)
+
     if (!activity) return { version: [] }
 
     let tasks = await taskController.selectTask({

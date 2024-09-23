@@ -441,6 +441,7 @@ const Worker = class {
                 result.totals.buffer = result.totals.inProgress + result.totals.started
                 result.priority = TASK_BUFFER_MAX - result.totals.buffer
                 result.free = result.priority
+                result.priority = (result.priority < 0) ? 0 : result.priority
                 return extend({}, t, result)
             })
 

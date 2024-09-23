@@ -9,18 +9,31 @@ const createTaskController = require("../../utils/task-controller")
 const mongodb = require("../../mongodb")
 
 
+// const REASON = {
+//     accept: {
+//         Basic_Labeling_1st: template(`The data labeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
+//         Basic_Relabeling_1st: template(`The data relabeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
+//         Basic_Labeling_2nd: template(`The data labeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
+//         Basic_Relabeling_2nd: template(`The data relabeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
+//         Basic_Finalization: template(`The data finalization by <%=user%> is required.`)
+//     },
+//     reject: {
+//         Basic_Labeling_2nd: template(`The data labeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`),
+//         Basic_Relabeling_2nd: template(`The data relabeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`),
+//         Basic_Finalization: template(`The data labeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`)
+//     }
+// }
+
+
 const REASON = {
     accept: {
-        Basic_Labeling_1st: template(`The data labeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
-        Basic_Relabeling_1st: template(`The data relabeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
-        Basic_Labeling_2nd: template(`The data labeling by <%=user%> is completed. Data verification from a CMO is required.`),
-        Basic_Relabeling_2nd: template(`The data relabeling by <%=user%> is completed. Data verification from a CMO is required.`),
-        Basic_Finalization: template(`The data finalization by <%=user%> is completed.`)
+        Basic_Labeling_1st: template(`The data labeling from a 1st expert is required.`),
+        Basic_Labeling_2nd: template(`Data verification from a 2nd expert is required.`),
+        Basic_Finalization: template(`Data finalization from a CMO is required.`)
     },
     reject: {
-        Basic_Labeling_2nd: template(`The data labeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`),
-        Basic_Relabeling_2nd: template(`The data relabeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`),
-        Basic_Finalization: template(`The data labeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`)
+        Basic_Relabeling_1st: template(`The data was rejected by <%=user%>. The data verification from <%=expert%> is required.`),
+        Basic_Relabeling_2nd: template(`The data was rejected by <%=user%>. The data verification from <%=expert%> is required.`),
     }
 }
 
@@ -68,7 +81,7 @@ module.exports = params => ({
         context.dataId = [recordId]
         const controller = createTaskController(context)
         let version = await controller.getActualVersion({ user, dataId: recordId })
-        let segmentation = await resolveSegmentation(context, version.data.segmentation)
+        let segmentation = await resolveSegmentation(context, version.data.segmentation || version.data.aiSegmentation)
 
         if (segmentation) {
             version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
@@ -123,7 +136,7 @@ module.exports = params => ({
         let expert = (expertVersion) ? expertVersion.user : null
 
         // submit rejection
-        console.log("REJECT", params)
+        console.log("REJECT", params, expert)
 
         await brancher.submit({
             user,

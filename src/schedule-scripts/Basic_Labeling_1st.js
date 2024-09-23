@@ -30,22 +30,22 @@ const run = async () => {
         db: options.db,
         collection:`${options.db.name}.labels`,
         pipeline:[
-            {
-                $match:{
-                    id:{
-                        $in:["ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"] //, "ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"]
-                    }
-                    // "S3":{
-                    //     $ne: "No"
-                    // },
-                    // setS3CheckTask:{
-                    //     $exists: false
-                    // }
-                }
-            },
-            {
-                $limit: 2
-            }
+            // {
+            //     $match:{
+            //         id:{
+            //             $in:["ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"] //, "ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"]
+            //         }
+            //         // "S3":{
+            //         //     $ne: "No"
+            //         // },
+            //         // setS3CheckTask:{
+            //         //     $exists: false
+            //         // }
+            //     }
+            // },
+            // {
+            //     $limit: 2
+            // }
         ]
     })
 
