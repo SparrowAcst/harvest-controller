@@ -1,65 +1,9 @@
 const { groupBy, keys, first, uniqBy } = require("lodash")
-
-
-// const commitSubmitedTasks = async taskController => {
-
-//     console.log(">> Basic_Labeling_2nd: Commit submited tasks")
-
-//     let commitedTasks = await taskController.selectTask({
-//         matchVersion: {
-
-//             head: true,
-
-//             type: "submit",
-
-//             "metadata.task.Basic_Labeling_2nd.status": "submit",
-
-//             branch: {
-//                 $exists: false
-//             },
-//             save: {
-//                 $exists: false
-//             },
-//             commit: {
-//                 $exists: false
-//             },
-//             submit: {
-//                 $exists: false
-//             },
-
-//             expiredAt: {
-//                 $lt: new Date()
-//             }
-//         }
-//     })
-
-//     for (let version of commitedTasks) {
-
-//         let options = taskController.context
-//         options.dataId = [version.dataId]
-
-//         const brancher = await taskController.getBrancher(options)
-
-//         await brancher.commit({
-//             source: version,
-//             metadata: {
-//                 "task.Basic_Labeling_2nd.status": "done",
-//                 "task.Basic_Labeling_2nd.updatedAt": new Date(),
-//                 "actual_task": "none",
-//                 "actual_status": "none"
-//             }
-//         })
-
-//     }
-
-// }
-
+const uuid = require("uuid").v4
 
 module.exports = async (user, taskController) => {
 
-    console.log(`>> Basic_Labeling_2nd for ${user.altname}`)
-
-    // await commitSubmitedTasks(taskController)
+    // console.log(`>> Basic_Labeling_2nd for ${user.altname}`)
 
     // select user activity
     let activity = await taskController.getEmployeeStat({
@@ -78,8 +22,7 @@ module.exports = async (user, taskController) => {
             head: true,
 
             type: "submit",
-
-            "metadata.task.Basic_Relabeling_1st.status": "submit",
+            "metadata.actual_task": "Basic_Relabeling_1st",
             "metadata.task.Basic_Relabeling_1st.initiator": user.altname,
 
             branch: {
@@ -101,46 +44,74 @@ module.exports = async (user, taskController) => {
         }
     })
 
-    if (tasks.length == 0) {
-        tasks = await taskController.selectTask({
-            matchVersion: {
+    if (tasks.length > 0) {
 
-                head: true,
+        tasks = tasks.slice(0, activity.priority)
 
-                type: "submit",
+        if(tasks.length > 0){
+            console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+        }
 
-                "metadata.task.Basic_Labeling_1st.status": "submit",
-
-                branch: {
-                    $exists: false
-                },
-                save: {
-                    $exists: false
-                },
-                commit: {
-                    $exists: false
-                },
-                submit: {
-                    $exists: false
-                },
-
-                expiredAt: {
-                    $lt: new Date()
-                }
+        return {
+            version: tasks,
+            metadata: {
+                "actual_task": "Basic_Labeling_2nd",
+                "actual_status": "Waiting for the start.",
+                "task.Basic_Labeling_2nd.user": user.altname,
+                "task.Basic_Labeling_2nd.status": "start",
+                "task.Basic_Labeling_2nd.updatedAt": new Date(),
+                permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
+ 
             }
-        })
+        }
     }
+
+
+    tasks = await taskController.selectTask({
+        matchVersion: {
+
+            head: true,
+
+            type: "submit",
+            "metadata.actual_task": "Basic_Labeling_1st",
+            "metadata.task.Basic_Labeling_1st.status": "submit",
+
+            branch: {
+                $exists: false
+            },
+            save: {
+                $exists: false
+            },
+            commit: {
+                $exists: false
+            },
+            submit: {
+                $exists: false
+            },
+
+            expiredAt: {
+                $lt: new Date()
+            }
+        }
+    })
+
 
     tasks = tasks.slice(0, activity.priority)
 
-    console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+    if(tasks.length > 0){
+            console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+        }
+    
     return {
         version: tasks,
         metadata: {
             "actual_task": "Basic_Labeling_2nd",
-            "actual_status": "waiting for the start",
+            "actual_status": "Waiting for the start.",
+            "task.Basic_Labeling_2nd.user": user.altname,
             "task.Basic_Labeling_2nd.status": "start",
             "task.Basic_Labeling_2nd.updatedAt": new Date(),
+            permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
+ 
         }
     }
 

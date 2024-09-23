@@ -46,7 +46,8 @@ const DEFAULT_FIELDS = [
     "save",
     "submit",
     "commit",
-    "expiredAt"
+    "expiredAt",
+    "lockRollback"
 ]
 
 

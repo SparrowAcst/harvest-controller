@@ -1,65 +1,55 @@
 const { groupBy, keys, first } = require("lodash")
+const uuid = require("uuid").v4
 
 
-const commitSubmitedTasks = async taskController => {
+// const commitSubmitedTasks = async taskController => {
+//     try {
 
-    console.log(">> Basic_Labeling_2nd: Commit submited tasks")
+//         console.log(">> Basic_Relabeling_2nd: Commit submited tasks")
 
-    let commitedTasks = await taskController.selectTask({
-        matchVersion: {
+//         let commitedTasks = await taskController.selectTask({
+//             matchVersion: {
 
-            head: true,
+//                 head: true,
+//                 type: "submit",
+//                 "metadata.actual_task": "Basic_Relabeling_2nd",
+//                 "metadata.task.Basic_Labeling_1st.status": "submit",
+//                 expiredAt: {
+//                     $lt: new Date()
+//                 }
 
-            type: "submit",
+//             }
+//         })
 
-            "metadata.task.Basic_Labeling_2nd.status": "submit",
+//         for (let version of commitedTasks) {
+//             console.log(">> create task for ",version.id)
+//             let options = taskController.context
+//             options.dataId = [version.dataId]
 
-            branch: {
-                $exists: false
-            },
-            save: {
-                $exists: false
-            },
-            commit: {
-                $exists: false
-            },
-            submit: {
-                $exists: false
-            },
+//             const brancher = await taskController.getBrancher(options)
 
-            expiredAt: {
-                $lt: new Date()
-            }
-        }
-    })
+//             version.lockRollback = true
+            
+//             // version.metadata.task.Basic_Finalization = {
+//             //     id: uuid(),
+//             //     status: "open",
+//             //     reason: "The relabeling by the 2nd expert is completed. Data verification from a 2nd expert is required.",
+//             //     createdAt: new Date()
+//             // }
 
-    for (let version of commitedTasks) {
+//             await brancher.updateVersion({ version })
+//         }
 
-        let options = taskController.context
-        options.dataId = [version.dataId]
-
-        const brancher = await taskController.getBrancher(options)
-
-        await brancher.commit({
-            source: version,
-            metadata: {
-                "task.Basic_Labeling_2nd.status": "done",
-                "task.Basic_Labeling_2nd.updatedAt": new Date(),
-                "actual_task": "none",
-                "actual_status": "none"
-            }
-        })
-
-    }
-
-}
-
+//     } catch (e) {
+//         console.log(e.toString(), e.stack)
+//     }
+// }
 
 module.exports = async (user, taskController) => {
 
-    console.log(`>> Basic_Labeling_2nd for ${user.altname}`)
+    // console.log(`>> Basic_Relabeling_2nd for ${user.altname}`)
 
-    await commitSubmitedTasks(taskController)
+    // await commitSubmitedTasks(taskController)
 
     // select user activity
     let activity = await taskController.getEmployeeStat({
@@ -78,18 +68,9 @@ module.exports = async (user, taskController) => {
 
             type: "submit",
 
-            "metadata.task.Basic_Labeling_1st.status": "submit",
+            "metadata.task.Basic_Relabeling_2nd.status": "open",
 
             branch: {
-                $exists: false
-            },
-            save: {
-                $exists: false
-            },
-            commit: {
-                $exists: false
-            },
-            submit: {
                 $exists: false
             },
 
@@ -101,15 +82,20 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, activity.priority)
 
-    console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+    if(tasks.length > 0){
+        console.log(`>> Basic_Relabeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+    }
+    
     return {
         version: tasks,
         metadata: {
-            "actual_task": "Basic_Labeling_2nd",
-            "actual_status": "waiting for the start",
-            "task.Basic_Labeling_2nd.status": "start",
-            "task.Basic_Labeling_2nd.updatedAt": new Date(),
-
+            "actual_task": "Basic_Relabeling_2nd",
+            "actual_status": "Waiting for the start.",
+            "task.Basic_Relabeling_2nd.user": user.altname,
+            "task.Basic_Relabeling_2nd.status": "start",
+            "task.Basic_Relabeling_2nd.updatedAt": new Date(),
+            permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
+ 
         }
     }
 

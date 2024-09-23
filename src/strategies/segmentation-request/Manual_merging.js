@@ -212,7 +212,7 @@ const updateRequest = async options => {
         metadata: {
             "task.Manual_merging.status": "in progress",
             "task.Manual_merging.updatedAt": new Date(),
-            "actual_status": "segmentation changes have been saved",
+            "actual_status": "Segmentation changes have been saved.",
         }
     })
 

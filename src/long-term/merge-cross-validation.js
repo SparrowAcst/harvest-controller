@@ -230,6 +230,7 @@ const mergeVersions = async settings => {
         data,
         metadata: {
             "task.Cross_Validation_2nd.status": "merged",
+            "task.Cross_Validation_2nd.reason": "Expert labelings successfully merged.",
             "task.Cross_Validation_2nd.updatedAt": new Date(),
             "actual_task": "Cross_Validation_2nd",
             "actual_status": "successfully merged"
@@ -239,8 +240,8 @@ const mergeVersions = async settings => {
     version = await brancher.commit({
         source: version,
         metadata: {
-            "task.Cross_Validation_2nd.status": "done",
-            "task.Cross_Validation_2nd.updatedAt": new Date(),
+            // "task.Cross_Validation_2nd.status": "done",
+            // "task.Cross_Validation_2nd.updatedAt": new Date(),
             "actual_task": "none",
             "actual_status": "none"
         }
@@ -291,8 +292,9 @@ const mergeCrossValidationOperation = async settings => {
                     metadata: {
                        "task.Cross_Validation_2nd.iteration": v.metadata.task.Cross_Validation_2nd.iteration + 1,
                        "task.Cross_Validation_2nd.status": "restart",
+                       "task.Cross_Validation_2nd.reason": "Differences in expert labelings were found. Restart the task for the current expert group.",
                        "task.Cross_Validation_2nd.updatedAt": new Date(),
-                       "actual_status": "changes detected and task restarted"
+                       "actual_status": "Waiting for the start."
                     },
                     ignoreChangeDetection: true
                 })
@@ -309,7 +311,8 @@ const mergeCrossValidationOperation = async settings => {
                 delete v.data
                 v.lockRollback = true
                 v.metadata.task.Cross_Validation_2nd.status = "reassign"
-                v.metadata.actual_status = "changes were detected and the task was transferred to the next expert group"
+                v.metadata.task.Cross_Validation_2nd.reason = "Differences in expert labelings were found. Start the task for the next expert group."
+                v.metadata.actual_status = "Waiting for the start."
             })
 
             await settings.brancher.updateVersion({
@@ -327,7 +330,8 @@ const mergeCrossValidationOperation = async settings => {
             v.lockRollback = true
             v.metadata.task.Cross_Validation_2nd.status = "need manual merge"
             v.metadata.task.Cross_Validation_2nd.updatedAt =  new Date()
-            v.metadata.actual_status = "changes were detected and the task was submitted for manual merging"
+            v.metadata.task.Cross_Validation_2nd.reason = "Differences in expert labelings were found. Start the manual merging by CMO."
+            v.metadata.actual_status = "Waiting for the start."
             v.metadata.task.Manual_merging = {
                 id: manualMergeTaskId,
                 status: "open",
@@ -349,6 +353,7 @@ const mergeCrossValidationOperation = async settings => {
                 "task.Manual_merging.updatedAt": new Date(),
                 "task.Manual_merging.state": "open",
                 "task.Manual_merging.versions": resolved.versions.map( s => s.id),
+                "task.Manual_merging.reason": "Expert labelings successfully merged.",
                 "actual_task": "none",
                 "actual_status": "none"
             }

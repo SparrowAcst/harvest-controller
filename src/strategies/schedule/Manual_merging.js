@@ -105,7 +105,8 @@ module.exports = async (user, taskController) => {
         version: tasks,
         metadata: {
             "actual_task": "Manual_merging",
-            "actual_status": "waiting for the start",
+            "actual_status": "Waiting for the start.",
+            "task.Manual_merging.user": user.altname,
             "task.Manual_merging.status": "start",
             "task.Manual_merging.updatedAt": new Date(),
 

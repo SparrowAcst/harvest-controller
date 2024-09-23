@@ -1,7 +1,7 @@
 module.exports = {
     
     segmentator: {
-        requestExpiration: [2, "hours"]
+        requestExpiration: [1, "seconds"]
     },
 
     strategy: {
@@ -18,7 +18,7 @@ module.exports = {
 
     dataVersion: {
         
-        EXPIRATION_PERIOD: [1, "minutes"], // rollback available in this period
+        EXPIRATION_PERIOD: [1, "seconds"], // rollback available in this period
 
         dataView: d => ((d)
             ? {

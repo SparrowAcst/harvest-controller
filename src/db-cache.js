@@ -89,7 +89,7 @@ const init = async () => {
 
 const handler = async (req, res, next) => {
 
-    if (!DATASET_CACHE || !USER_CACHE || !METADATA_CACHE) {
+    if (!DATASET_CACHE || !USER_CACHE || !METADATA_CACHE || req.body.forceUpdate) {
         await init()
     }
 

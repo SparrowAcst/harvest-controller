@@ -171,12 +171,13 @@ router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)
 const adeTaskDashboard = require("./src/ade-task-dashboard") 
 const adeGrants = require("./src/ade-grants") 
 const adeLabeling = require("./src/ade-labeling") 
+const adePatientView = require("./src/ade-patient-view")
 
 router.post("/ade-grants/get-dataset-list/", [DBCache, adeGrants.getDatasetList])
 router.post("/ade-grants/get-grants/", [DBCache, adeGrants.getGrants])
 router.post("/ade-task-dashboard/get-active-task/", [DBCache, adeTaskDashboard.getActiveTask])
 router.post("/ade-task-dashboard/get-employee-stat/", [DBCache, adeTaskDashboard.getEmployeeStat])
-// router.post("/ade-task-dashboard/cancel-employee-quote/", adeTaskDashboard.cancelQuote)
+router.post("/ade-task-dashboard/force-update/", [DBCache, adeTaskDashboard.forceUpdateCache])
 router.post("/ade-labeling/get-record/", [DBCache, adeLabeling.getRecordData])
 router.post("/ade-labeling/save-record/", [DBCache, adeLabeling.saveRecordData])
 router.post("/ade-labeling/reject-record/", [DBCache, adeLabeling.rejectRecordData])
@@ -188,6 +189,12 @@ router.post("/ade-labeling/get-forms/", [DBCache, adeLabeling.getForms])
 router.post("/ade-labeling/changelog/", [DBCache, adeLabeling.getChangelog])
 router.post("/ade-labeling/get-records/", [DBCache, adeLabeling.getRecords])
 router.post("/ade-labeling/segment/", [DBCache, adeLabeling.getSegmentation])
+
+
+router.post("/ade-patient-view/get-records/", [DBCache, adePatientView.getRecords])
+router.post("/ade-patient-view/segment/", [DBCache, adePatientView.getSegmentation])
+router.post("/ade-patient-view/get-metadata/", [DBCache, adePatientView.getMetadata])
+router.post("/ade-patient-view/get-forms/", [DBCache, adePatientView.getForms])
 
 
 

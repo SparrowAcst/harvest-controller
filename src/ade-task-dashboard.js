@@ -30,10 +30,7 @@ const getActiveTask = async (req, res) => {
 
         // console.log("options", options)
 
-        if (req.eventHub.listenerCount("assign-tasks") == 0) {
-            req.eventHub.on("assign-tasks", assignTasks)
-        }
-
+        
         options = extend(
             options, 
             req.body.cache.currentDataset,
@@ -42,8 +39,6 @@ const getActiveTask = async (req, res) => {
         // options.dataView = dataView
 
         const controller = createTaskController(options)
-
-        req.eventHub.emit("assign-tasks", options)
 
         let taskList = await controller.selectEmployeeTask({
 
@@ -90,6 +85,12 @@ const getActiveTask = async (req, res) => {
             query: req.body,
             result: taskList
         })
+
+        if (req.eventHub.listenerCount("assign-tasks") == 0) {
+            req.eventHub.on("assign-tasks", assignTasks)
+        }
+
+        req.eventHub.emit("assign-tasks", options)
 
     } catch (e) {
         console.log(e.toString(), e.stack)
@@ -310,8 +311,12 @@ const getEmployeeStat = async (req, res) => {
 }
 }
 
+const forceUpdateCache = async (req, res) => {
+    res.status(200).send({message: "db cache updated"})
+}
 
 module.exports = {
     getActiveTask,
-    getEmployeeStat
+    getEmployeeStat,
+    forceUpdateCache
 }

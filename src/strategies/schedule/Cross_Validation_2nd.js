@@ -98,7 +98,7 @@ const assignTasks = async (user, taskController) => {
                         ),
                         "task.Cross_Validation_2nd.updatedAt": new Date(),
                         "actual_task": "Cross_Validation_2nd",
-                        "actual_status": "waiting for the start"
+                        "actual_status": "Waiting for the start."
                     }
                 })
                 toAssignTask = toAssignTask.concat(
@@ -116,7 +116,7 @@ const assignTasks = async (user, taskController) => {
                             ),
                             "task.Cross_Validation_2nd.updatedAt": new Date(),
                             "actual_task": "Cross_Validation_2nd",
-                            "actual_status": "waiting for the start"
+                            "actual_status": "Waiting for the start."
                         }
                     }))
                 )
@@ -230,13 +230,14 @@ const reassignTasks = async (user, taskController) => {
                             "task.Cross_Validation_2nd.status": "started",
                             "task.Cross_Validation_2nd.stage": (task.metadata.task.Cross_Validation_2nd.stage || 0) + 1,
                             "task.Cross_Validation_2nd.iteration": 1,
+                            "task.Cross_Validation_2nd.user": user.altname,
                             "task.Cross_Validation_2nd.collaborators": (task.metadata.task.Cross_Validation_2nd.collaborators || [])
                                 .concat(
                                     [collaborators.candidates.map(c => c.namedAs)]
                                 ),
                             "task.Cross_Validation_2nd.updatedAt": new Date(),
                             "actual_task": "Cross_Validation_2nd",
-                            "actual_status": "waiting for the start"
+                            "actual_status": "Waiting for the start."
                         }
 
                     })

@@ -538,6 +538,16 @@ const Worker = class {
                     user: user.altname,
                     metadata: tasks.metadata
                 })
+
+                tasks.version = tasks.version.map( v => {
+                    v.lockRollback = true
+                    return v
+                })
+                
+                // console.log("tasks.version", tasks.version)
+
+                await b.updateVersion({version: tasks.version})
+                
             }
         } catch (e) {
             console.log(e.toString(), e.stack)

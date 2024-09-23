@@ -37,14 +37,20 @@ const get = async context => {
 		let { recordId, user } = context
 	    context.dataId = [ recordId ]
 	    const controller = createTaskController(context)
-		let version = await controller.getActualVersion({user, dataId: recordId})
+		let version = await controller.selectTask({
+			matchVersion: v => v.type == "main" && v.head == true
+		})
+	    
+	    version = version[0]
+	    version.data = await controller.resolveData({ version})
+
 	    let segmentation = await resolveSegmentation(context, version.data.segmentation)
 
 	    if (segmentation) {
 	        version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
 	    }
 
-	    version.strategy = "none"
+	    version.strategy = "Default"
 	    return version
 }
 

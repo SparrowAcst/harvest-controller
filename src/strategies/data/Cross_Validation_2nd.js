@@ -126,7 +126,7 @@ const save = async context => {
         metadata: {
             "task.Cross_Validation_2nd.status": "process",
             "task.Cross_Validation_2nd.updatedAt": new Date(),
-            "actual_status": "label changes have been saved",
+            "actual_status": "Label changes have been saved.",
 
         }
     })
@@ -147,7 +147,7 @@ const submit = async context => {
         metadata: {
             "task.Cross_Validation_2nd.status": "submit",
             "task.Cross_Validation_2nd.updatedAt": new Date(),
-            "actual_status": "changes to labels and segmentation have been submitted"
+            "actual_status": "Changes to labels and segmentation have been submitted."
         }
     })
 

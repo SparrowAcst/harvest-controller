@@ -1,4 +1,5 @@
 const { isString } = require("lodash")
+const moment = require("moment")
 
 const uuid = require("uuid").v4
 const isValidUUID = require("uuid").validate
@@ -7,6 +8,10 @@ const isUUID = data => isString(data) && isValidUUID(data)
 const { segmentationAnalysis } = require("../utils")
 const createTaskController = require("../../utils/task-controller")
 const mongodb = require("../../mongodb")
+
+
+const settings = require("../settings").segmentator
+
 
 const resolveSegmentation = async (options, segmentation) => {
 
@@ -53,9 +58,30 @@ const openRequest = async options => {
 
     if (existed.length > 0) {
         existed = existed[0]
-        existed.opened = true
-        return existed
+        
+        if(
+            moment(existed.updatedAt)
+                .add(...settings.requestExpiration)
+                .isSameOrBefore(moment(new Date()))
+        ){
+            console.log(`>> Basic_Labeling: force close request ${existed.id} (${existed.user})`)
+            existed.closed = true
+            existed.closedAt = new Date()
+            existed.force = true
+            await mongodb.replaceOne({
+                db: configDB,
+                collection: `settings.segmentation-requests`,
+                filter: {
+                    id: existed.id
+                },
+                data: existed
+            })
+        } else {
+            existed.opened = true
+            return existed    
+        }
     }
+
 
     options.dataId = [version.dataId]
     const controller = createTaskController(options)
@@ -63,13 +89,13 @@ const openRequest = async options => {
 
     let seg = await resolveSegmentation(options, data.segmentation)
 
-    let segmentationData = (seg) ? {
+    let segmentationData = (seg) ?
+        {
             user: user.altname,
             readonly: false,
             segmentation: seg.data
         } :
         undefined
-
 
     let requestData = {
         "patientId": data["Examination ID"],
@@ -83,7 +109,6 @@ const openRequest = async options => {
         "Other murmurs": data["Other murmurs"],
         "inconsistency": [],
         "data": (segmentationData) ? [segmentationData] : []
-
     }
 
     let request = {
@@ -91,7 +116,7 @@ const openRequest = async options => {
         user: user.altname,
         versionId: version.id,
         dataId: version.dataId,
-        strategy: "Basic_Labeling_2nd",
+        strategy: "Basic_Labeling_1st",
         db,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -115,7 +140,7 @@ const openRequest = async options => {
 
 const updateRequest = async options => {
 
-    console.log(`>> Basic_Labeling_2nd: UPDATE REQUEST ${options.requestId}: START`)
+    console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: START`)
 
     let { requestId, request } = options
 
@@ -150,10 +175,10 @@ const updateRequest = async options => {
         user,
         data,
         metadata: {
-            "task.Basic_Labeling_2nd.status": "process",
-            "task.Basic_Labeling_2nd.reason": "Update Segmentation",
-            "task.Basic_Labeling_2nd.updatedAt": new Date(),
-            "actual_status": "segmentation changes have been saved"
+            "task.Basic_Labeling_1st.status": "process",
+            "task.Basic_Labeling_1st.reason": "Update Segmentation",
+            "task.Basic_Labeling_1st.updatedAt": new Date(),
+            "actual_status": "Segmentation changes have been saved."
         }
     })
 
@@ -168,7 +193,7 @@ const updateRequest = async options => {
         data: segmentation
     })
 
-    console.log(`>> Basic_Labeling_2nd: UPDATE REQUEST ${options.requestId}: DONE`)
+    console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: DONE`)
 
 
 }
