@@ -108,7 +108,7 @@ const updateDiagnosisTags = async (req, res) => {
 	
 		let options = req.body.options
 	
-		console.log("updateDiagnosisTags", options.form.id, options.form.diagnosis)
+		// console.log("updateDiagnosisTags", options.form.id, options.form.diagnosis)
 
 
 		let result = await mongodb.updateOne({
@@ -224,7 +224,7 @@ const getForms = async (req, res) => {
 	          }
 	        ] 
 
-	        console.log(pipeline)
+	        // console.log(pipeline)
 
 		let data = await mongodb.aggregate({
 			db: options.db,
@@ -234,7 +234,7 @@ const getForms = async (req, res) => {
 
 		data = data[0]
 
-		console.log(data)
+		// console.log(data)
 
 	    if(data) {
 	        let formType = ["patient","echo","ekg", "attachements"]
@@ -246,9 +246,9 @@ const getForms = async (req, res) => {
 	            }
 	        }).filter( f => f)
 	        
-	        console.log()
-	        console.log("FORMS  >>", forms)
-	        console.log()
+	        // console.log()
+	        // console.log("FORMS  >>", forms)
+	        // console.log()
 
 
 	        let physician
@@ -301,7 +301,7 @@ const updateForm = async (req, res) => {
 	try {
 		
 		let options = req.body.options
-		console.log("updateForm", options.form)
+		// console.log("updateForm", options.form)
 
 		pipeline = [
 			{
@@ -320,7 +320,7 @@ const updateForm = async (req, res) => {
 
 		storedForm = storedForm[0]
 
-		console.log("storedForm", storedForm)
+		// console.log("storedForm", storedForm)
 
 		if(!storedForm) {
 			res.send({
