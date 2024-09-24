@@ -3,6 +3,7 @@ const uuid = require("uuid").v4
 
 const {
     extend,
+    isUndefined,
     isArray,
     isString,
     isObject,
@@ -50,6 +51,11 @@ const SETTINGS = {
 
 const TASK_BUFFER_MAX = 21
 const LIMIT = 100
+
+
+let EMPLOYEES = {}
+
+
 
 const collaboratorHeads = (dataId, user) => version => version.dataId == dataId && version.type != "main" && version.user != user && version.head == true
 const userHead = (dataId, user) => version =>
@@ -456,6 +462,24 @@ const Worker = class {
 
     }
 
+
+    async getEmploeePriorities(options = {}) {
+        
+        let { user } = options
+        
+        if(isUndefined(EMPLOYEES[user])){
+            console.log("LOAD priority for", user)
+            let activity = await this.getEmployeeStat({
+                matchEmployee: u => u.namedAs == user
+            })
+            activity = activity[0]
+            if(activity) EMPLOYEES[user] = activity.priority
+        
+        }
+        
+        return EMPLOYEES
+    
+    }
 
     async getEmployeeStatByTaskType(options = {}) {
         try {

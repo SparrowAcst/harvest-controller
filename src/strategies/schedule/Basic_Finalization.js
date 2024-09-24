@@ -1,7 +1,7 @@
 const { groupBy, keys, first, uniqBy } = require("lodash")
 const uuid = require("uuid").v4
 
-const commitSubmitedTasks = async taskController => {
+const commitSubmitedTasks = async (user, taskController) => {
 
     
     let commitedTasks = await taskController.selectTask({
@@ -13,6 +13,7 @@ const commitSubmitedTasks = async taskController => {
 
             "metadata.actual_task": "Basic_Finalization",
             "metadata.task.Basic_Finalization.status": "submit",
+            "user": user.altname,
 
             branch: {
                 $exists: false
@@ -37,6 +38,10 @@ const commitSubmitedTasks = async taskController => {
         console.log(`>> Basic_Finalization: Commit ${commitedTasks.length} tasks`)
 
     }
+
+    priorities = await taskController.getEmploeePriorities({user: user.altname})
+
+    priorities[user.altname] += commitedTasks.length
 
     for (let version of commitedTasks) {
 
@@ -64,15 +69,13 @@ module.exports = async (user, taskController) => {
 
     // console.log(`>> Basic_Finalization for ${user.altname}`)
 
-    await commitSubmitedTasks(taskController)
+    await commitSubmitedTasks(user, taskController)
 
-    // select user activity
-    let activity = await taskController.getEmployeeStat({
-        matchEmployee: u => u.namedAs == user.altname
-    })
+    
+    let priorities = await taskController.getEmploeePriorities({user: user.altname})
+    // console.log("fin priorities", priorities)
 
-    activity = activity[0]
-    if (!activity) return { version: [] }
+    if(!priorities[user.altname] || priorities[user.altname] == 0) return
 
     // select not assigned tasks
 
@@ -138,12 +141,15 @@ module.exports = async (user, taskController) => {
         })
     }
 
-    tasks = tasks.slice(0, activity.priority)
+    tasks = tasks.slice(0, priorities[user.altname])
 
     if(tasks.length > 0) {
         console.log(`>> Basic_Finalization for ${user.altname}: assign ${tasks.length} tasks`)
     }
     
+    priorities[user.altname] -= tasks.length
+
+            
     return {
         version: tasks,
         metadata: {

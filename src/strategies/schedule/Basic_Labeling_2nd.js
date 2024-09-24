@@ -3,18 +3,13 @@ const uuid = require("uuid").v4
 
 module.exports = async (user, taskController) => {
 
-    // console.log(`>> Basic_Labeling_2nd for ${user.altname}`)
 
-    // select user activity
-    let activity = await taskController.getEmployeeStat({
-        matchEmployee: u => u.namedAs == user.altname
-    })
+    let priorities = await taskController.getEmploeePriorities({user: user.altname})
+    // console.log("lab 2nd priorities", priorities)
 
-    activity = activity[0]
-    if (!activity) return { version: [] }
-
+    if(!priorities[user.altname] || priorities[user.altname] == 0) return
+    
     // select not assigned tasks
-
 
     let tasks = await taskController.selectTask({
         matchVersion: {
@@ -46,11 +41,13 @@ module.exports = async (user, taskController) => {
 
     if (tasks.length > 0) {
 
-        tasks = tasks.slice(0, activity.priority)
+        tasks = tasks.slice(0, priorities[user.altname])
 
         if(tasks.length > 0){
             console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
         }
+
+        priorities[user.altname] -= tasks.length
 
         return {
             version: tasks,
@@ -96,11 +93,13 @@ module.exports = async (user, taskController) => {
     })
 
 
-    tasks = tasks.slice(0, activity.priority)
+    tasks = tasks.slice(0, priorities[user.altname])
 
     if(tasks.length > 0){
             console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
         }
+    
+    priorities[user.altname] -= tasks.length
     
     return {
         version: tasks,

@@ -5,17 +5,8 @@ const uuid = require("uuid").v4
 
 module.exports = async (user, taskController) => {
 
-    // console.log(`>> Basic_Relabeling_1st for ${user.altname}`)
-
-    // await commitSubmitedTasks(taskController)
-
-    // select user activity
-    let activity = await taskController.getEmployeeStat({
-        matchEmployee: u => u.namedAs == user.altname
-    })
-
-    activity = activity[0]
-    if (!activity) return { version: [] }
+    let priorities = await taskController.getEmploeePriorities({user: user.altname})
+    // console.log("relab 1st priorities", priorities)
 
     let tasks = await taskController.selectTask({
         matchVersion: {
@@ -34,12 +25,14 @@ module.exports = async (user, taskController) => {
         }
     })
 
-    // tasks = tasks.slice(0, activity.priority)
 
     if(tasks.length > 0){
         console.log(`>> Basic_Relabeling_1st for ${user.altname}: assign ${tasks.length} tasks`)
     }
 
+    priorities[user.altname] -= tasks.length
+
+        
     return {
         version: tasks,
         metadata: {

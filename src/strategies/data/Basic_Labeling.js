@@ -138,6 +138,9 @@ module.exports = params => ({
         // submit rejection
         console.log("REJECT", params, expert)
 
+        let priorities = await controller.getEmploeePriorities({user})
+        priorities[user]++
+        
         await brancher.submit({
             user,
             source,
@@ -165,6 +168,11 @@ module.exports = params => ({
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
 
+        let priorities = await controller.getEmploeePriorities({user})
+        priorities[user]++
+
+        console.log("priorities", priorities)
+
         console.log("ACCEPT", params)
 
         await brancher.submit({
@@ -191,6 +199,10 @@ module.exports = params => ({
         context.dataId = [recordId]
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
+
+        let priorities = await controller.getEmploeePriorities({user})
+        priorities[user]--
+        
         await brancher.rollback({
             source
         })

@@ -3,18 +3,11 @@ const uuid = require("uuid").v4
 
 
 module.exports = async (user, taskController) => {
+    try {
+    let priorities = await taskController.getEmploeePriorities({user: user.altname})
+    // console.log("lab 1st priorities", priorities, priorities[user.altname])
 
-    // console.log(`>> Basic_Labeling_1st for ${user.altname}`)
-
-    // select user activity
-    let activity = await taskController.getEmployeeStat({
-        matchEmployee: u => u.namedAs == user.altname
-    })
-
-    activity = activity[0]
-    console.log("activity", activity)
-
-    if (!activity) return { version: [] }
+    if(!priorities[user.altname] || priorities[user.altname] == 0) return
 
     let tasks = await taskController.selectTask({
         matchVersion: {
@@ -27,11 +20,15 @@ module.exports = async (user, taskController) => {
         }
     })
 
-    tasks = tasks.slice(0, activity.priority)
+    tasks = tasks.slice(0, priorities[user.altname])
     
+    // console.log(tasks,"tasks")
+
     if(tasks.length > 0){
         console.log(`>> Basic_Labeling_1st for ${user.altname}: assign ${tasks.length} tasks`)
     }
+
+    priorities[user.altname] -= tasks.length
     
     return {
         version: tasks,
@@ -45,5 +42,9 @@ module.exports = async (user, taskController) => {
  
         }
     }
+
+} catch(e) {
+    console.log("Schedule Basic_Labeling 1st: ",e.toString(), e.stack)
+}
 
 }

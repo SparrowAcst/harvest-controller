@@ -9,10 +9,14 @@ const POOL = {}
 const assignTasksOperation = async (options = {}) => {
     try {
     
-    let { user } = options
-    
+    let { initiator } = options
+    let user = initiator
+    options.user = initiator
+
     console.log("ASSIGN TASKS PROCEDURE STARTS FOR", user.altname)
     
+    // console.log(user)
+
     options.strategy = strategy
 
 

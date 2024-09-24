@@ -5,6 +5,7 @@ const createTaskController = require("./utils/task-controller")
 
 const dataStrategy = require("./strategies/data")
 
+const assignTasks = require("./long-term/assign-task")
 
 
 const getRecordData = async (req, res) => {
@@ -78,16 +79,26 @@ const rejectRecordData = async (req, res) => {
         let { options } = req.body
 
         options = extend(
-            options,
-            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+            options, 
+            req.body.cache.currentDataset,
+            { userProfiles: req.body.cache.userProfiles}
         )
 
         options.eventHub = req.eventHub
+        options.initiator = find(options.userProfiles, p => p.namedAs == options.user)
+
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].reject : undefined
         let result
         if (handler) {
             result = await handler(options)
+
+            // if (req.eventHub.listenerCount("assign-tasks") == 0) {
+            //     req.eventHub.on("assign-tasks", assignTasks)
+            // }
+
+            // req.eventHub.emit("assign-tasks", options)
+
         } else {
             result = {}
         }
@@ -111,16 +122,25 @@ const submitRecordData = async (req, res) => {
         let { options } = req.body
 
         options = extend(
-            options,
-            req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
+            options, 
+            req.body.cache.currentDataset,
+            { userProfiles: req.body.cache.userProfiles}
         )
 
         options.eventHub = req.eventHub
+        options.initiator = find(options.userProfiles, p => p.namedAs == options.user)
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].submit : undefined
         let result
         if (handler) {
             result = await handler(options)
+
+            // if (req.eventHub.listenerCount("assign-tasks") == 0) {
+            //     req.eventHub.on("assign-tasks", assignTasks)
+            // }
+
+            // req.eventHub.emit("assign-tasks", options)
+
         } else {
             result = {}
         }

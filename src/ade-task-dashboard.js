@@ -34,7 +34,8 @@ const getActiveTask = async (req, res) => {
         options = extend(
             options, 
             req.body.cache.currentDataset,
-            { userProfiles: req.body.cache.userProfiles}
+            { userProfiles: req.body.cache.userProfiles},
+            {initiator: options.user}
         )
         // options.dataView = dataView
 
