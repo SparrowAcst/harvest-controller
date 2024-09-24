@@ -69,7 +69,7 @@ const openRequest = async options => {
             existed.closedAt = new Date()
             existed.force = true
             await mongodb.replaceOne({
-                db: configDB,
+                db,
                 collection: `settings.segmentation-requests`,
                 filter: {
                     id: existed.id

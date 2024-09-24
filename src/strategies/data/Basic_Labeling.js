@@ -85,6 +85,8 @@ module.exports = params => ({
 
         if (segmentation) {
             version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
+            version.data.segmentationAnalysis.user = segmentation.user.name
+            version.data.segmentationAnalysis.createdAt = segmentation.createdAt
         }
 
         version.strategy = params.actual
