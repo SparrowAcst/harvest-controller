@@ -5,7 +5,7 @@ const uuid = require("uuid").v4
 module.exports = async (user, taskController) => {
     try {
     let priorities = await taskController.getEmploeePriorities({user: user.altname})
-    // console.log("lab 1st priorities", priorities, priorities[user.altname])
+    console.log("lab 1st priorities", priorities, priorities[user.altname])
 
     if(!priorities[user.altname] || priorities[user.altname] == 0) return
 
@@ -22,7 +22,7 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, priorities[user.altname])
     
-    // console.log(tasks,"tasks")
+    console.log(tasks,"tasks")
 
     if(tasks.length > 0){
         console.log(`>> Basic_Labeling_1st for ${user.altname}: assign ${tasks.length} tasks`)

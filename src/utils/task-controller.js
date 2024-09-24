@@ -476,6 +476,9 @@ const Worker = class {
             if(activity) EMPLOYEES[user] = activity.priority
         
         }
+        keys(EMPLOYEES).forEach( key => {
+            EMPLOYEES[key] = (EMPLOYEES[key] < 0) ? 0 : EMPLOYEES[key]
+        })
         
         return EMPLOYEES
     

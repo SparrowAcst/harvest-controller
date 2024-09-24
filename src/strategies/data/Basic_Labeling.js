@@ -123,12 +123,13 @@ module.exports = params => ({
 
         let expertVersion = brancher.getHistory({
             version: source,
-            stopAt: v => v.type == "submit" && v.metadata.actual_task == params.reject
+            stopAt: v => v.type == "submit" && params.previus.includes(v.metadata.actual_task) //!= params.actual
+            // stopAt: v => v.type == "submit" && v.metadata.actual_task == params.reject
         })
 
         // console.log("expertVersion full", expertVersion)
 
-        expertVersion = expertVersion.filter(v => v.type == "submit" && v.metadata.actual_task == params.reject)
+        expertVersion = expertVersion.filter(v => v.type == "submit" && params.previus.includes(v.metadata.actual_task))
         expertVersion = first(expertVersion)
 
         // console.log("expertVersion", expertVersion)

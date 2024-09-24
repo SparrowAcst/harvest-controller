@@ -4,7 +4,7 @@ const uuid = require("uuid").v4
 module.exports = async (user, taskController) => {
 
     let priorities = await taskController.getEmploeePriorities({user: user.altname})
-    // console.log("relab 2nd priorities", priorities)
+    console.log("relab 2nd priorities", priorities)
 
     // select not assigned tasks
 
@@ -27,6 +27,7 @@ module.exports = async (user, taskController) => {
         }
     })
 
+    console.log("tasks", tasks)
 
     if(tasks.length > 0){
         console.log(`>> Basic_Relabeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)

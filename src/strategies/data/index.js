@@ -23,6 +23,7 @@ module.exports = {
         actual: "Basic_Labeling_2nd",
         accept: "Basic_Finalization",
         reject: "Basic_Relabeling_1st",
+        previus: ["Basic_Labeling_1st", "Basic_Relabeling_1st"],
         permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
     }),
 
@@ -30,6 +31,7 @@ module.exports = {
         actual: "Basic_Relabeling_2nd",
         accept: "Basic_Finalization",
         reject: "Basic_Relabeling_1st",
+        previus: ["Basic_Labeling_1st", "Basic_Relabeling_1st"],
         permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
     }),
 
@@ -41,6 +43,7 @@ module.exports = {
         actual: "Basic_Finalization",
         accept: "",
         reject: "Basic_Relabeling_2nd",
+        previus: ["Basic_Labeling_2nd", "Basic_Relabeling_2nd"],
         permission: ["rollback", "sync", "history", "save", "reject", "submit"]
     }),
 
