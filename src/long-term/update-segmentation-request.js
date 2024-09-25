@@ -16,6 +16,7 @@ try {
 
     let { requestId, configDB, data } = settings
     
+    
     let request = await mongodb.aggregate({
         db: configDB,
         collection: `settings.segmentation-requests`,
@@ -70,6 +71,7 @@ try {
     	handler(settings)	
     }
 
+
     console.log(`LONG-TERM: updateSegmentationRequest: done`)
 } catch(e) {
     console.log(`LONG-TERM: updateSegmentationRequest:`)
@@ -82,7 +84,11 @@ try {
 const updateSegmentationRequest = (settings = {}) => {
     console.log("CALL updateSegmentationRequest")
     LongTerm.execute( async () => {
+        let { requestId } = settings
+        LongTerm.pool.startTask("update-segmentation-request", requestId)
         await updateSegmentationRequestOperation(settings)     
+        LongTerm.pool.stopTask("update-segmentation-request", requestId)
+
     })
 }
 

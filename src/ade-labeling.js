@@ -7,6 +7,7 @@ const dataStrategy = require("./strategies/data")
 
 const assignTasks = require("./long-term/assign-task")
 
+const LongTerm = require("./utils/long-term-queue")
 
 const getRecordData = async (req, res) => {
     try {
@@ -475,6 +476,11 @@ const getRecords = async (req, res) => {
 
 }
 
+const getLongTermTask = async (req, res) => {
+    let {type, id} = req.body
+    res.send(LongTerm.pool.getTask(type, id))
+}
+
 
 
 module.exports = {
@@ -488,5 +494,6 @@ module.exports = {
     getForms,
     getChangelog,
     getSegmentation,
-    getRecords
+    getRecords,
+    getLongTermTask
 }

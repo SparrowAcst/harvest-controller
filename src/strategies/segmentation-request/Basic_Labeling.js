@@ -146,6 +146,9 @@ const updateRequest = async options => {
 
     let { db, collection, responseData, requestData, dataId, versionId, user } = request
 
+    console.log("Basic_Labeling_1st:", db, collection, responseData, requestData, dataId, versionId, user)
+
+
     if (!responseData) return
     if (!responseData.segmentation) return
 
@@ -163,6 +166,7 @@ const updateRequest = async options => {
             id: dataId
         },
         user,
+        createdAt: new Date(),
         data: responseData.segmentation
     }
 
@@ -176,7 +180,7 @@ const updateRequest = async options => {
         data,
         metadata: {
             "task.Basic_Labeling_1st.status": "process",
-            "task.Basic_Labeling_1st.reason": "Update Segmentation",
+            "task.Basic_Labeling_1st.reason": "",
             "task.Basic_Labeling_1st.updatedAt": new Date(),
             "actual_status": "Segmentation changes have been saved."
         }
@@ -192,6 +196,18 @@ const updateRequest = async options => {
         },
         data: segmentation
     })
+
+    request.versionId = v.id
+
+    await mongodb.replaceOne({
+        db,
+        collection: `settings.segmentation-requests`,
+        filter: {
+            id: requestId
+        },
+        data: request
+    })
+
 
     console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: DONE`)
 

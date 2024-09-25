@@ -85,7 +85,7 @@ module.exports = params => ({
 
         if (segmentation) {
             version.data.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(segmentation.data)
-            version.data.segmentationAnalysis.user = segmentation.user.name
+            version.data.segmentationAnalysis.user = (segmentation.user.name) ? segmentation.user.name : segmentation.user
             version.data.segmentationAnalysis.createdAt = segmentation.createdAt
         }
 
