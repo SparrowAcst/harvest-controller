@@ -4,7 +4,7 @@ const isValidUUID = require("uuid").validate
 const mongodb = require("../../mongodb")
 const moment = require("moment")
 
-const settings = require("../settings").segmentator
+const settings = require("../settings")
 
 
 const isUUID = data => isString(data) && isValidUUID(data)
@@ -80,7 +80,7 @@ const openRequest = async options => {
         
         if(
             moment(existed.updatedAt)
-                .add(...settings.requestExpiration)
+                .add(...(settings().segmentator.requestExpiration))
                 .isSameOrBefore(moment(new Date()))
         ){
             console.log(`>> tagged_records: force close request ${existed.id} (${existed.user})`)
