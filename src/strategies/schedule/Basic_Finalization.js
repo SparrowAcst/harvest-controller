@@ -3,16 +3,26 @@ const uuid = require("uuid").v4
 
 const commitSubmitedTasks = async (user, taskController) => {
 
-    
+
     let commitedTasks = await taskController.selectTask({
+
         matchVersion: {
 
             head: true,
 
             type: "submit",
-
             "metadata.actual_task": "Basic_Finalization",
             "metadata.task.Basic_Finalization.status": "submit",
+            $or: [{
+                    "metadata.task.Basic_Relabeling_2nd": {
+                        $exists: false,
+                    },
+                },
+                {
+                    "metadata.task.Basic_Relabeling_2nd.status": "submit"
+                }
+            ],
+
             "user": user.altname,
 
             branch: {
@@ -31,15 +41,17 @@ const commitSubmitedTasks = async (user, taskController) => {
             expiredAt: {
                 $lt: new Date()
             }
+
         }
+
     })
 
-    if(commitedTasks.length > 0){
+    if (commitedTasks.length > 0) {
         console.log(`>> Basic_Finalization: Commit ${commitedTasks.length} tasks`)
 
     }
 
-    priorities = await taskController.getEmploeePriorities({user: user.altname})
+    priorities = await taskController.getEmploeePriorities({ user: user.altname })
 
     priorities[user.altname] += commitedTasks.length
 
@@ -71,11 +83,11 @@ module.exports = async (user, taskController) => {
 
     await commitSubmitedTasks(user, taskController)
 
-    
-    let priorities = await taskController.getEmploeePriorities({user: user.altname})
+
+    let priorities = await taskController.getEmploeePriorities({ user: user.altname })
     // console.log("fin priorities", priorities)
 
-    if(!priorities[user.altname] || priorities[user.altname] == 0) return
+    if (!priorities[user.altname] || priorities[user.altname] == 0) return
 
     // select not assigned tasks
 
@@ -143,13 +155,13 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, priorities[user.altname])
 
-    if(tasks.length > 0) {
+    if (tasks.length > 0) {
         console.log(`>> Basic_Finalization for ${user.altname}: assign ${tasks.length} tasks`)
     }
-    
+
     priorities[user.altname] -= tasks.length
 
-            
+
     return {
         version: tasks,
         metadata: {

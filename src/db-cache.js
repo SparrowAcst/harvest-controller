@@ -116,7 +116,8 @@ const handler = async (req, res, next) => {
             datasets: DATASET_CACHE.map(d => d),
             userProfiles: USER_CACHE.map(d => d),
             metadata: METADATA_CACHE.map(d => d),
-            currentDataset
+            currentDataset,
+            update: init
         }
     })
 
@@ -126,7 +127,8 @@ const handler = async (req, res, next) => {
             datasets: DATASET_CACHE.map(d => d),
             userProfiles: USER_CACHE.map(d => d),
             metadata: METADATA_CACHE.map(d => d),
-            currentDataset
+            currentDataset,
+            update: init
         }
     })
 
@@ -135,7 +137,8 @@ const handler = async (req, res, next) => {
         datasets: DATASET_CACHE.map(d => d),
         userProfiles: USER_CACHE.map(d => d),
         metadata: METADATA_CACHE.map(d => d),
-        currentDataset
+        currentDataset,
+        update: init
     }
 
 

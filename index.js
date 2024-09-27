@@ -230,7 +230,10 @@ let adeAdmin = require("./src/ade-admin")
 
 router.get("/ade-admin/cache-update/", DBCache)
 router.get("/ade-admin/schedule/users/reset-priority/:user", adeAdmin.resetEmployeePriority)
-router.get("/ade-admin/schedule/users/list", adeAdmin.listEmployeePriority)
+router.get("/ade-admin/schedule/users/change-priority/:user/:mode/:delta", adeAdmin.changeEmployeePriority)
+router.get("/ade-admin/schedule/users", [ DBCache, adeAdmin.listEmployee ])
+router.get("/ade-admin/schedule/users/:users", [ DBCache, adeAdmin.listEmployee ])
+router.post("/ade-admin/schedule/update", [ DBCache, adeAdmin.updateEmployeeSchedule ])
 
 router.get("/ade-admin/schedule/settings", adeAdmin.getStrategiesSettings)
 router.post("/ade-admin/schedule/settings", adeAdmin.setStrategiesSettings)

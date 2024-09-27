@@ -490,7 +490,6 @@ const Worker = class {
     }
 
     async resetEmployeePriority(user) {
-        console.log(user)
         if (!user) {
 
             EMPLOYEES = {}
@@ -504,6 +503,23 @@ const Worker = class {
         return EMPLOYEES
 
     }
+
+    async changeEmployeePriority(user, delta, mode) {
+        if (user) {
+            delta = Number.parseInt(delta)
+            if( !Number.isNaN(delta) ) {
+                if(mode == "relative") {
+                    EMPLOYEES[user] += delta
+                } else {
+                    //absolute mode
+                    EMPLOYEES[user] = delta
+                }    
+            }                            
+        }    
+        console.log(EMPLOYEES)
+        return EMPLOYEES
+    }
+
 
     async getEmployeeStatByTaskType(options = {}) {
         try {
