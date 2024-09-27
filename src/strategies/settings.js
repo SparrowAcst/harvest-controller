@@ -1,4 +1,24 @@
-module.exports = {
+const { set, isUndefined, keys } = require("lodash")
+
+
+const setProperties = (source, ops) => {
+    if (!ops) return source
+    let result = JSON.parse(JSON.stringify(source))
+    keys(ops).map(key => {
+        if (!isUndefined(ops[key])) {
+            set(result, key, ops[key])
+        }
+    })
+
+    result.setProperties = ops => {
+        settings = setProperties(settings, ops)
+    }    
+    
+    return result
+}
+
+
+let settings = {
     
     segmentator: {
         requestExpiration: [2, "hours"]
@@ -30,6 +50,13 @@ module.exports = {
                 }
             : {})    
 
-    }
+    },
 
 }
+
+
+settings.setProperties = ops => {
+    settings = setProperties(settings, ops)
+}    
+
+module.exports = () => settings

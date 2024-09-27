@@ -35,28 +35,33 @@ const initiate = () => {
 
 
 const removeExpiredTask = section => {
-    if (!pool[section]) return
-    let tasks = keys(pool[section])
-    tasks.forEach(task => {
-        if (
-            pool[section][task].state == "done" &&
-            pool[section][task].expiredAt &&
-            moment(new Date()).isSameOrBefore(moment(pool[section][task].expiredAt))
-        ) delete pool[section][task]
-    })
+    try {
+        if (!pool[section]) return
+        let tasks = keys(pool[section])
+        tasks.forEach(task => {
+            if (
+                pool[section][task].state == "done" &&
+                pool[section][task].expiredAt &&
+                moment(new Date()).isSameOrBefore(moment(pool[section][task].expiredAt))
+            ) delete pool[section][task]
+        })
+    } catch (e) {
+        console.log(e.toString(), e.stack)
+    }
 
 }
 
 
-const startTask = (section, id) => {
+const startTask = (section, id, metadata) => {
     try {
         removeExpiredTask(section)
         pool[section] = pool[section] || {}
         pool[section][id] = {
             id,
+            metadata,
             status: "started"
         }
-        console.log("LONG TERM TASK POOL", pool)
+        // console.log("START TASK LONG TERM TASK POOL", pool)
     } catch (e) {
         console.log(e.toString(), e.stack)
     }
@@ -68,32 +73,88 @@ const stopTask = (section, id) => {
         pool[section][id] = {
             id,
             status: "done",
+            metadata: (pool[section][id]) ? pool[section][id].metadata : undefined,
             version: uuid(),
             expiredAt: moment(new Date()).add(...EXPIRAION).toDate()
         }
-        console.log("LONG TERM TASK POOL", pool)
+        // console.log("STOP TASK LONG TERM TASK POOL", pool)
     } catch (e) {
         console.log(e.toString(), e.stack)
     }
 }
 
 const getTask = (section, id) => {
-    if (!pool[section]) return {}
-    if (!pool[section][id]) return {}
-    return pool[section][id]
+    try {
+        if (!pool[section]) return {}
+        if (!pool[section][id]) return {}
+        let res = pool[section][id]
+        return res
+    } catch (e) {
+        console.log(e.toString(), e.stack)
+    }
 }
+
+const selectTask = (section, test) => {
+    try {
+        let res = []
+        keys(pool[section]).forEach(id => {
+            if (test(pool[section][id])) res.push(pool[section][id])
+        })
+        return res
+    } catch (e) {
+        console.log(e.toString(), e.stack)
+    }
+}
+
+const endLongTermOperation = (options = {}) => new Promise((resolve, reject) => {
+    try {
+
+        let { section, test, interval, repeat } = options
+
+        repeat = repeat || 5
+        interval = interval || 1000
+
+        let counter = 0
+
+        let t = setInterval(() => {
+
+            let task = selectTask(section, test)[0]
+
+            console.log("WAIT FOR LONG-TERM", section, task)
+            
+            if (!task || task.status == "done" || counter > repeat) {
+                clearInterval(t)
+                resolve(true)
+            }
+
+            counter++
+
+        }, interval)
+
+    } catch (e) {
+        console.log(e.toString(), e.stack)
+    }
+
+})
 
 
 module.exports = {
 
     execute: task => {
-        console.log('EXECUTE LONG TERM')
-        if (!queue) initiate()
-        queue.enqueue(task)
+        try {
+            if (!queue) initiate()
+            queue.enqueue(task)
+        } catch (e) {
+            console.log(e.toString(), e.stack)
+        }
     },
+
+    endLongTermOperation,
+
     pool: {
         startTask,
         stopTask,
-        getTask
+        getTask,
+        selectTask
     }
 }

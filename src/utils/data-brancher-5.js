@@ -25,9 +25,7 @@ const Diff = require('jsondiffpatch')
 const uuid = require("uuid").v4
 const moment = require("moment")
 
-const { dataView, EXPIRATION_PERIOD } = require("../strategies/settings").dataVersion
-
-
+let SETTINGS = require("../strategies/settings")
 
 const DEFAULT_FIELDS = [
     "id",
@@ -162,7 +160,10 @@ const init = async (options = {}) => {
 
     try {
 
+        const { dataView, EXPIRATION_PERIOD } = SETTINGS().dataVersion
+
         let { db, dataId, metadata } = options
+
 
         let branches = dataId.map(did => ({
             id: uuid(),
@@ -433,6 +434,9 @@ const Worker = class {
 
         try {
 
+            const { dataView, EXPIRATION_PERIOD } = SETTINGS().dataVersion
+
+
             let { db, cache } = this.context
             let { user, source, data, metadata, ignoreChangeDetection } = options
 
@@ -515,6 +519,8 @@ const Worker = class {
     async submit(options = {}) {
 
         try {
+
+            const { dataView, EXPIRATION_PERIOD } = SETTINGS().dataVersion
 
             let { db, cache, freezePeriod } = this.context
             let { user, source, data, metadata } = options
@@ -659,6 +665,9 @@ const Worker = class {
 
         try {
 
+            const { dataView, EXPIRATION_PERIOD } = SETTINGS().dataVersion
+
+
             let { db, cache } = this.context
 
             let { user, source, data, metadata } = options
@@ -788,7 +797,7 @@ const Worker = class {
 
             let { user, sources, data, metadata } = options
 
-            // dataView = dataView || (d => null)
+            const { dataView, EXPIRATION_PERIOD } = SETTINGS().dataVersion
 
             let parents = sources.map(source => this.resolveVersion({ version: source }))
 

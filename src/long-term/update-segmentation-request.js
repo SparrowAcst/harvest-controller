@@ -1,94 +1,99 @@
-const {extend} = require("lodash")
+const { extend } = require("lodash")
 const LongTerm = require("../utils/long-term-queue")
 const mongodb = require("../mongodb")
 const requestStrategies = require("../strategies/segmentation-request")
 const jsondiffpatch = require("jsondiffpatch")
 
 const checker = jsondiffpatch.create({
-    objectHash: (d, index)  => {
+    objectHash: (d, index) => {
         return JSON.stringify(d)
     }
 })
 
 const updateSegmentationRequestOperation = async settings => {
-try {
-    console.log(`LONG-TERM: updateSegmentationRequest: started`)
+    try {
+        console.log(`LONG-TERM: updateSegmentationRequest: started`)
 
-    let { requestId, configDB, data } = settings
-    
-    
-    let request = await mongodb.aggregate({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        pipeline: [{
-                $match: {
-                    id: requestId
+        let { requestId, configDB, data } = settings
+
+
+        let request = await mongodb.aggregate({
+            db: configDB,
+            collection: `settings.segmentation-requests`,
+            pipeline: [{
+                    $match: {
+                        id: requestId
+                    }
+                },
+                {
+                    $project: { _id: 0 }
                 }
+            ]
+        })
+
+
+        if (request.length == 0) return
+
+        request = request[0]
+
+        request.responseData = request.responseData || { segmentation: null }
+
+        if (!checker.diff(request.responseData.segmentation, data.segmentation)) {
+            console.log(`LONG-TERM: updateSegmentationRequest: no changes`)
+            return
+        }
+
+
+        LongTerm.pool.startTask("update-segmentation-request", requestId, {
+            user: request.user,
+            dataId: request.dataId
+        })
+
+
+        request.responseData = data
+        request.updatedAt = new Date()
+
+        let { db } = request
+
+        await mongodb.replaceOne({
+            db: configDB,
+            collection: `settings.segmentation-requests`,
+            filter: {
+                id: requestId
             },
-            {
-                $project: { _id: 0 }
-            }
-        ]
-    })
+            data: request
+        })
 
 
-    if(request.length == 0) return
+        request.strategy = request.strategy || "test"
 
-    request = request[0]
-    
-    request.responseData = request.responseData || {segmentation: null}
-    
-    if( !checker.diff(request.responseData.segmentation, data.segmentation) ){
-        console.log(`LONG-TERM: updateSegmentationRequest: no changes`)
-        return
-    }    
-    
-    request.responseData = data
-    request.updatedAt = new Date()
+        settings.request = request
 
-    let { db } = request
-
-    await mongodb.replaceOne({
-         db: configDB,
-         collection: `settings.segmentation-requests`,
-         filter:{
-             id: requestId
-         },
-         data: request
-     })
+        let handler = (requestStrategies[request.strategy]) ?
+            requestStrategies[request.strategy].updateRequest :
+            undefined
 
 
-    request.strategy = request.strategy || "test"
-    
-    settings.request = request
+        if (handler) {
+            await handler(settings)
+        }
 
-    let handler = (requestStrategies[request.strategy]) 
-    	? requestStrategies[request.strategy].updateRequest 
-    	: undefined
-    
-    
-    if(handler){
-    	handler(settings)	
+        LongTerm.pool.stopTask("update-segmentation-request", requestId)
+
+
+        console.log(`LONG-TERM: updateSegmentationRequest: done`)
+    } catch (e) {
+        console.log(`LONG-TERM: updateSegmentationRequest:`)
+        console.log(e.toString(), e.stack)
+
     }
-
-
-    console.log(`LONG-TERM: updateSegmentationRequest: done`)
-} catch(e) {
-    console.log(`LONG-TERM: updateSegmentationRequest:`)
-    console.log(e.toString(), e.stack)
-
-}
 }
 
 
 const updateSegmentationRequest = (settings = {}) => {
     console.log("CALL updateSegmentationRequest")
-    LongTerm.execute( async () => {
-        let { requestId } = settings
-        LongTerm.pool.startTask("update-segmentation-request", requestId)
-        await updateSegmentationRequestOperation(settings)     
-        LongTerm.pool.stopTask("update-segmentation-request", requestId)
-
+    LongTerm.execute(async () => {
+        await updateSegmentationRequestOperation(settings)
     })
 }
 

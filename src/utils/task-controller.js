@@ -88,9 +88,10 @@ const Worker = class {
 
 
     async getBrancher(options) {
-        console.log("options.dataId", (options) ? options.dataId : "undefined")
-        
-        if(options && options.dataId != this.brancherDataId){
+
+        // console.log("options.dataId", (options) ? options.dataId : "undefined")
+
+        if (options && options.dataId != this.brancherDataId) {
             this.brancher = await createBrancher(options)
             return this.brancher
         }
@@ -99,7 +100,7 @@ const Worker = class {
             this.brancher :
             await createBrancher(options || this.context)
         return this.brancher
-    
+
     }
 
 
@@ -464,24 +465,44 @@ const Worker = class {
 
 
     async getEmploeePriorities(options = {}) {
-        
+
         let { user } = options
-        
-        if(isUndefined(EMPLOYEES[user])){
+
+        if (isUndefined(EMPLOYEES[user])) {
             console.log("LOAD priority for", user)
             let activity = await this.getEmployeeStat({
                 matchEmployee: u => u.namedAs == user
             })
             activity = activity[0]
-            if(activity) EMPLOYEES[user] = activity.priority
-        
+            if (activity) EMPLOYEES[user] = activity.priority
+
         }
-        keys(EMPLOYEES).forEach( key => {
+        keys(EMPLOYEES).forEach(key => {
             EMPLOYEES[key] = (EMPLOYEES[key] < 0) ? 0 : EMPLOYEES[key]
         })
-        
+
         return EMPLOYEES
-    
+
+    }
+
+    async listEmploeePriorities() {
+        return EMPLOYEES
+    }
+
+    async resetEmployeePriority(user) {
+        console.log(user)
+        if (!user) {
+
+            EMPLOYEES = {}
+
+        } else {
+
+            delete EMPLOYEES[user]
+
+        }
+        console.log(EMPLOYEES)
+        return EMPLOYEES
+
     }
 
     async getEmployeeStatByTaskType(options = {}) {
@@ -560,22 +581,22 @@ const Worker = class {
                 if (tasks.version.length == 0) continue
 
                 let b = await this.getBrancher(extend({}, this.context, { dataId: tasks.version.map(t => t.dataId) }))
-                
+
                 await b.branch({
                     source: tasks.version,
                     user: user.altname,
                     metadata: tasks.metadata
                 })
 
-                tasks.version = tasks.version.map( v => {
+                tasks.version = tasks.version.map(v => {
                     v.lockRollback = true
                     return v
                 })
-                
+
                 // console.log("tasks.version", tasks.version)
 
-                await b.updateVersion({version: tasks.version})
-                
+                await b.updateVersion({ version: tasks.version })
+
             }
         } catch (e) {
             console.log(e.toString(), e.stack)

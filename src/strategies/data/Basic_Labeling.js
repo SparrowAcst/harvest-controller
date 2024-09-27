@@ -8,22 +8,7 @@ const { segmentationAnalysis } = require("../utils")
 const createTaskController = require("../../utils/task-controller")
 const mongodb = require("../../mongodb")
 
-
-// const REASON = {
-//     accept: {
-//         Basic_Labeling_1st: template(`The data labeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
-//         Basic_Relabeling_1st: template(`The data relabeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
-//         Basic_Labeling_2nd: template(`The data labeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
-//         Basic_Relabeling_2nd: template(`The data relabeling by <%=user%> is completed. Data verification from a 2nd expert is required.`),
-//         Basic_Finalization: template(`The data finalization by <%=user%> is required.`)
-//     },
-//     reject: {
-//         Basic_Labeling_2nd: template(`The data labeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`),
-//         Basic_Relabeling_2nd: template(`The data relabeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`),
-//         Basic_Finalization: template(`The data labeling by <%=user%> is rejected. Data verification from <%=expert%> is required.`)
-//     }
-// }
-
+const LongTerm = require("../../utils/long-term-queue")
 
 const REASON = {
     accept: {
@@ -47,7 +32,6 @@ const getReason = (mode, task, data) => {
     }
     return ""
 }
-
 
 const resolveSegmentation = async (options, segmentation) => {
 
@@ -78,6 +62,7 @@ module.exports = params => ({
     get: async context => {
 
         let { recordId, user } = context
+
         context.dataId = [recordId]
         const controller = createTaskController(context)
         let version = await controller.getActualVersion({ user, dataId: recordId })
@@ -98,6 +83,7 @@ module.exports = params => ({
 
         let { data, source, user, recordId } = context
         context.dataId = [recordId]
+
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
         await brancher.save({
@@ -108,7 +94,8 @@ module.exports = params => ({
                 [`task.${params.actual}.status`]: "process",
                 [`task.${params.actual}.updatedAt`]: new Date(),
                 permission: params.permission,
-                "actual_status": "Label changes have been saved."
+                "actual_status": "Label changes have been saved.",
+                "TODO_comment": data.TODO_comment
             }
         })
 
@@ -118,6 +105,7 @@ module.exports = params => ({
 
         let { data, source, user, recordId } = context
         context.dataId = [recordId]
+
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
 
@@ -129,21 +117,16 @@ module.exports = params => ({
             // stopAt: v => v.type == "submit" && v.metadata.actual_task == params.reject
         })
 
-        // console.log("expertVersion full", expertVersion)
-
         expertVersion = expertVersion.filter(v => v.type == "submit" && params.previus.includes(v.metadata.actual_task))
         expertVersion = first(expertVersion)
 
-        // console.log("expertVersion", expertVersion)
-
         let expert = (expertVersion) ? expertVersion.user : null
 
-        // submit rejection
         console.log("REJECT", params, expert)
 
-        let priorities = await controller.getEmploeePriorities({user})
+        let priorities = await controller.getEmploeePriorities({ user })
         priorities[user]++
-        
+
         await brancher.submit({
             user,
             source,
@@ -152,6 +135,7 @@ module.exports = params => ({
                     [`task.${params.actual}.status`]: "submit",
                     [`task.${params.actual}.updatedAt`]: new Date(),
                     "actual_status": "Data labeling rejected.",
+                    "TODO_comment": data.TODO_comment
                 },
                 (params.reject) ? {
                     [`task.${params.reject}.status`]: "open",
@@ -166,15 +150,15 @@ module.exports = params => ({
 
     submit: async context => {
 
+
         let { data, source, user, recordId } = context
         context.dataId = [recordId]
+
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
 
-        let priorities = await controller.getEmploeePriorities({user})
+        let priorities = await controller.getEmploeePriorities({ user })
         priorities[user]++
-
-        console.log("priorities", priorities)
 
         console.log("ACCEPT", params)
 
@@ -185,7 +169,8 @@ module.exports = params => ({
             metadata: extend({
                 [`task.${params.actual}.status`]: "submit",
                 [`task.${params.actual}.updatedAt`]: new Date(),
-                "actual_status": "Changes to labels and segmentation have been submitted."
+                "actual_status": "Changes to labels and segmentation have been submitted.",
+                "TODO_comment": data.TODO_comment
             }, (params.accept) ? {
                 [`task.${params.accept}.id`]: uuid(),
                 [`task.${params.accept}.status`]: "open",
@@ -198,14 +183,16 @@ module.exports = params => ({
 
     rollback: async context => {
 
+
         let { source, user, recordId } = context
         context.dataId = [recordId]
+
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
 
-        let priorities = await controller.getEmploeePriorities({user})
+        let priorities = await controller.getEmploeePriorities({ user })
         priorities[user]--
-        
+
         await brancher.rollback({
             source
         })

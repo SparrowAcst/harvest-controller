@@ -14,8 +14,7 @@ const {
 
 } = require("lodash")
 
-
-const { PARALLEL_BRANCHES } = require("../settings").strategy.Cross_Validation_2nd
+const SETTINGS = require("../settings")
 
 
 const selectCandidates = (collaborators, count, exclusion) => {
@@ -36,6 +35,8 @@ const selectCandidates = (collaborators, count, exclusion) => {
 const assignTasks = async (user, taskController) => {
     try {
         
+        const { PARALLEL_BRANCHES } = SETTINGS().strategy.Cross_Validation_2nd
+
         let pool = await taskController.getEmployeeStat({
             matchEmployee: u => u.schedule && u.schedule.includes("Cross_Validation_2nd")
         })
@@ -169,7 +170,7 @@ const assignTasks = async (user, taskController) => {
 const reassignTasks = async (user, taskController) => {
     try {
 
-        // console.log(`>> Schedule: Cross_Validation_2nd: Reassign tasks initiated by ${user.altname}`)
+        const { PARALLEL_BRANCHES } = SETTINGS().strategy.Cross_Validation_2nd
 
         let pool = await taskController.getEmployeeStat({
             matchEmployee: u => u.schedule && u.schedule.includes("Cross_Validation_2nd")

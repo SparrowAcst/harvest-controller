@@ -89,6 +89,13 @@ const init = async () => {
 
 const handler = async (req, res, next) => {
 
+
+    if(req.url == "/ade-admin/cache-update/"){
+        await init()
+        res.status(200).send(`Cache updated. Datasets: ${DATASET_CACHE.length}. Users: ${USER_CACHE.length}. Metadata: ${METADATA_CACHE.length} items.`)
+        return
+    }
+
     if (!DATASET_CACHE || !USER_CACHE || !METADATA_CACHE || req.body.forceUpdate) {
         await init()
     }

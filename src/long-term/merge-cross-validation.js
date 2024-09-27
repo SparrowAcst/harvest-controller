@@ -7,11 +7,7 @@ const uuid = require("uuid").v4
 const isValidUUID = require("uuid").validate
 const isUUID = data => isString(data) && isValidUUID(data)
 
-const {
-    PARALLEL_BRANCHES, // expert count
-    MAX_ITERATIONS, // max submit count for each stage
-    MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
-} = require("../strategies/settings").strategy.Cross_Validation_2nd
+const SETTINGS = require("../strategies/settings")
 
 const createTaskController = require("../utils/task-controller")
 
@@ -93,6 +89,13 @@ const hasSegmentationDiff = segmentationArray => {
 }
 
 const hasPolygonsDiff = polygonArray => {
+
+    const {
+        PARALLEL_BRANCHES, // expert count
+        MAX_ITERATIONS, // max submit count for each stage
+        MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
+    } = SETTINGS().strategy.Cross_Validation_2nd
+
 
     let result = []
 
@@ -177,6 +180,13 @@ const mergeVersionsData = versions => {
 
 const getVersions = async settings => {
 
+    const {
+        PARALLEL_BRANCHES, // expert count
+        MAX_ITERATIONS, // max submit count for each stage
+        MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
+    } = SETTINGS().strategy.Cross_Validation_2nd
+
+
     const { brancher } = settings
 
     let versions = brancher.select(
@@ -254,6 +264,13 @@ const mergeVersions = async settings => {
 const mergeCrossValidationOperation = async settings => {
 
     try {
+
+    const {
+        PARALLEL_BRANCHES, // expert count
+        MAX_ITERATIONS, // max submit count for each stage
+        MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
+    } = SETTINGS().strategy.Cross_Validation_2nd
+    
     console.log(`LONG-TERM: mergeCrossValidation: started`)
 
     let { dataId, db } = settings

@@ -12,6 +12,7 @@ const LongTerm = require("./utils/long-term-queue")
 const getRecordData = async (req, res) => {
     try {
 
+
         let { options } = req.body
 
         options = extend(
@@ -20,6 +21,17 @@ const getRecordData = async (req, res) => {
         )
 
         options.eventHub = req.eventHub
+
+        let { user, recordId } = options
+
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   {
+                return task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+            }                
+        })
+
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].get : dataStrategy.Default.get
         let result
@@ -52,6 +64,15 @@ const saveRecordData = async (req, res) => {
         )
 
         options.eventHub = req.eventHub
+
+        let { user, recordId } = options
+        
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
+
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].save : undefined
         let result
@@ -87,6 +108,15 @@ const rejectRecordData = async (req, res) => {
 
         options.eventHub = req.eventHub
         options.initiator = find(options.userProfiles, p => p.namedAs == options.user)
+
+
+        let { user, recordId } = options
+        
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
 
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].reject : undefined
@@ -131,17 +161,19 @@ const submitRecordData = async (req, res) => {
         options.eventHub = req.eventHub
         options.initiator = find(options.userProfiles, p => p.namedAs == options.user)
 
+        let { user, recordId } = options
+        
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
+
+
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].submit : undefined
         let result
         if (handler) {
             result = await handler(options)
-
-            // if (req.eventHub.listenerCount("assign-tasks") == 0) {
-            //     req.eventHub.on("assign-tasks", assignTasks)
-            // }
-
-            // req.eventHub.emit("assign-tasks", options)
-
         } else {
             result = {}
         }
@@ -171,6 +203,15 @@ const rollbackRecordData = async (req, res) => {
         )
 
         options.eventHub = req.eventHub
+
+        let { user, recordId } = options
+        
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
+
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].rollback : undefined
         let result

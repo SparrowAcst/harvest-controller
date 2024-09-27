@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const { extend, find, isString } = require("lodash")
+const { extend, find, isString, last } = require("lodash")
 const moment = require("moment")
 
 const uuid = require("uuid").v4
@@ -223,13 +223,51 @@ const getRecords = async (req, res) => {
 
         }
 
-        let pipeline = options.excludeFilter
-            .concat(options.valueFilter)
-            .concat([{
-                '$project': {
-                    '_id': 0
-                }
-            }])
+        let pipeline = [
+          {
+            $match:
+              {
+                "Examination ID": options.id,
+              },
+          },
+          {
+            $lookup:
+              {
+                from: "segmentations",
+                localField: "segmentation",
+                foreignField: "id",
+                as: "result",
+              },
+          },
+          {
+            $addFields:
+              {
+                segmentation: {
+                  $first: "$result",
+                },
+              },
+          },
+          {
+            $addFields:
+              {
+                segmentation: "$segmentation.data",
+              },
+          },
+          {
+            $project:
+              {
+                _id: 0,
+                result: 0,
+              },
+          },
+        ]
+        // options.excludeFilter
+        //     .concat(options.valueFilter)
+        //     .concat([{
+        //         '$project': {
+        //             '_id': 0
+        //         }
+        //     }])
 
         const data = await mongodb.aggregate({
             db,
@@ -237,9 +275,9 @@ const getRecords = async (req, res) => {
             pipeline
         })
 
-        for(let d of data){
-            d.segmentation = await resolveSegmentation(d.segmentation)
-        }
+        // for(let d of data){
+        //     d.segmentation = await resolveSegmentation(d.segmentation)
+        // }
 
         res.send({
             options,
@@ -255,11 +293,45 @@ const getRecords = async (req, res) => {
 
 }
 
+const getTags = async (req, res) => {
+    try {
+    
+       let { db } = req.body.cache.currentDataset
 
+        options = {
+            db,
+            collection: `settings.tags`,
+            pipeline: [   
+                {
+                    $match:{
+                        classification: "Diagnosis"
+                    }
+                },
+                {
+                    $project:{ _id: 0 }
+                }
+            ] 
+        }
+        
+        const result = await mongodb.aggregate(options)
+        res.send(result)
+
+    } catch (e) {
+        
+        res.send({
+            command: "getTags", 
+            error: e.toString(),
+            requestBody: req.body
+        })
+    
+    }   
+
+}
 
 module.exports = {
     getMetadata,
     getForms,
     getSegmentation,
-    getRecords
+    getRecords,
+    getTags
 }

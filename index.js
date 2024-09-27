@@ -196,6 +196,7 @@ router.post("/ade-patient-view/get-records/", [DBCache, adePatientView.getRecord
 router.post("/ade-patient-view/segment/", [DBCache, adePatientView.getSegmentation])
 router.post("/ade-patient-view/get-metadata/", [DBCache, adePatientView.getMetadata])
 router.post("/ade-patient-view/get-forms/", [DBCache, adePatientView.getForms])
+router.post("/ade-patient-view/get-tags/", [DBCache, adePatientView.getTags])
 
 
 
@@ -223,6 +224,17 @@ router.get("/segmentation/:requestId/raw", segmentationRequest.getSegmentationDa
 
 router.post("/segmentation/", segmentationRequest.updateSegmentationData)
 router.post("/segmentation/:requestId", segmentationRequest.updateSegmentationData)
+
+
+let adeAdmin = require("./src/ade-admin")
+
+router.get("/ade-admin/cache-update/", DBCache)
+router.get("/ade-admin/schedule/users/reset-priority/:user", adeAdmin.resetEmployeePriority)
+router.get("/ade-admin/schedule/users/list", adeAdmin.listEmployeePriority)
+
+router.get("/ade-admin/schedule/settings", adeAdmin.getStrategiesSettings)
+router.post("/ade-admin/schedule/settings", adeAdmin.setStrategiesSettings)
+
 
 
 

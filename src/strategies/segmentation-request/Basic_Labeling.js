@@ -58,12 +58,12 @@ const openRequest = async options => {
 
     if (existed.length > 0) {
         existed = existed[0]
-        
-        if(
+
+        if (
             moment(existed.updatedAt)
-                .add(...settings.requestExpiration)
-                .isSameOrBefore(moment(new Date()))
-        ){
+            .add(...settings.requestExpiration)
+            .isSameOrBefore(moment(new Date()))
+        ) {
             console.log(`>> Basic_Labeling: force close request ${existed.id} (${existed.user})`)
             existed.closed = true
             existed.closedAt = new Date()
@@ -78,7 +78,7 @@ const openRequest = async options => {
             })
         } else {
             existed.opened = true
-            return existed    
+            return existed
         }
     }
 
@@ -87,10 +87,9 @@ const openRequest = async options => {
     const controller = createTaskController(options)
     let data = await controller.resolveData({ version })
 
-    let seg = await resolveSegmentation(options, data.segmentation)
+    let seg = await resolveSegmentation(options, data.segmentation || data.aiSegmentation)
 
-    let segmentationData = (seg) ?
-        {
+    let segmentationData = (seg) ? {
             user: user.altname,
             readonly: false,
             segmentation: seg.data
@@ -139,78 +138,80 @@ const openRequest = async options => {
 
 
 const updateRequest = async options => {
+    try {
+        console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: START`)
 
-    console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: START`)
+        let { requestId, request } = options
 
-    let { requestId, request } = options
+        let { db, collection, responseData, requestData, dataId, versionId, user } = request
 
-    let { db, collection, responseData, requestData, dataId, versionId, user } = request
+        if (!responseData) return
+        if (!responseData.segmentation) return
 
-    console.log("Basic_Labeling_1st:", db, collection, responseData, requestData, dataId, versionId, user)
+        options.dataId = [dataId]
+        options.db = db
+        options.user = user
 
+        const controller = createTaskController(options)
+        let data = await controller.resolveData({ version: versionId })
 
-    if (!responseData) return
-    if (!responseData.segmentation) return
-
-    options.dataId = [dataId]
-    options.db = db
-    options.user = user
-
-    const controller = createTaskController(options)
-    let data = await controller.resolveData({ version: versionId })
-
-    let segmentation = {
-        id: uuid(),
-        patientId: data["Examination ID"],
-        record: {
-            id: dataId
-        },
-        user,
-        createdAt: new Date(),
-        data: responseData.segmentation
-    }
-
-
-    data.segmentation = segmentation.id
-
-    const brancher = await controller.getBrancher(options)
-    let v = await brancher.save({
-        source: versionId,
-        user,
-        data,
-        metadata: {
-            "task.Basic_Labeling_1st.status": "process",
-            "task.Basic_Labeling_1st.reason": "",
-            "task.Basic_Labeling_1st.updatedAt": new Date(),
-            "actual_status": "Segmentation changes have been saved."
+        let segmentation = {
+            id: uuid(),
+            patientId: data["Examination ID"],
+            record: {
+                id: dataId
+            },
+            user,
+            createdAt: new Date(),
+            data: responseData.segmentation
         }
-    })
-
-    segmentation.record.versionId = v.id
-
-    await mongodb.replaceOne({
-        db,
-        collection: `${db.name}.segmentations`,
-        filter: {
-            id: segmentation.id
-        },
-        data: segmentation
-    })
-
-    request.versionId = v.id
-
-    await mongodb.replaceOne({
-        db,
-        collection: `settings.segmentation-requests`,
-        filter: {
-            id: requestId
-        },
-        data: request
-    })
 
 
-    console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: DONE`)
+        data.segmentation = segmentation.id
 
+        const brancher = await controller.getBrancher(options)
+        let v = await brancher.save({
+            source: versionId,
+            user,
+            data,
+            metadata: {
+                "task.Basic_Labeling_1st.status": "process",
+                "task.Basic_Labeling_1st.reason": "",
+                "task.Basic_Labeling_1st.updatedAt": new Date(),
+                "actual_status": "Segmentation changes have been saved."
+            }
+        })
+
+        // console.log(versionId, "create Seg Save: ", v.id)
+
+        segmentation.record.versionId = v.id
+
+        await mongodb.replaceOne({
+            db,
+            collection: `${db.name}.segmentations`,
+            filter: {
+                id: segmentation.id
+            },
+            data: segmentation
+        })
+
+        request.versionId = v.id
+
+        await mongodb.replaceOne({
+            db,
+            collection: `settings.segmentation-requests`,
+            filter: {
+                id: requestId
+            },
+            data: request
+        })
+
+
+        console.log(`>> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: DONE`)
+
+    } catch (e) {
+        console.log(">> Basic_Labeling_1st: UPDATE REQUEST ${options.requestId}: ", e.toString(), e.stack)
+    }
 
 }
 
