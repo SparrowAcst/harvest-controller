@@ -97,6 +97,7 @@ const get = async context => {
 
     version.strategy = "Cross_Validation_2nd"
     version.dataDiff = uniqBy(flatten(altVersions.map(v => v.diff.formatted.map(d => d.key))))
+    version.metadata.permission = ["rollback", "sync", "history", "save", "submit"]
 
     return version
 }

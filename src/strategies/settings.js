@@ -29,7 +29,7 @@ let settings = {
         Cross_Validation_2nd: {
 
             PARALLEL_BRANCHES: 2, // expert count
-            MAX_ITERATIONS: 1, // max submit count for each stage
+            MAX_ITERATIONS: 3, // max submit count for each stage
             MAX_STAGES: 1, // after MAX_STAGES  stages "manual merge task" will be generated
         
         }

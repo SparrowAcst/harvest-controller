@@ -98,7 +98,9 @@ const assignTasks = async (user, taskController) => {
                         ),
                         "task.Cross_Validation_2nd.updatedAt": new Date(),
                         "actual_task": "Cross_Validation_2nd",
-                        "actual_status": "Waiting for the start."
+                        "actual_status": "Waiting for the start.",
+                        "permission": ["rollback", "sync", "history", "save", "submit"]
+
                     }
                 })
                 toAssignTask = toAssignTask.concat(
@@ -116,7 +118,9 @@ const assignTasks = async (user, taskController) => {
                             ),
                             "task.Cross_Validation_2nd.updatedAt": new Date(),
                             "actual_task": "Cross_Validation_2nd",
-                            "actual_status": "Waiting for the start."
+                            "actual_status": "Waiting for the start.",
+                            "permission": ["rollback", "sync", "history", "save", "submit"]
+
                         }
                     }))
                 )
@@ -239,7 +243,8 @@ const reassignTasks = async (user, taskController) => {
                                 ),
                             "task.Cross_Validation_2nd.updatedAt": new Date(),
                             "actual_task": "Cross_Validation_2nd",
-                            "actual_status": "Waiting for the start."
+                            "actual_status": "Waiting for the start.",
+                            "permission": ["rollback", "sync", "history", "save", "submit"]
                         }
 
                     })

@@ -120,6 +120,7 @@ module.exports = async (user, taskController) => {
             "task.Cross_Verification.user": user.altname,
             "task.Cross_Verification.status": "start",
             "task.Cross_Verification.updatedAt": new Date(),
+            "permission": ["rollback", "sync", "history", "save", "submit"]
 
         }
     }

@@ -121,6 +121,7 @@ module.exports = async (user, taskController) => {
             "task.Manual_merging.user": user.altname,
             "task.Manual_merging.status": "start",
             "task.Manual_merging.updatedAt": new Date(),
+            "permission": ["rollback", "sync", "history", "save", "submit"]
 
         }
     }
