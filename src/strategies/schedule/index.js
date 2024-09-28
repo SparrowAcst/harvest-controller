@@ -9,8 +9,7 @@ module.exports = {
 	
 	Basic_Finalization: require("./Basic_Finalization"),
         
-
-
     Cross_Validation_2nd: require("./Cross_Validation_2nd"),
-    Manual_merging: require("./Manual_merging")
+    Manual_merging: require("./Manual_merging"),
+    Cross_Verification: require("./Cross_Verification")
 }

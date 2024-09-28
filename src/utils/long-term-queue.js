@@ -6,7 +6,7 @@ const { keys } = require("lodash")
 let queue
 let pool = {}
 
-const EXPIRAION = [1, "hours"]
+const EXPIRAION = [5, "seconds"]
 
 
 const initiate = () => {
@@ -39,11 +39,15 @@ const removeExpiredTask = section => {
         if (!pool[section]) return
         let tasks = keys(pool[section])
         tasks.forEach(task => {
+                
             if (
-                pool[section][task].state == "done" &&
+                pool[section][task].status == "done" &&
                 pool[section][task].expiredAt &&
-                moment(new Date()).isSameOrBefore(moment(pool[section][task].expiredAt))
-            ) delete pool[section][task]
+                moment(new Date()).isSameOrAfter(moment(pool[section][task].expiredAt))
+            ) {
+                console.log("delete", section, task)
+                delete pool[section][task]
+            }
         })
     } catch (e) {
         console.log(e.toString(), e.stack)
@@ -59,8 +63,10 @@ const startTask = (section, id, metadata) => {
         pool[section][id] = {
             id,
             metadata,
-            status: "started"
+            status: "started", 
+            expiredAt: null
         }
+        return pool[section][id]
         // console.log("START TASK LONG TERM TASK POOL", pool)
     } catch (e) {
         console.log(e.toString(), e.stack)
@@ -69,6 +75,7 @@ const startTask = (section, id, metadata) => {
 
 const stopTask = (section, id) => {
     try {
+        removeExpiredTask(section)
         pool[section] = pool[section] || {}
         pool[section][id] = {
             id,
@@ -85,6 +92,7 @@ const stopTask = (section, id) => {
 
 const getTask = (section, id) => {
     try {
+        removeExpiredTask(section)
         if (!pool[section]) return {}
         if (!pool[section][id]) return {}
         let res = pool[section][id]
@@ -96,6 +104,7 @@ const getTask = (section, id) => {
 
 const selectTask = (section, test) => {
     try {
+        if(!test) return pool[section]
         let res = []
         keys(pool[section]).forEach(id => {
             if (test(pool[section][id])) res.push(pool[section][id])

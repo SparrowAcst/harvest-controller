@@ -13,6 +13,8 @@ module.exports = {
 
 	Cross_Validation_2nd: require("./Cross_Validation_2nd"),
 	Manual_merging: require("./Manual_merging"),
+	Cross_Verification: require("./Cross_Verification"),
+
 	
 	linear_workflow: require("./linear_workflow"),
 	tagged_record: require("./tagged_record")

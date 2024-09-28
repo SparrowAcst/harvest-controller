@@ -2,7 +2,7 @@ const createTaskController = require("../utils/task-controller")
 const LongTerm = require("../utils/long-term-queue")
 const strategy = require("../strategies/schedule")
 const { uniqBy, find } = require("lodash")
-
+const uuid = require("uuid").v4()
 
 const POOL = {}
 
@@ -16,9 +16,9 @@ const getUserSchedule = options => {
     if (!cachedUser) return []
     return uniqBy(
         (cachedUser.schedule || [])
-        .concat(
-            ((cachedUser.profile) ? cachedUser.profile.schedule : []) || []
-        )
+        // .concat(
+        //     ((cachedUser.profile) ? cachedUser.profile.schedule : []) || []
+        // )
     )
 }
 
@@ -34,10 +34,15 @@ const assignTasksOperation = async (options = {}) => {
 
         let schedules = getUserSchedule(options)
 
+        LongTerm.pool.startTask("assign-tasks", user.altname)
+
         console.log("ASSIGN TASKS PROCEDURE STARTS FOR", user.altname, schedules)
+
+        
 
         options.schedule = schedules.map(s => strategy[s]).filter(s => s)
 
+        
 
         if (options.schedule.length > 0) {
             const controller = createTaskController(options)
@@ -47,6 +52,10 @@ const assignTasksOperation = async (options = {}) => {
         POOL[user.altname] = false
         console.log("ASSIGN TASKS PROCEDURE COMPLETE FOR", user.altname)
         console.log("POOL", POOL)
+
+        LongTerm.pool.stopTask("assign-tasks", user.altname)
+
+    
     } catch (e) {
         console.log(e.toString(), e.stack)
     }

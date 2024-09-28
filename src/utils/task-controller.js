@@ -591,6 +591,13 @@ const Worker = class {
 
             for (const s of schedule) {
 
+                let priority = await this.getEmploeePriorities({user: user.altname})
+                console.log(priority)
+                if(!priority[user.altname] || priority[user.altname] == 0) {
+                    console.log(`TASK BUFFER FOR USER ${user.altname} IS FULL. IGNORE TASK ASSIGN STRATEGIES`)
+                    break
+                }
+
                 let tasks = await s(user, this)
                 tasks = tasks || { version: [] }
 
@@ -614,6 +621,7 @@ const Worker = class {
                 await b.updateVersion({ version: tasks.version })
 
             }
+
         } catch (e) {
             console.log(e.toString(), e.stack)
         }

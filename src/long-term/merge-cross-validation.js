@@ -96,6 +96,7 @@ const hasPolygonsDiff = polygonArray => {
         MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
     } = SETTINGS().strategy.Cross_Validation_2nd
 
+    console.log(SETTINGS())
 
     let result = []
 
@@ -227,6 +228,39 @@ const getVersions = async settings => {
     }
 }
 
+// const mergeVersions = async settings => {
+
+//     let { brancher, sources, data } = settings
+
+//     delete data.$segmentationRef
+
+
+//     let version = await brancher.merge({
+//         sources,
+//         user: "cross-validation-2nd strategy",
+//         data,
+//         metadata: {
+//             "task.Cross_Validation_2nd.status": "merged",
+//             "task.Cross_Validation_2nd.reason": "Expert labelings successfully merged.",
+//             "task.Cross_Validation_2nd.updatedAt": new Date(),
+//             "actual_task": "Cross_Validation_2nd",
+//             "actual_status": "successfully merged"
+//         }
+//     })
+
+//     version = await brancher.commit({
+//         source: version,
+//         metadata: {
+//             // "task.Cross_Validation_2nd.status": "done",
+//             // "task.Cross_Validation_2nd.updatedAt": new Date(),
+//             "actual_task": "none",
+//             "actual_status": "none"
+//         }
+//     })
+// }
+
+
+
 const mergeVersions = async settings => {
 
     let { brancher, sources, data } = settings
@@ -234,29 +268,57 @@ const mergeVersions = async settings => {
     delete data.$segmentationRef
 
 
+    let uid = uuid()
+
+    sources.forEach(v => {
+        v.lockRollback = true
+        v.metadata.task.Cross_Validation_2nd.status = "successfully merged"
+        v.metadata.task.Cross_Validation_2nd.updatedAt = new Date()
+        v.metadata.task.Cross_Validation_2nd.reason = "Expert data successfully merged."
+        v.metadata.actual_status = "Waiting for the start."
+        v.metadata.task.Cross_Verification = {
+            id: uid,
+            status: "open",
+            updatedAt: new Date()
+        }
+
+    })
+
+    await settings.brancher.updateVersion({
+        version: sources
+    })
+
     let version = await brancher.merge({
         sources,
         user: "cross-validation-2nd strategy",
         data,
         metadata: {
             "task.Cross_Validation_2nd.status": "merged",
-            "task.Cross_Validation_2nd.reason": "Expert labelings successfully merged.",
+            "task.Cross_Validation_2nd.reason": "Expert data successfully merged.",
             "task.Cross_Validation_2nd.updatedAt": new Date(),
+            "task.Cross_Verification.id": uid,
+            "task.Cross_Verification.updatedAt": new Date(),
+            "task.Cross_Verification.state": "open",
+            "task.Cross_Verification.versions": sources.map(s => s.id),
+            "task.Cross_Verification.reason": "Wait for data verification.",
             "actual_task": "Cross_Validation_2nd",
             "actual_status": "successfully merged"
         }
     })
 
-    version = await brancher.commit({
-        source: version,
-        metadata: {
-            // "task.Cross_Validation_2nd.status": "done",
-            // "task.Cross_Validation_2nd.updatedAt": new Date(),
-            "actual_task": "none",
-            "actual_status": "none"
-        }
-    })
+    // version = await brancher.commit({
+    //     source: version,
+    //     metadata: {
+    //         // "task.Cross_Validation_2nd.status": "done",
+    //         // "task.Cross_Validation_2nd.updatedAt": new Date(),
+    //         "actual_task": "none",
+    //         "actual_status": "none"
+    //     }
+    // })
 }
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -265,141 +327,142 @@ const mergeCrossValidationOperation = async settings => {
 
     try {
 
-    const {
-        PARALLEL_BRANCHES, // expert count
-        MAX_ITERATIONS, // max submit count for each stage
-        MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
-    } = SETTINGS().strategy.Cross_Validation_2nd
-    
-    console.log(`LONG-TERM: mergeCrossValidation: started`)
+        const {
+            PARALLEL_BRANCHES, // expert count
+            MAX_ITERATIONS, // max submit count for each stage
+            MAX_STAGES // after MAX_STAGES  stages "manual merge task" will be generated
+        } = SETTINGS().strategy.Cross_Validation_2nd
 
-    let { dataId, db } = settings
+        console.log(`LONG-TERM: mergeCrossValidation: started`)
+        console.log(SETTINGS())
 
-    settings.controller = createTaskController(settings)
-    settings.brancher = await settings.controller.getBrancher(settings)
+        let { dataId, db } = settings
+
+        settings.controller = createTaskController(settings)
+        settings.brancher = await settings.controller.getBrancher(settings)
 
 
-    let resolved = await getVersions(settings)
+        let resolved = await getVersions(settings)
 
-    if (!resolved) {
-        console.log(`LONG-TERM: mergeCrossValidation: ignored. No compared versions`)
-        return
-    }
-
-    // console.log("resolved", resolved)
-
-    let diffDetected = hasDiff(resolved.versions)
-
-    if (diffDetected) {
-        
-        // restart task for current expert group
-
-        if (resolved.iteration < MAX_ITERATIONS) {
-            
-            for( v of resolved.versions){
-
-                v.data.segmentation = v.data.$segmentationRef
-                
-                delete v.data.$segmentationRef
-
-                await settings.brancher.save({
-                    source: v,
-                    data: v.data,
-                    user: v.user,
-                    metadata: {
-                       "task.Cross_Validation_2nd.iteration": v.metadata.task.Cross_Validation_2nd.iteration + 1,
-                       "task.Cross_Validation_2nd.status": "restart",
-                       "task.Cross_Validation_2nd.reason": "Differences in expert labelings were found. Restart the task for the current expert group.",
-                       "task.Cross_Validation_2nd.updatedAt": new Date(),
-                       "actual_status": "Waiting for the start."
-                    },
-                    ignoreChangeDetection: true
-                })
-            }
-
-            console.log(`LONG-TERM: mergeCrossValidation: restart. Difference detected`)
+        if (!resolved) {
+            console.log(`LONG-TERM: mergeCrossValidation: ignored. No compared versions`)
             return
-
         }
 
-        // TODO assign task to next expert group
-        if (resolved.versions[0].metadata.task.Cross_Validation_2nd.stage < MAX_STAGES) {
+        // console.log("resolved", resolved)
+
+        let diffDetected = hasDiff(resolved.versions)
+
+        if (diffDetected) {
+
+            // restart task for current expert group
+
+            if (resolved.iteration < MAX_ITERATIONS) {
+
+                for (v of resolved.versions) {
+
+                    v.data.segmentation = v.data.$segmentationRef
+
+                    delete v.data.$segmentationRef
+
+                    await settings.brancher.save({
+                        source: v,
+                        data: v.data,
+                        user: v.user,
+                        metadata: {
+                            "task.Cross_Validation_2nd.iteration": v.metadata.task.Cross_Validation_2nd.iteration + 1,
+                            "task.Cross_Validation_2nd.status": "restart",
+                            "task.Cross_Validation_2nd.reason": "Differences in expert labelings were found. Restart the task for the current expert group.",
+                            "task.Cross_Validation_2nd.updatedAt": new Date(),
+                            "actual_status": "Waiting for the start."
+                        },
+                        ignoreChangeDetection: true
+                    })
+                }
+
+                console.log(`LONG-TERM: mergeCrossValidation: restart. Difference detected`)
+                return
+
+            }
+
+            // TODO assign task to next expert group
+            if (resolved.versions[0].metadata.task.Cross_Validation_2nd.stage < MAX_STAGES) {
+                resolved.versions.forEach(v => {
+                    delete v.data
+                    v.lockRollback = true
+                    v.metadata.task.Cross_Validation_2nd.status = "reassign"
+                    v.metadata.task.Cross_Validation_2nd.reason = "Differences in expert labelings were found. Start the task for the next expert group."
+                    v.metadata.actual_status = "Waiting for the start."
+                })
+
+                await settings.brancher.updateVersion({
+                    version: resolved.versions
+                })
+
+                console.log(`LONG-TERM: mergeCrossValidation: Lock submits. Wait next stage.`)
+                return
+
+            }
+
+            // TODO generate manual merge task
+            let manualMergeTaskId = uuid()
             resolved.versions.forEach(v => {
-                delete v.data
                 v.lockRollback = true
-                v.metadata.task.Cross_Validation_2nd.status = "reassign"
-                v.metadata.task.Cross_Validation_2nd.reason = "Differences in expert labelings were found. Start the task for the next expert group."
+                v.metadata.task.Cross_Validation_2nd.status = "need manual merge"
+                v.metadata.task.Cross_Validation_2nd.updatedAt = new Date()
+                v.metadata.task.Cross_Validation_2nd.reason = "Differences in expert labelings were found. Start the manual merging by CMO."
                 v.metadata.actual_status = "Waiting for the start."
+                v.metadata.task.Manual_merging = {
+                    id: manualMergeTaskId,
+                    status: "open",
+                    updatedAt: new Date()
+                }
+
             })
 
             await settings.brancher.updateVersion({
                 version: resolved.versions
             })
 
-            console.log(`LONG-TERM: mergeCrossValidation: Lock submits. Wait next stage.`)
+            await settings.brancher.merge({
+                sources: resolved.versions,
+                user: "cross-validation-2nd strategy",
+                data: resolved.versions[0].data,
+                metadata: {
+                    "task.Manual_merging.id": manualMergeTaskId,
+                    "task.Manual_merging.updatedAt": new Date(),
+                    "task.Manual_merging.state": "open",
+                    "task.Manual_merging.versions": resolved.versions.map(s => s.id),
+                    "task.Manual_merging.reason": "Wait for manual merging.",
+                    "actual_task": "none",
+                    "actual_status": "none"
+                }
+            })
+
+            console.log(`LONG-TERM: mergeCrossValidation: Lock submits. Wait manual merge.`)
             return
 
         }
 
-        // TODO generate manual merge task
-        let manualMergeTaskId = uuid()
-        resolved.versions.forEach(v => {
-            v.lockRollback = true
-            v.metadata.task.Cross_Validation_2nd.status = "need manual merge"
-            v.metadata.task.Cross_Validation_2nd.updatedAt =  new Date()
-            v.metadata.task.Cross_Validation_2nd.reason = "Differences in expert labelings were found. Start the manual merging by CMO."
-            v.metadata.actual_status = "Waiting for the start."
-            v.metadata.task.Manual_merging = {
-                id: manualMergeTaskId,
-                status: "open",
-                updatedAt: new Date()
-            }    
-            
-        })
+        let merged = mergeVersionsData(resolved.versions)
 
-        await settings.brancher.updateVersion({
-            version: resolved.versions
-        })
-
-        await settings.brancher.merge({
-            sources: resolved.versions,
-            user: "cross-validation-2nd strategy",
-            data: resolved.versions[0].data,
-            metadata: {
-                "task.Manual_merging.id": manualMergeTaskId,
-                "task.Manual_merging.updatedAt": new Date(),
-                "task.Manual_merging.state": "open",
-                "task.Manual_merging.versions": resolved.versions.map( s => s.id),
-                "task.Manual_merging.reason": "Expert labelings successfully merged.",
-                "actual_task": "none",
-                "actual_status": "none"
-            }
-        })
-
-        console.log(`LONG-TERM: mergeCrossValidation: Lock submits. Wait manual merge.`)
-        return
-
-    }
-
-    let merged = mergeVersionsData(resolved.versions)
-
-    merged.data.segmentation = await saveSegmentation(
-        extend({}, settings, { patientId: merged.data["Examination ID"] }),
-        merged.segmentation
-    )
-
-    await mergeVersions(
-        extend({},
-            settings, {
-                sources: resolved.versions,
-                data: merged.data
-            }
+        merged.data.segmentation = await saveSegmentation(
+            extend({}, settings, { patientId: merged.data["Examination ID"] }),
+            merged.segmentation
         )
-    )
+
+        await mergeVersions(
+            extend({},
+                settings, {
+                    sources: resolved.versions,
+                    data: merged.data
+                }
+            )
+        )
 
 
-    console.log(`LONG-TERM: mergeCrossValidation: merge > commit > done`)
-    } catch(e){
+        console.log(`LONG-TERM: mergeCrossValidation: merge > commit > done`)
+    } catch (e) {
         console.log("LONG-TERM: mergeCrossValidation:", e.toString(), e.stack)
     }
 
@@ -418,6 +481,3 @@ const mergeCrossValidation = (settings = {}) => {
 module.exports = {
     mergeCrossValidation
 }
-
-
-

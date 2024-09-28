@@ -1,6 +1,7 @@
 const mongodb = require("./mongodb")
 const { extend, find, groupBy, keys, flatten } = require("lodash")
 const moment = require("moment")
+const LongTerm = require("./utils/long-term-queue")
 
 const createTaskController = require("./utils/task-controller")
 
@@ -65,19 +66,7 @@ const getActiveTask = async (req, res) => {
                 },
                 submit:{
                     $exists: false
-                },
-
-                // $or: [{
-                //         expiredAt: {
-                //             $gte: new Date()
-                //         },
-                //     },
-                //     {
-                //         expiredAt: {
-                //             $exists: false
-                //         }
-                //     }
-                // ]
+                }
             }
 
         })
@@ -92,6 +81,37 @@ const getActiveTask = async (req, res) => {
         }
 
         req.eventHub.emit("assign-tasks", options)
+
+    } catch (e) {
+        console.log(e.toString(), e.stack)
+        res.send({
+            error: `${e.toString()}\n${e.stack}`,
+            requestBody: req.body
+        })
+    }
+}
+
+
+const executeAssignTasks = async (req, res) => {
+    try {
+
+        let { options } = req.body
+
+        options = extend(
+            options, 
+            req.body.cache.currentDataset,
+            { userProfiles: req.body.cache.userProfiles},
+            {initiator: options.user}
+        )
+        
+
+        if (req.eventHub.listenerCount("assign-tasks") == 0) {
+            req.eventHub.on("assign-tasks", assignTasks)
+        }
+
+        req.eventHub.emit("assign-tasks", options)
+
+        res.status(200).send({})
 
     } catch (e) {
         console.log(e.toString(), e.stack)
@@ -247,19 +267,7 @@ const getEmployeeStat = async (req, res) => {
                 },
                 submit:{
                     $exists: false
-                },
-
-                // $or: [{
-                //         expiredAt: {
-                //             $gte: new Date()
-                //         },
-                //     },
-                //     {
-                //         expiredAt: {
-                //             $exists: false
-                //         }
-                //     }
-                // ]
+                }
             }
         })
 
@@ -316,8 +324,18 @@ const forceUpdateCache = async (req, res) => {
     res.status(200).send({message: "db cache updated"})
 }
 
+
+const getLongTermTask = async (req, res) => {
+    let {task, user} = req.body
+    res.send(LongTerm.pool.getTask(task, user))
+}
+
+
+
 module.exports = {
     getActiveTask,
+    executeAssignTasks,
     getEmployeeStat,
+    getLongTermTask,
     forceUpdateCache
 }

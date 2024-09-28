@@ -3,7 +3,7 @@ const { groupBy, keys, first } = require("lodash")
 
 const commitSubmitedTasks = async (user, taskController) => {
     try {
-        console.log(">> Manual_merging: Commit submited tasks")
+        console.log(">> Cross_Verification: Commit submited tasks")
 
         let commitedTasks = await taskController.selectTask({
             matchVersion: {
@@ -14,7 +14,7 @@ const commitSubmitedTasks = async (user, taskController) => {
 
                 type: "submit",
 
-                "metadata.task.Manual_merging.status": "submit",
+                "metadata.task.Cross_Verification.status": "submit",
 
                 branch: {
                     $exists: false
@@ -38,7 +38,6 @@ const commitSubmitedTasks = async (user, taskController) => {
         priorities = await taskController.getEmploeePriorities({ user: user.altname })
         priorities[user.altname] += commitedTasks.length
 
-
         for (let version of commitedTasks) {
 
             let options = taskController.context
@@ -46,13 +45,13 @@ const commitSubmitedTasks = async (user, taskController) => {
 
             const brancher = await taskController.getBrancher(options)
 
-            delete version.metadata.task.Manual_merging.versions
+            delete version.metadata.task.Cross_Verification.versions
 
             await brancher.commit({
                 source: version,
                 metadata: {
-                    "task.Manual_merging.status": "done",
-                    "task.Manual_merging.updatedAt": new Date(),
+                    "task.Cross_Verification.status": "done",
+                    "task.Cross_Verification.updatedAt": new Date(),
                     "actual_task": "none",
                     "actual_status": "none"
                 }
@@ -67,17 +66,16 @@ const commitSubmitedTasks = async (user, taskController) => {
 
 module.exports = async (user, taskController) => {
 
-    // console.log(`>> Manual_merging for ${user.altname}`)
+    // console.log(`>> Cross_Verification for ${user.altname}`)
 
     await commitSubmitedTasks(user, taskController)
 
     let priorities = await taskController.getEmploeePriorities({user: user.altname})
-    console.log("Manual Merging priorities", priorities, priorities[user.altname])
+    console.log("Cross verification priorities", priorities, priorities[user.altname])
 
     if(!priorities[user.altname] || priorities[user.altname] == 0) return
 
-
-    // select user activity
+    // // select user activity
     // let activity = await taskController.getEmployeeStat({
     //     matchEmployee: u => u.namedAs == user.altname
     // })
@@ -92,7 +90,7 @@ module.exports = async (user, taskController) => {
 
             type: "merge",
 
-            "metadata.task.Manual_merging.state": "open",
+            "metadata.task.Cross_Verification.state": "open",
 
             branch: {
                 $exists: false
@@ -112,15 +110,16 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, priorities[user.altname])
 
-    // console.log(`>> Manual_merging for ${user.altname}: assign ${tasks.length} tasks`)
+    console.log(`>> Cross_Verification for ${user.altname}: assign ${tasks.length} tasks`)
+    
     return {
         version: tasks,
         metadata: {
-            "actual_task": "Manual_merging",
+            "actual_task": "Cross_Verification",
             "actual_status": "Waiting for the start.",
-            "task.Manual_merging.user": user.altname,
-            "task.Manual_merging.status": "start",
-            "task.Manual_merging.updatedAt": new Date(),
+            "task.Cross_Verification.user": user.altname,
+            "task.Cross_Verification.status": "start",
+            "task.Cross_Verification.updatedAt": new Date(),
 
         }
     }

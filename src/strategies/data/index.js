@@ -48,6 +48,7 @@ module.exports = {
     }),
 
     Manual_merging: require("./Manual_merging"),
+    Cross_Verification: require("./Cross_Verification"),
 
     // other strategies  	
     linear_workflow: require("./linear-workflow"),
