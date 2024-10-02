@@ -88,9 +88,12 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
             console.log("targetDrive.uploadFile", e.toString(), e.stack)
             throw e
         }
+
+        let result
+        
         // controller.close()
         try {
-        let result = targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
+         result = targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
         } catch (e) {
             console.log("targetDrive.fileList", e.toString(), e.stack)
             throw e
