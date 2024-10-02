@@ -1500,7 +1500,10 @@ const findEqualSegmentIndex = (sample, sequence, type) => {
             Math.abs(sample.lf - s.lf),
             Math.abs(sample.hf - s.hf)
         ]
-        .map((v, index) => v <= TOLERANCE.segment[type][index])
+        .map((v, index) => {
+            // console.log(type, index,":", v, TOLERANCE.segment[type][index], v <= TOLERANCE.segment[type][index])
+            return v <= TOLERANCE.segment[type][index]
+        })
         .reduce((a, b) => a && b, true)
     )
 }
@@ -1520,7 +1523,7 @@ const getPairSegmentsDiff = (s1, s2) => {
 
         let m = matchData[key]
         diff.push(reduceEquality(m.s1, m.s2, findEqualSegmentIndex, key))
-
+        // console.log(key, diff)
     })
 
     let segments = zipObject(CHECKED_SEGMENT_TYPES, diff)
@@ -1689,6 +1692,8 @@ const getDataDiff = dataArray => {
 }
 
 
+const mergeData = dataArray => DataDiff.merge(dataArray)
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = {
@@ -1707,11 +1712,16 @@ module.exports = {
     mergePolygons,
     polygons2v2,
 
-    getDataDiff
+    getDataDiff,
+    mergeData
 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+// let segmentations = require("./segment-examples")
+
+// console.log(JSON.stringify(getSegmentsDiff(segmentations.map(s => parse(s).segments)), null, " "))
 
 
 // let data = [

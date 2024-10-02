@@ -3,7 +3,7 @@ const { set, isUndefined, keys } = require("lodash")
 
 const setProperties = (source, ops) => {
     if (!ops) return source
-    let result = JSON.parse(JSON.stringify(source))
+    let result = source //JSON.parse(JSON.stringify(source))
     keys(ops).map(key => {
         if (!isUndefined(ops[key])) {
             set(result, key, ops[key])

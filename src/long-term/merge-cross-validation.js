@@ -168,7 +168,7 @@ const mergePolygons = polygonArray => {
 const mergeVersionsData = versions => {
 
     res = {
-        data: versions[0].data,
+        data: segmentationAnalysis.mergeData(versions.map(v => v.data)),
         segmentation: segmentationAnalysis.mergeSegments(versions.map(v => v.data.segmentation.segments))
     }
     res.segmentation.Murmur = segmentationAnalysis.polygons2v2(mergePolygons(versions.map(v => v.data.segmentation.polygons)))
@@ -459,7 +459,6 @@ const mergeCrossValidationOperation = async settings => {
                 }
             )
         )
-
 
         console.log(`LONG-TERM: mergeCrossValidation: merge > commit > done`)
     } catch (e) {

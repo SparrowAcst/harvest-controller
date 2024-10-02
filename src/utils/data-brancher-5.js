@@ -520,7 +520,10 @@ const Worker = class {
 
         try {
 
+            console.log("!!!!!!!!!!!!!!!!!", SETTINGS().dataVersion)
+
             const { dataView, EXPIRATION_PERIOD } = SETTINGS().dataVersion
+
 
             let { db, cache, freezePeriod } = this.context
             let { user, source, data, metadata } = options

@@ -102,7 +102,7 @@ const get = async context => {
     version.strategy = "Manual_merging"
     version.dataDiff = uniqBy(flatten(altVersions.map(v => v.diff.formatted.map(d => d.key))))
     version.alternatives = altVersions
-    version.metadata.permission = ["rollback", "sync", "history", "save", "submit"]
+    version.metadata.permission = ["rollback", "sync", "history", "save", "submit", "open"]
 
     return version
 }
@@ -134,6 +134,7 @@ const save = async context => {
             "task.Manual_merging.status": "process",
             "task.Manual_merging.updatedAt": new Date(),
             "actual_status": "Label changes have been saved.",
+            "TODO_comment": data.TODO_comment
 
         }
     })
@@ -156,7 +157,8 @@ const submit = async context => {
         metadata: {
             "task.Manual_merging.status": "submit",
             "task.Manual_merging.updatedAt": new Date(),
-            "actual_status": "Changes to labels and segmentation have been submitted."
+            "actual_status": "Changes to labels and segmentation have been submitted.",
+            "TODO_comment": data.TODO_comment
         }
     })
 

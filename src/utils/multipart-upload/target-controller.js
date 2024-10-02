@@ -82,15 +82,28 @@ const copyToGD = async (fileSourcePath, homeDir, targetDir, callback) => {
         await targetDrive.load(homeDir)
         
         console.log(`\n----- COPY FILE ----- ${fileSourcePath} into GD: ${homeDir}/${targetDir}`, "\n\n")
-        await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
-
+        try {
+         await targetDrive.uploadFile(fileSourcePath, `${homeDir}/${targetDir}`, callback)
+        } catch (e) {
+            console.log("targetDrive.uploadFile", e.toString(), e.stack)
+            throw e
+        }
         // controller.close()
+        try {
         let result = targetDrive.fileList(`${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)[0]
-        
+        } catch (e) {
+            console.log("targetDrive.fileList", e.toString(), e.stack)
+            throw e
+        }
+        try {
         if(!result){
             console.log(`REPEAT for  -- ${homeDir}/${targetDir}/${path.basename(fileSourcePath)}`)
             result = await getFileDescription(homeDir, targetDir, path.basename(fileSourcePath))
+        } } catch (e) {
+            console.log("getFileDescription", e.toString(), e.stack)
+            throw e
         }
+
         
         return result
     
