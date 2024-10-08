@@ -30,7 +30,7 @@ const Resumable = class {
     this.maxFileSize = null;
     this.fileParameterName = 'file';
     this.processed = {}
-    
+    this.chunks = []
     try {
       fs.mkdirSync(this.temporaryFolder);
     } catch(e) {
@@ -127,12 +127,24 @@ const Resumable = class {
   
   }
 
-  async mergeUploads(target, template){
-  
+  async mergeUploads(target, template, result = "file"){
+    
     let files = (await fsp.readdir(this.temporaryFolder)).filter(a => a.startsWith(template))
     files = sortBy(files, d => d.split(".")[1]*1)
-    // console.log(files)
+    
+    if(result == "chunks") {
+      let size = files.map( f => fs.statSync(f).size).reduce((a,b) => a + b, 0)
+      return {
+        target,
+        chunks: files,
+        size
+      }
+    }
+
+    console.log(target, files)
+    
     console.log("\n----- mergeUploads ----- into ", target, "\n" )
+    
     const stream = fs.createWriteStream(target)
 
     for(const file of files){
@@ -188,7 +200,7 @@ const Resumable = class {
     mem()
     if (req.busboy) {
       
-      await ( new Promise( (resolve, reject) => {
+      let status = await ( new Promise( (resolve, reject) => {
         
 
           let query = req.query;
@@ -213,6 +225,7 @@ const Resumable = class {
 
             var chunkFilename = this.getChunkFilename(requestMetadata.chunkNumber, requestMetadata.identifier);
             
+            this.chunks.push(`resumable-${requestMetadata.identifier}.${requestMetadata.chunkNumber}`)              
             console.log("\n----- upload -----", chunkFilename,"\n")
             
             let stream = await fs.createWriteStream(chunkFilename, {flags:'w'})
@@ -262,7 +275,16 @@ const Resumable = class {
          
           req.pipe(req.busboy)
 
+          console.log(this.chunks)
+
+          resolve ({
+            chunks: this.chunks
+          })
+
+
         }))  
+      
+      return status
     }
 
   }

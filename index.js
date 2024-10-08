@@ -120,6 +120,7 @@ router.post("/report/test/", report.test)
 ////////////////////////////////////////////////////////////////////////////
 
 const uploader = require("./src/utils/multipart-upload/routes")
+
 router.get("/file/fileid", uploader.getFileId)
 router.get("/file/upload", uploader.getUpload)
 router.post("/file/upload", uploader.postUpload)
@@ -134,6 +135,18 @@ router.post("/file/record", uploader.postUpdateRecording)
 router.post("/file/metadata", uploader.postGetGdFileMetadata)
 
 
+/////////////////////////////////////////////////////////////////////////////////////
+
+const uploaderS3 = require("./src/utils/multipart-upload/routes-s3")
+
+router.get("/file-s3/fileid", uploaderS3.getFileId)
+router.get("/file-s3/upload", uploaderS3.getUpload)
+router.post("/file-s3/upload", uploaderS3.postUpload)
+router.post("/file/s3", uploaderS3.s3Upload)
+router.get("/file/s3/status", uploaderS3.s3UploadStatus)
+router.post("/file/s3/status", uploaderS3.s3UploadStatus)
+router.post("/file/s3/metadata", uploaderS3.s3Metadata)
+router.post("/file/s3/url", uploaderS3.s3PresignedUrl)
 
 /////////////////////////////////////////////////////////////////////////////////////
 

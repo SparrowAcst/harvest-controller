@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/SparrowAcst/harvest-controller#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.662.0",
+    "@aws-sdk/s3-request-presigner": "^3.663.0",
     "@flatten-js/core": "^1.5.7",
     "@geek/spinner": "^1.0.2",
     "@stdlib/stats-base-dists-t-quantile": "^0.2.1",
@@ -33,6 +35,7 @@
     "js-yaml": "^4.1.0",
     "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.21",
+    "mime-types": "^2.1.35",
     "moment": "^2.29.4",
     "mongodb": "^4.13.0",
     "nanomatch": "^1.2.13",

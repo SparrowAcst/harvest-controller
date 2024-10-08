@@ -7,7 +7,7 @@ const { keys, sortBy } = require("lodash")
 const TARGET_DIR = path.resolve('./.tmp/uploads/')
 // console.log(`UPLOADS TARGET ${path.resolve(TARGET_DIR)}`)
 
-const Resumable = require('./resumable-node.js') //(TARGET_DIR);
+const Resumable = require('./resumable-node-1.js') //(TARGET_DIR);
 const resumable = new Resumable(TARGET_DIR)
 
 const { copyToGD, getFileWriteStreamFromGD, createFolder, updateRecording, getGdFileMetadata } = require("./target-controller")
