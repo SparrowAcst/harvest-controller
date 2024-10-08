@@ -56,7 +56,7 @@ const Resumable = class {
 
                     let stream = await fs.createWriteStream(chunkMetadata.file, { flags: 'w' })
 
-                    stream.on('close', async file => {
+                    stream.on('close', () => {
                         UPLOAD[id].chunk[chunkMetadata.file].status = "done"
                         UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
                         console.log("close stream", chunkMetadata.file)
