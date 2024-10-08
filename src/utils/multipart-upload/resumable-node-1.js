@@ -23,7 +23,7 @@ const Resumable = class {
             .length == UPLOAD[id].totalChunks
     }
 
-    async post(req) {
+    async post(req, res, next) {
         if (req.busboy) {
             let query = req.query;
             let eventHub = req.eventHub
@@ -49,26 +49,43 @@ const Resumable = class {
                 if (fieldname) query[fieldname] = val;
             })
 
-            req.busboy.on('close', async () => {
-                console.log("busboy.on('finish'...")
-                UPLOAD[id].chunk[chunkMetadata.file].status = "done"
-                UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
-                console.log(UPLOAD)
-                if (this.testAllChunkExists(id)) {
-                    UPLOAD[id].status = "done"
-                    UPLOAD[id].completedAt = new Date()
-                    console.log('all chunks ready', UPLOAD[id])
-                    eventHub.emit("resumable-done", UPLOAD[id])
-                    delete UPLOAD[id]
-                }
-            })
+            // req.busboy.on('close', async () => {
+            //     console.log("busboy.on('finish'...")
+            //     UPLOAD[id].chunk[chunkMetadata.file].status = "done"
+            //     UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
+            //     console.log(UPLOAD)
+            //     if (this.testAllChunkExists(id)) {
+            //         UPLOAD[id].status = "done"
+            //         UPLOAD[id].completedAt = new Date()
+            //         console.log('all chunks ready', UPLOAD[id])
+            //         eventHub.emit("resumable-done", UPLOAD[id])
+            //         delete UPLOAD[id]
+            //     }
+            // })
 
             req.busboy.on('file', (name, file, info) => {
                 try {
-                    console.log("busboy.on('file'...")
-                    file.pipe(fs.createWriteStream(chunkMetadata.file))
-                    file.resume()
+         
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  busboy.on('file'...")
+                    let writer = fs.createWriteStream(chunkMetadata.file)
+                    writer.on('finish', () => {
+                        console.log("wriiter.on('finish'...")
+                        UPLOAD[id].chunk[chunkMetadata.file].status = "done"
+                        UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
+                        console.log(UPLOAD)
+                        if (this.testAllChunkExists(id)) {
+                            UPLOAD[id].status = "done"
+                            UPLOAD[id].completedAt = new Date()
+                            console.log('all chunks ready', UPLOAD[id])
+                            eventHub.emit("resumable-done", UPLOAD[id])
+                            delete UPLOAD[id]
+                        }
+                        // next()
+                        res.status(200).send(chunkMetadata.file)
+                    })
 
+                    file.pipe(writer)
+            
                 } catch (e) {
                     console.log("UPLOAD CHUNK ERROR", id, e.toString(), e.stack)
                 }

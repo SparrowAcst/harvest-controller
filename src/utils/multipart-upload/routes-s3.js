@@ -34,12 +34,11 @@ const getFileId = (req, res) => {
     );
 }
 
-const postUpload = async (req, res) => {
+const postUpload = async (req, res, next) => {
     if (req.eventHub.listenerCount("resumable-done") == 0) {
         req.eventHub.on("resumable-done", updateChunked)
     }
-    resumable.post(req)
-    res.send()
+    resumable.post(req, res, next)
 }
 
 const getUpload = async (req, res) => {
