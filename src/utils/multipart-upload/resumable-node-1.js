@@ -17,6 +17,7 @@ const Resumable = class {
     }
 
     testAllChunkExists(id) {
+        console.log(UPLOAD[id].chunk)
         return keys(UPLOAD[id].chunk)
             .map(key => UPLOAD[id].chunk[key].status)
             .filter(status => status == "done")
@@ -60,6 +61,7 @@ const Resumable = class {
                     if (this.testAllChunkExists(id)) {
                         UPLOAD[id].status = "done"
                         UPLOAD[id].completedAt = new Date()
+                        console.log('all chunks ready', UPLOAD[id])
                         eventHub.emit("resumable-done", UPLOAD[id])
                         delete UPLOAD[id]
                     }

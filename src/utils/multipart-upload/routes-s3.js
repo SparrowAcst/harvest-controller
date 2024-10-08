@@ -76,6 +76,7 @@ const readyForUpload = async uploadId => new Promise( (resolve, reject) => {
     let interval = setInterval(()=> {
         i++
         console.log(`CHECK ready for upload ${uploadId}: ${i}`)
+        console.log(CHUNKED[uploadId])
         if(CHUNKED[uploadId]) {
             clearInterval(interval)
             resolve()
