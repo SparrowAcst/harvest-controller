@@ -70,14 +70,35 @@ const s3RemoveChunks = async chunks => {
     }
 }
 
+
+const readyForUpload = async uploadId => new Promise( (resolve, reject) => {
+    let i = 0
+    let interval = setInterval(()=> {
+        i++
+        console.log(`CHECK ready for upload ${uploadId}: ${i}`)
+        if(CHUNKED[uploadId]) {
+            clearInterval(interval)
+            resolve()
+        }
+        if(i > 10) {
+            clearInterval(interval)
+            reject(new Error(`Upload ${uploadId} not ready after 10 retries.`))   
+        }
+    }, 250)
+})
+
 const s3Upload = async (req, res) => {
     try {
         let { uploadId, target } = req.body
         
-        if (!CHUNKED[uploadId]) {
-            res.status(404).send()
-            return
-        }
+        // if (!CHUNKED[uploadId]) {
+        //     res.status(404).send()
+        //     return
+        // }
+
+        console.log("await ready For Upload: ", uploadId)
+        await readyForUpload(uploadId)
+        console.log("Start Upload: ", uploadId)
         
         UPLOADS[uploadId] = { 
             target, 
