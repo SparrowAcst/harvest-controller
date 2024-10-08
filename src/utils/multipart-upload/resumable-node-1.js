@@ -34,48 +34,52 @@ const Resumable = class {
             })
 
             req.busboy.on('file', async (name, file, info) => {
+                try {
+                    
+                    let id = cleanIdentifier(query.resumableIdentifier)
 
-                let id = cleanIdentifier(query.resumableIdentifier)
-
-                let chunkMetadata = {
-                    file: path.join(this.temporaryFolder, `./resumable-${id}.${query.resumableChunkNumber}`),
-                    status: "processed"
-                }
-
-                UPLOAD[id] = UPLOAD[id] || {
-                    id,
-                    file: info.filename,
-                    size: query.resumableTotalSize,
-                    status: "processed",
-                    totalChunks: query.resumableTotalChunks,
-                    chunk: {}
-                }
-
-                UPLOAD[id].chunk[chunkMetadata.file] = chunkMetadata
-
-                let stream = await fs.createWriteStream(chunkMetadata.file, { flags: 'w' })
-
-                stream.on('close', async file => {
-                    UPLOAD[id].chunk[chunkMetadata.file].status = "done"
-                    UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
-                    if (this.testAllChunkExists(id)) {
-                        UPLOAD[id].status = "done"
-                        UPLOAD[id].completedAt = new Date()
-                        console.log('all chunks ready', UPLOAD[id])
-                        eventHub.emit("resumable-done", UPLOAD[id])
-                        delete UPLOAD[id]
+                    let chunkMetadata = {
+                        file: path.join(this.temporaryFolder, `./resumable-${id}.${query.resumableChunkNumber}`),
+                        status: "processed"
                     }
-                })
 
-                stream.on('error', e => {
-                    UPLOAD[id].status = "error"
-                    UPLOAD[id].chunk[chunkMetadata.file].status = "error"
-                    UPLOAD[id].chunk[chunkMetadata.file].error = e.toString() + " " + e.stack
-                    eventHub.emit("resumable-error", UPLOAD[id])
-                    delete UPLOAD[id]
-                    console.log(`upload error: ${e.toString()}`)
-                })
-                file.pipe(stream);
+                    UPLOAD[id] = UPLOAD[id] || {
+                        id,
+                        file: info.filename,
+                        size: query.resumableTotalSize,
+                        status: "processed",
+                        totalChunks: query.resumableTotalChunks,
+                        chunk: {}
+                    }
+
+                    UPLOAD[id].chunk[chunkMetadata.file] = chunkMetadata
+
+                    let stream = await fs.createWriteStream(chunkMetadata.file, { flags: 'w' })
+
+                    stream.on('close', async file => {
+                        UPLOAD[id].chunk[chunkMetadata.file].status = "done"
+                        UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
+                        if (this.testAllChunkExists(id)) {
+                            UPLOAD[id].status = "done"
+                            UPLOAD[id].completedAt = new Date()
+                            console.log('all chunks ready', UPLOAD[id])
+                            eventHub.emit("resumable-done", UPLOAD[id])
+                            delete UPLOAD[id]
+                        }
+                    })
+
+                    stream.on('error', e => {
+                        UPLOAD[id].status = "error"
+                        UPLOAD[id].chunk[chunkMetadata.file].status = "error"
+                        UPLOAD[id].chunk[chunkMetadata.file].error = e.toString() + " " + e.stack
+                        eventHub.emit("resumable-error", UPLOAD[id])
+                        delete UPLOAD[id]
+                        console.log(`upload error: ${e.toString()}`)
+                    })
+                    file.pipe(stream);
+                } catch (e) {
+                    console.log("UPLOAD CHUNK ERROR", id, e.toString(), e.stack)
+                }    
                 // resolve(id)
             })
 
