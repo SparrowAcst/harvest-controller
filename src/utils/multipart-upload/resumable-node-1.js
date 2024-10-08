@@ -49,34 +49,20 @@ const Resumable = class {
                 if (fieldname) query[fieldname] = val;
             })
 
-            // req.busboy.on('close', async () => {
-            //     console.log("busboy.on('finish'...")
-            //     UPLOAD[id].chunk[chunkMetadata.file].status = "done"
-            //     UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
-            //     console.log(UPLOAD)
-            //     if (this.testAllChunkExists(id)) {
-            //         UPLOAD[id].status = "done"
-            //         UPLOAD[id].completedAt = new Date()
-            //         console.log('all chunks ready', UPLOAD[id])
-            //         eventHub.emit("resumable-done", UPLOAD[id])
-            //         delete UPLOAD[id]
-            //     }
-            // })
-
             req.busboy.on('file', (name, file, info) => {
                 try {
          
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  busboy.on('file'...")
+                    // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  busboy.on('file'...")
                     let writer = fs.createWriteStream(chunkMetadata.file)
                     writer.on('finish', () => {
-                        console.log("wriiter.on('finish'...")
+                        // console.log("wriiter.on('finish'...")
                         UPLOAD[id].chunk[chunkMetadata.file].status = "done"
                         UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
-                        console.log(UPLOAD)
+                        // console.log(UPLOAD)
                         if (this.testAllChunkExists(id)) {
                             UPLOAD[id].status = "done"
                             UPLOAD[id].completedAt = new Date()
-                            console.log('all chunks ready', UPLOAD[id])
+                            // console.log('all chunks ready', UPLOAD[id])
                             eventHub.emit("resumable-done", UPLOAD[id])
                             delete UPLOAD[id]
                         }

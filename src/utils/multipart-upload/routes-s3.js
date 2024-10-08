@@ -96,7 +96,7 @@ const s3Upload = async (req, res) => {
         //     return
         // }
 
-        console.log("await ready For Upload: ", uploadId)
+        // console.log("await ready For Upload: ", uploadId)
         await readyForUpload(uploadId)
         console.log("Start Upload: ", uploadId)
         
