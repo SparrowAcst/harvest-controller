@@ -67,6 +67,7 @@ const Resumable = class {
                 try {
                     console.log("busboy.on('file'...")
                     file.pipe(fs.createWriteStream(chunkMetadata.file))
+                    file.resume()
 
                 } catch (e) {
                     console.log("UPLOAD CHUNK ERROR", id, e.toString(), e.stack)
