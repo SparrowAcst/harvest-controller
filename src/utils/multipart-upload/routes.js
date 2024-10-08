@@ -35,9 +35,9 @@ const getFileId = (req, res) => {
 }
 
 const postUpload = async (req, res) => {
-    if (req.eventHub.listenerCount("resumable-done") == 0) {
-        req.eventHub.on("resumable-done", updateChunked)
-    }
+    // if (req.eventHub.listenerCount("resumable-done") == 0) {
+    //     req.eventHub.on("resumable-done", updateChunked)
+    // }
     resumable.post(req)
     res.send()
 }

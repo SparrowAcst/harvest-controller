@@ -36,6 +36,7 @@ const Resumable = class {
             req.busboy.on('file', async (name, file, info) => {
                 try {
                     
+                    console.log("busboy.on('file'", name, file, info)
                     let id = cleanIdentifier(query.resumableIdentifier)
 
                     let chunkMetadata = {
@@ -54,8 +55,8 @@ const Resumable = class {
 
                     UPLOAD[id].chunk[chunkMetadata.file] = chunkMetadata
 
-                    let stream = await fs.createWriteStream(chunkMetadata.file, { flags: 'w' })
-
+                    let stream = await fs.createWriteStream(chunkMetadata.file) //, { flags: 'w' })
+                    console.log(stream)
                     stream.on('close', () => {
                         UPLOAD[id].chunk[chunkMetadata.file].status = "done"
                         UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
@@ -78,7 +79,9 @@ const Resumable = class {
                         delete UPLOAD[id]
                         console.log(`upload error: ${e.toString()}`)
                     })
+
                     file.pipe(stream);
+                
                 } catch (e) {
                     console.log("UPLOAD CHUNK ERROR", id, e.toString(), e.stack)
                 }    
