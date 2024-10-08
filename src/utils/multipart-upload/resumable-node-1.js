@@ -59,6 +59,8 @@ const Resumable = class {
                     stream.on('close', async file => {
                         UPLOAD[id].chunk[chunkMetadata.file].status = "done"
                         UPLOAD[id].chunk[chunkMetadata.file].commpletedAt = new Date()
+                        console.log("close stream", chunkMetadata.file)
+                        console.log(UPLOAD)
                         if (this.testAllChunkExists(id)) {
                             UPLOAD[id].status = "done"
                             UPLOAD[id].completedAt = new Date()
