@@ -55,20 +55,10 @@ const s3UploadStatus = async (req, res) => {
     }
     let result = JSON.parse(JSON.stringify(UPLOADS[uploadId]))
     if (result.status == "done") {
-        s3RemoveChunks(keys(CHUNKED[uploadId].chunk))
         delete UPLOADS[uploadId]
     }
     res.status(200).send(result)
 }
-
-const s3RemoveChunks = async chunks => {
-    try {
-        await Promise.all(chunks.map(chunk => fsp.unlink(chunk)))
-    } catch (e) {
-        console.error("s3RemoveChunks:", e.toString(), e.stack)
-    }
-}
-
 
 const readyForUpload = async uploadId => new Promise( (resolve, reject) => {
     let i = 0
@@ -107,14 +97,20 @@ const s3Upload = async (req, res) => {
             status: "processed"
         }
 
-        s3bucket.uploadChunks({
-            chunks: sortBy(keys(CHUNKED[uploadId].chunk)),
-            target,
-            size: CHUNKED[uploadId].size,
-            callback: status => {
-                UPLOADS[uploadId] = status
-            }
-        })
+        try {
+            s3bucket.uploadChunks({
+                chunks: sortBy(keys(CHUNKED[uploadId].chunk)),
+                simultaneousUploads: 3,
+                deleteUploadedChunks: true,
+                target,
+                size: CHUNKED[uploadId].size,
+                callback: status => {
+                    UPLOADS[uploadId] = status
+                }
+            })
+         } catch (e) {
+            console.log("s3bucket.uploadChunks", e.toString(), e.stack)
+         }   
 
         res.status(200).send({ uploadId })
     } catch (e) {

@@ -1,5 +1,15 @@
 const { readFileSync } = require("fs")
-const { extend, findIndex } = require("lodash")
+const fsp = require("fs").promises
+
+const {
+    extend,
+    findIndex,
+    chunk: splitArray,
+    isUndefined,
+    sortBy,
+    last
+} = require("lodash")
+
 const path = require("path")
 const { lookup } = require("mime-types")
 const nanomatch = require('nanomatch')
@@ -37,13 +47,13 @@ const client = new S3Client(settings.access)
 
 const dir = async path => {
     try {
-        let  { CommonPrefixes }  = await client.send(new ListObjectsCommand({
+        let { CommonPrefixes } = await client.send(new ListObjectsCommand({
             Bucket: bucket,
             Delimiter: "/",
             Prefix: path
         }))
-        if(!CommonPrefixes) return
-        return CommonPrefixes.map( item => item.Prefix.replace(path, "").replace("/", ""))
+        if (!CommonPrefixes) return
+        return CommonPrefixes.map(item => item.Prefix.replace(path, "").replace("/", ""))
     } catch (e) {
         console.error("s3-bucket.dir:", e.toString(), e.stack)
         throw e
@@ -55,15 +65,15 @@ const list = async path => {
         path = path || "**/*"
         let Prefix = path.split("/")
         Prefix = Prefix.slice(0, findIndex(Prefix, d => /\*/.test(d))).join("/")
-        Prefix = (!Prefix) ? undefined : Prefix +"/"
-        let { Contents} = await client.send(new ListObjectsCommand({
+        Prefix = (!Prefix) ? undefined : Prefix + "/"
+        let { Contents } = await client.send(new ListObjectsCommand({
             Bucket: bucket,
             Prefix
         }))
         let items = Contents || []
         let names = items.map(d => d.Key)
         names = nanomatch(names, path)
-        return items.filter( d => names.includes(d.Key))
+        return items.filter(d => names.includes(d.Key))
     } catch (e) {
         console.error("s3-bucket.list:", e.toString(), e.stack)
         throw e
@@ -108,22 +118,19 @@ const metadata = async target => {
 const deleteFiles = async path => {
 
     let deletedItems = await list(path)
-    let Keys = deletedItems.map( d => d.Key)
-    
-    if(Keys.length == 0) return 
-    
+    let Keys = deletedItems.map(d => d.Key)
+
+    if (Keys.length == 0) return
+
     await client.send(
-      new DeleteObjectsCommand({
-        Bucket: bucket,
-        Delete: {
-          Objects: Keys.map(Key => ({Key})),
-        }
-      })
+        new DeleteObjectsCommand({
+            Bucket: bucket,
+            Delete: {
+                Objects: Keys.map(Key => ({ Key })),
+            }
+        })
     )
-    await Promise.all( Keys.map( Key => waitUntilObjectNotExists(
-        { client },
-        { Bucket: bucket, Key },
-      )))
+    await Promise.all(Keys.map(Key => waitUntilObjectNotExists({ client }, { Bucket: bucket, Key }, )))
 
 }
 
@@ -167,7 +174,7 @@ const getPresignedUrl = async source => {
         return res
     } catch (e) {
         console.error("s3-bucket.getPresignedUrl:", e.toString(), e.stack)
-        reject(e)
+        throw e
     }
 }
 
@@ -195,7 +202,14 @@ const uploadLt20M = async ({ source, target }) => {
 
 // multypart upload,  chunk size must be >= 6Mb
 
-const uploadChunks = async ({ chunks, target, size, callback = (() => {}) }) => {
+const uploadChunks = async ({
+    chunks,
+    simultaneousUploads = 2,
+    deleteUploadedChunks = true,
+    target,
+    size,
+    callback = (() => {})
+}) => {
 
     let uploadId
     let options = {
@@ -206,32 +220,55 @@ const uploadChunks = async ({ chunks, target, size, callback = (() => {}) }) => 
     try {
         const ContentType = lookup(path.extname(`./${target}`))
 
-        
         uploadId = (await client.send(new CreateMultipartUploadCommand(extend({}, options, { ContentType })))).UploadId
         let uploadedBytes = 0
-        
-        const uploadResults = await Promise.all(chunks.map((chunk, i) => {
-            let buffer = readFileSync(chunk)
-            return client
-                .send(
-                    new UploadPartCommand(
-                        extend({}, options, {
-                            UploadId: uploadId,
-                            Body: buffer,
-                            PartNumber: i + 1
-                        }))
-                )
-                .then((d) => {
-                    uploadedBytes += buffer.length
-                    callback({ 
-                        target, 
-                        uploadedBytes, 
-                        percents: (size) ? Number.parseFloat((uploadedBytes / size).toFixed(3)) : 0, 
-                        status: "processed"
-                    })
-                    return d;
-                })
-        }))
+
+        chunks = sortBy(chunks, c => Number.parseInt(last(c.split("."))))
+        let partitions = splitArray(chunks, simultaneousUploads)
+
+        const uploadResults = await new Promise(async (resolve, reject) => {
+            let uploads = []
+            let partIndex = 0
+
+            for (const partition of partitions) {
+
+                console.log(`Upload ${target} part ${partIndex + 1}: ${partition.length} items`)
+                console.log(partition)
+
+                let partUploads = await Promise.all(partition.map((chunk, i) => {
+                    let buffer = readFileSync(chunk)
+                    return client
+                        .send(
+                            new UploadPartCommand(
+                                extend({}, options, {
+                                    UploadId: uploadId,
+                                    Body: buffer,
+                                    PartNumber: partIndex * simultaneousUploads + i + 1
+                                }))
+                        )
+                        .then((d) => {
+                            uploadedBytes += buffer.length
+                            callback({
+                                target,
+                                uploadedBytes,
+                                percents: (size) ? Number.parseFloat((uploadedBytes / size).toFixed(3)) : 0,
+                                status: "processed"
+                            })
+                            return d;
+                        })
+                }))
+
+                uploads = uploads.concat(partUploads)
+
+                if (deleteUploadedChunks) {
+                    await Promise.all(partition.map(c => fsp.unlink(c)))
+                }
+
+                partIndex++
+            }
+
+            resolve(uploads)
+        })
 
         await client.send(new CompleteMultipartUploadCommand(
             extend({}, options, {
@@ -244,10 +281,10 @@ const uploadChunks = async ({ chunks, target, size, callback = (() => {}) }) => 
                 }
             })))
 
-        callback({ 
-            target, 
-            uploadedBytes: size, 
-            percents: 1, 
+        callback({
+            target,
+            uploadedBytes: size,
+            percents: 1,
             status: "done"
         })
 
@@ -262,6 +299,8 @@ const uploadChunks = async ({ chunks, target, size, callback = (() => {}) }) => 
             )
             await client.send(abortCommand);
         }
+
+        // throw e
     }
 }
 
@@ -281,7 +320,7 @@ module.exports = {
 //     console.log( (await dir()) )
 //     console.log( (await dir("ADE BACKUP/")))
 //     console.log( (await dir("ADE-BACKUP/TESTAI/")))
-    
+
 
 // }
 
