@@ -324,7 +324,7 @@ const updateForm = async (req, res) => {
 
 		if(!storedForm) {
 			res.send({
-				error: `${options.form.type} for ${options.patientId} not found`,
+				error: `${options.type} for ${options.patientId} not found`,
 				requestBody: req.body
 			})
 		}

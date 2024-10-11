@@ -1,13 +1,14 @@
 const { readFileSync } = require("fs")
 const fsp = require("fs").promises
-
+const axios = require("axios")
 const {
     extend,
     findIndex,
     chunk: splitArray,
     isUndefined,
     sortBy,
-    last
+    last,
+    isFunction
 } = require("lodash")
 
 const path = require("path")
@@ -35,13 +36,14 @@ const {
 } = require("@aws-sdk/client-s3");
 
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
+const { Upload } = require("@aws-sdk/lib-storage")
+
 
 // TODO transfer into settings
 
 const settings = require("../../../sync-data/.config/key/s3/s3.settings.json")
 const bucket = settings.bucket.default
 console.log("S3 bucket:", bucket)
-
 
 const client = new S3Client(settings.access)
 
@@ -179,6 +181,10 @@ const getPresignedUrl = async source => {
 }
 
 
+
+
+
+
 // upload file with size <= 20Mb
 
 const uploadLt20M = async ({ source, target }) => {
@@ -197,6 +203,37 @@ const uploadLt20M = async ({ source, target }) => {
         console.error("s3-bucket.uploadLt20M:", e.toString(), e.stack)
         throw e
     }
+}
+
+const uploadFromURL = async ({ source, target, callback }) => {
+    try {
+
+        callback = (callback && isFunction(callback)) ? callback : (() => {})
+        const ContentType = lookup(path.extname(`./${target}`))
+
+        const axiosResponse = await axios({
+            method: 'GET',
+            url: source,
+            responseType: 'stream'
+        })
+
+        const uploadProcess = new Upload({
+            client,
+            params: {
+                Bucket: bucket,
+                Key: target,
+                ContentType,
+                Body: axiosResponse.data
+            },
+        })
+
+        uploadProcess.on("httpUploadProgress", callback)
+        await uploadProcess.done();
+
+    } catch (e) {
+        console.log(`uploadFromURL`, e.toString(), e.stack)
+    }
+
 }
 
 
@@ -313,7 +350,8 @@ module.exports = {
     getPresignedUrl,
     uploadLt20M,
     uploadChunks,
-    deleteFiles
+    deleteFiles,
+    uploadFromURL
 }
 
 // const run = async () => {

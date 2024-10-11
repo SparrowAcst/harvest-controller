@@ -1,19 +1,19 @@
 const mongodb = require("./mongodb")
-const { 
-	extend, 
-	sortBy, 
-	uniq, 
-	flattenDeep, 
-	find, 
-	difference, 
-	isArray, 
-	maxBy, 
-	keys, 
-	first,
-	last, 
-	isUndefined, 
-	groupBy, 
-	isString 
+const {
+    extend,
+    sortBy,
+    uniq,
+    flattenDeep,
+    find,
+    difference,
+    isArray,
+    maxBy,
+    keys,
+    first,
+    last,
+    isUndefined,
+    groupBy,
+    isString
 } = require("lodash")
 const moment = require("moment")
 const s3Bucket = require("./utils/s3-bucket")
@@ -22,6 +22,8 @@ const uuid = require("uuid").v4
 const axios = require("axios")
 const fs = require("fs")
 const fsp = require("fs").promises
+const filesize = require("file-size")
+
 // const syncOneExamination = require("../../sync-data/src/actions/sync-one-examination")
 // const { updateAISegmentation } = require("./long-term/ai-segmentation")
 
@@ -125,7 +127,7 @@ const getGrants = async (req, res) => {
             if (grants.patientPrefix.filter(d => options.examinationID.startsWith(d)).length == 0) {
                 grants.role = "reader"
                 // res.send ({
-                // 	error: `Examination ${options.examinationID} not available for user ${options.user.email}`
+                //  error: `Examination ${options.examinationID} not available for user ${options.user.email}`
                 // })
                 // return
             } else {
@@ -381,28 +383,28 @@ const getExaminationList = async (req, res) => {
 }
 
 
-const downloadFromUrl = async ({source, target}) => {
+const downloadFromUrl = async ({ source, target }) => {
 
-  // axios image download with response type "stream"
-  const response = await axios({
-    method: 'GET',
-    url: source,
-    responseType: 'stream'
-  })
-
-  // pipe the result stream into a file on disc
-  response.data.pipe(fs.createWriteStream(target))
-
-  // return a promise and resolve when download finishes
-  return new Promise((resolve, reject) => {
-    response.data.on('end', () => {
-      resolve()
+    // axios image download with response type "stream"
+    const response = await axios({
+        method: 'GET',
+        url: source,
+        responseType: 'stream'
     })
 
-    response.data.on('error', () => {
-      reject()
+    // pipe the result stream into a file on disc
+    response.data.pipe(fs.createWriteStream(target))
+
+    // return a promise and resolve when download finishes
+    return new Promise((resolve, reject) => {
+        response.data.on('end', () => {
+            resolve()
+        })
+
+        response.data.on('error', () => {
+            reject()
+        })
     })
-  })
 
 }
 
@@ -415,10 +417,10 @@ const copyFromURLToS3 = async ({ source, target }) => {
         console.log(tempFileName)
 
         await downloadFromUrl({
-        	source,
-        	target: tempFileName
+            source,
+            target: tempFileName
         })
-        
+
         await s3Bucket.uploadLt20M({
             source: tempFileName,
             target
@@ -455,32 +457,7 @@ const copyFromURLToS3 = async ({ source, target }) => {
 
 const syncAssets = async (req, res) => {
 
-    let options = req.body.options
-    let { db, collection, examinationID, grants } = req.body.options
-
-    let forms = await mongodb.aggregate({
-        db,
-        collection: `${db.name}.${collection.forms}`,
-        pipeline: [{
-                '$match': {
-                    'examination.patientId': examinationID
-                }
-            },
-            {
-                '$project': {
-                    '_id': 0
-                }
-            }
-        ]
-    })
-
-    if (!forms || !forms[0]) {
-        res.send({})
-        return
-    }
-
-    examination = forms[0].examination
-
+    let { examinationID, grants, eid } = req.body.options
 
     const controller = await require("../../sync-data/src/controller")({
         console,
@@ -489,8 +466,9 @@ const syncAssets = async (req, res) => {
         }
     })
 
-    // console.log(examination)
-    let assets = await controller.getFbAssets(examination.id)
+    let assets = await controller.getFbAssets(eid)
+    
+    console.log(assets.files)
 
     assets.files = assets.files.map(a => {
         a.source = "Stethophone Data"
@@ -506,33 +484,36 @@ const syncAssets = async (req, res) => {
 
         let target = `${grants.backup.home}/${examinationID}/FILES/${f.name}`
         let metadata = await s3Bucket.metadata(target)
-
-        console.log(target)
-        console.log(metadata)
+        
+        console.log(f.name, metadata)
 
         if (!metadata) {
 
-            let res = await copyFromURLToS3({
+            await s3Bucket.uploadFromURL({
                 source: f.url,
-                target
+                target,
+                callback: (progress) => {
+                    console.log(`UPLOAD ${target}: ${filesize(progress.loaded).human("jedec")} from ${filesize(progress.total).human("jedec")} (${(100*progress.loaded/progress.total).toFixed(1)}%)`)
+                }
+
             })
 
-            upd.push(res)
-        } else {
-            upd.push({
-                id: uuid(),
-                name: last(metadata.Key.split("/")),
-                publicName: last(metadata.Key.split("/")),
-                path: metadata.Key,
-                mimeType: metadata.ContentType,
-                size: metadata.ContentLength,
-                updatedAt: metadata.LastModified,
-                source: "Stetophone Data",
-                storage: "s3",
-                url: metadata.url,
-                valid: true
-            })
+            metadata = await s3Bucket.metadata(target)
         }
+
+        upd.push({
+            id: uuid(),
+            name: last(metadata.Key.split("/")),
+            publicName: last(metadata.Key.split("/")),
+            path: metadata.Key,
+            mimeType: metadata.ContentType,
+            size: metadata.ContentLength,
+            updatedAt: metadata.LastModified,
+            source: "Stetophone Data",
+            storage: "s3",
+            url: metadata.url,
+            valid: true
+        })
     }
 
     assets.files = upd
@@ -630,10 +611,10 @@ const syncExaminations = async (req, res) => {
         }
 
         // if( grants.patientPrefix.filter( d => options.examinationID.startsWith(d)).length == 0){
-        // 	res.send ({
-        // 		error: `Examination ${options.examinationID} not available for user ${options.user.email}`
-        // 	})
-        // 	return
+        //  res.send ({
+        //      error: `Examination ${options.examinationID} not available for user ${options.user.email}`
+        //  })
+        //  return
         // }
 
         let examinations_fb = await fb.execute.getCollectionItems(
@@ -714,10 +695,10 @@ const syncExaminations = async (req, res) => {
 
 
             // await mongodb.insertAll({
-            // 	db: options.db,
-            // 	collection: `${options.db.name}.forms`,
-            // 	data: forms
-            // })	
+            //  db: options.db,
+            //  collection: `${options.db.name}.forms`,
+            //  data: forms
+            // })   
 
         }
 
