@@ -110,7 +110,7 @@ const metadata = async target => {
         }
     } catch (e) {
         console.error("s3-bucket.metadata:", e.toString(), e.stack)
-        throw e
+        // throw e
     }
 }
 
@@ -146,7 +146,7 @@ const getStream = async source => {
         return res
     } catch (e) {
         console.error("s3-bucket.getStream:", e.toString(), e.stack)
-        throw e
+        // throw e
     }
 }
 
