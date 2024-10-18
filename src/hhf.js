@@ -470,11 +470,16 @@ const syncAssets = async (req, res) => {
     
     console.log(assets.files)
 
+
     assets.files = assets.files.map(a => {
         a.source = "Stethophone Data"
         if (a.mimeType == "application/octet-stream") {
             a.mimeType = "image/jpg"
             a.name = a.name.replace("octet-stream", "jpg")
+        }
+        if (!a.mimeType) {
+            a.mimeType = "image/jpg"
+            a.name = a.name.replace("undefined", "jpg")
         }
         return a
     })
@@ -486,6 +491,8 @@ const syncAssets = async (req, res) => {
         let metadata = await s3Bucket.metadata(target)
         
         console.log(f.name, metadata)
+        console.log("target", target)
+
 
         if (!metadata) {
 
