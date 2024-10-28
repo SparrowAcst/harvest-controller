@@ -50,10 +50,11 @@ const commitSubmitedTasks = async (user, taskController) => {
             await brancher.commit({
                 source: version,
                 metadata: {
-                    "task.Cross_Verification.status": "done",
-                    "task.Cross_Verification.updatedAt": new Date(),
+                    // "task.Cross_Verification.status": "done",
+                    // "task.Cross_Verification.updatedAt": new Date(),
                     "actual_task": "none",
-                    "actual_status": "none"
+                    "actual_status": "none",
+                    "lock": false
                 }
             })
 

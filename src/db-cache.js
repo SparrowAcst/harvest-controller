@@ -100,15 +100,16 @@ const handler = async (req, res, next) => {
         await init()
     }
 
-    let currentDataset = (req.body && req.body.options && req.body.options.currentDataset) ?
-        req.body.options.currentDataset :
-        (req.body && req.body.currentDataset) ?
-        req.body.currentDataset :
+    let currentDatasetName = (req.body && req.body.options && (req.body.options.currentDataset || req.body.options.dataset)) ?
+        (req.body.options.currentDataset || req.body.options.dataset) :
+        (req.body && req.body.currentDataset || req.body.dataset) ?
+        (req.body.currentDataset  || req.body.dataset):
         "ADE-TEST"
 
-    currentDataset = find(DATASET_CACHE, d => d.name == currentDataset)
+    let currentDataset = find(DATASET_CACHE, d => d.name == currentDatasetName)
 
     currentDataset = (currentDataset && currentDataset.settings) ? currentDataset.settings : undefined
+    currentDataset.name = currentDatasetName
 
     req.body = extend(req.body, {
         cache: {

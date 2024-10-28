@@ -62,7 +62,7 @@ const run = async () => {
         }
         let task = (d.metadata) ? d.metadata.task || {} : {}
         task = extend({}, task, {
-            Basic_Labeling_1st: {
+            CMO_Editing: {
                 id: uuid(),
                 status: "open",
                 updatedAt: new Date()

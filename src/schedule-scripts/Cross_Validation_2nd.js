@@ -24,6 +24,12 @@ let options = {
 }
 
 
+const recordId = [
+    "4084eaac-d234-475b-83da-5627ca659698",
+    "e228a545-bb0c-4a66-9fd9-a180c0b7448b"
+]
+
+
 const run = async () => {
 
     let buffer = await mongodb.aggregate({
@@ -33,7 +39,7 @@ const run = async () => {
             {
                 $match:{
                     id:{
-                        $in:["af40d78c-84f9-49b3-9d9d-ed33e99858bd"] //, "ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"]
+                        $in: recordId, //["af40d78c-84f9-49b3-9d9d-ed33e99858bd"] //, "ae4e3cd1-2ccc-4acf-84c2-b25f4a1167db"]
                     }
                     // "S3":{
                     //     $ne: "No"
@@ -58,21 +64,33 @@ const run = async () => {
         
         console.log("!!!!!!!!!!", d.metadata)
 
+        if(d.metadata.lock){
+            console.log("IGNORE BY LOCK")
+            return
+        }
+       
         let task = (d.metadata) ? d.metadata.task || {} : {}
         task = extend({}, task, {
-        actual_task: "none",
-        actual_status: "none",
+        // actual_task: "none",
+        // actual_status: "none",
         Cross_Validation_2nd:{
             id: uuid(),
             status:"open",
             updatedAt: new Date()
         }})
         
-        d.metadata = extend({}, d.metadata, { task })
+        d.metadata = extend({}, d.metadata, { task, lock: true })
 
         console.log(d.metadata)
         return d
+    }).filter( d => d)
+
+    if(initiated.length == 0) return
+        
+    await controller.updateVersion({
+        version: initiated
     })
+
 
     await controller.updateVersion({
         version: initiated

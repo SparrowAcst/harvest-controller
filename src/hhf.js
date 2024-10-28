@@ -457,75 +457,80 @@ const copyFromURLToS3 = async ({ source, target }) => {
 
 const syncAssets = async (req, res) => {
 
-    let { examinationID, grants, eid } = req.body.options
+    try{
+        let { examinationID, grants, eid } = req.body.options
 
-    const controller = await require("../../sync-data/src/controller")({
-        console,
-        firebaseService: {
-            noprefetch: true
-        }
-    })
-
-    let assets = await controller.getFbAssets(eid)
-    
-    console.log(assets.files)
-
-
-    assets.files = assets.files.map(a => {
-        a.source = "Stethophone Data"
-        if (a.mimeType == "application/octet-stream") {
-            a.mimeType = "image/jpg"
-            a.name = a.name.replace("octet-stream", "jpg")
-        }
-        if (!a.mimeType) {
-            a.mimeType = "image/jpg"
-            a.name = a.name.replace("undefined", "jpg")
-        }
-        return a
-    })
-
-    let upd = []
-    for (let f of assets.files) {
-
-        let target = `${grants.backup.home}/${examinationID}/FILES/${f.name}`
-        let metadata = await s3Bucket.metadata(target)
-        
-        console.log(f.name, metadata)
-        console.log("target", target)
-
-
-        if (!metadata) {
-
-            await s3Bucket.uploadFromURL({
-                source: f.url,
-                target,
-                callback: (progress) => {
-                    console.log(`UPLOAD ${target}: ${filesize(progress.loaded).human("jedec")} from ${filesize(progress.total).human("jedec")} (${(100*progress.loaded/progress.total).toFixed(1)}%)`)
-                }
-
-            })
-
-            metadata = await s3Bucket.metadata(target)
-        }
-
-        upd.push({
-            id: uuid(),
-            name: last(metadata.Key.split("/")),
-            publicName: last(metadata.Key.split("/")),
-            path: metadata.Key,
-            mimeType: metadata.ContentType,
-            size: metadata.ContentLength,
-            updatedAt: metadata.LastModified,
-            source: "Stetophone Data",
-            storage: "s3",
-            url: metadata.url,
-            valid: true
+        const controller = await require("../../sync-data/src/controller")({
+            console,
+            firebaseService: {
+                noprefetch: true
+            }
         })
-    }
 
-    assets.files = upd
+        let assets = await controller.getFbAssets(eid)
+        
+        console.log(assets.files)
 
-    res.send(assets)
+
+        assets.files = assets.files.map(a => {
+            a.source = "Stethophone Data"
+            if (a.mimeType == "application/octet-stream") {
+                a.mimeType = "image/jpg"
+                a.name = a.name.replace("octet-stream", "jpg")
+            }
+            if (!a.mimeType) {
+                a.mimeType = "image/jpg"
+                a.name = a.name.replace("undefined", "jpg")
+            }
+            return a
+        })
+
+        let upd = []
+        for (let f of assets.files) {
+
+            let target = `${grants.backup.home}/${examinationID}/FILES/${f.name}`
+            let metadata = await s3Bucket.metadata(target)
+            
+            console.log(f.name, metadata)
+            console.log("target", target)
+
+
+            if (!metadata) {
+
+                await s3Bucket.uploadFromURL({
+                    source: f.url,
+                    target,
+                    callback: (progress) => {
+                        console.log(`UPLOAD ${target}: ${filesize(progress.loaded).human("jedec")} from ${filesize(progress.total).human("jedec")} (${(100*progress.loaded/progress.total).toFixed(1)}%)`)
+                    }
+
+                })
+
+                metadata = await s3Bucket.metadata(target)
+            }
+
+            upd.push({
+                id: uuid(),
+                name: last(metadata.Key.split("/")),
+                publicName: last(metadata.Key.split("/")),
+                path: metadata.Key,
+                mimeType: metadata.ContentType,
+                size: metadata.ContentLength,
+                updatedAt: metadata.LastModified,
+                source: "Stetophone Data",
+                storage: "s3",
+                url: metadata.url,
+                valid: true
+            })
+        }
+
+        assets.files = upd
+
+        res.send(assets)
+    } catch (e) {
+        console.log("Sync Assets Error", e.toString(), e.stack, JSON.stringify(req.body))
+        throw e
+    }    
 
 }
 

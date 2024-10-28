@@ -4,11 +4,11 @@ const uuid = require("uuid").v4
 module.exports = async (user, taskController) => {
 
 
-    let priorities = await taskController.getEmploeePriorities({user: user.altname})
+    let priorities = await taskController.getEmploeePriorities({ user: user.altname })
     // console.log("lab 2nd priorities", priorities)
 
-    if(!priorities[user.altname] || priorities[user.altname] == 0) return
-    
+    if (!priorities[user.altname] || priorities[user.altname] == 0) return
+
     // select not assigned tasks
 
     let tasks = await taskController.selectTask({
@@ -17,8 +17,10 @@ module.exports = async (user, taskController) => {
             head: true,
 
             type: "submit",
-            "metadata.actual_task": "Basic_Relabeling_1st",
-            "metadata.task.Basic_Relabeling_1st.initiator": user.altname,
+            "metadata.task.Basic_Labeling_2nd.status": "open",
+            "metadata.task.Basic_Labeling_2nd.initiator": user.altname,
+            // "metadata.actual_task": "Basic_Relabeling_1st",
+            // "metadata.task.Basic_Relabeling_1st.initiator": user.altname,
 
             branch: {
                 $exists: false
@@ -43,7 +45,7 @@ module.exports = async (user, taskController) => {
 
         tasks = tasks.slice(0, priorities[user.altname])
 
-        if(tasks.length > 0){
+        if (tasks.length > 0) {
             console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
         }
 
@@ -58,7 +60,7 @@ module.exports = async (user, taskController) => {
                 "task.Basic_Labeling_2nd.status": "start",
                 "task.Basic_Labeling_2nd.updatedAt": new Date(),
                 permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
- 
+
             }
         }
     }
@@ -70,8 +72,14 @@ module.exports = async (user, taskController) => {
             head: true,
 
             type: "submit",
-            "metadata.actual_task": "Basic_Labeling_1st",
-            "metadata.task.Basic_Labeling_1st.status": "submit",
+            
+            "metadata.task.Basic_Labeling_2nd.status": "open",
+            "metadata.task.Basic_Labeling_2nd.initiator": {
+                $exists: false
+            },
+
+            // "metadata.actual_task": "Basic_Labeling_1st",
+            // "metadata.task.Basic_Labeling_1st.status": "submit",
 
             branch: {
                 $exists: false
@@ -95,12 +103,12 @@ module.exports = async (user, taskController) => {
 
     tasks = tasks.slice(0, priorities[user.altname])
 
-    if(tasks.length > 0){
-            console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
-        }
-    
+    if (tasks.length > 0) {
+        console.log(`>> Basic_Labeling_2nd for ${user.altname}: assign ${tasks.length} tasks`)
+    }
+
     priorities[user.altname] -= tasks.length
-    
+
     return {
         version: tasks,
         metadata: {
@@ -110,7 +118,7 @@ module.exports = async (user, taskController) => {
             "task.Basic_Labeling_2nd.status": "start",
             "task.Basic_Labeling_2nd.updatedAt": new Date(),
             permission: ["open", "rollback", "sync", "history", "save", "reject", "submit"]
- 
+
         }
     }
 

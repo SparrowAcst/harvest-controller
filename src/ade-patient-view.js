@@ -58,8 +58,11 @@ const getForms = async (req, res) => {
             }, {
                 '$project': {
                     '_id': 0,
+                    'id': 1,
                     'type': 1,
                     'comment': 1,
+                    'Stage Comment': 1,
+                    'workflowTags': 1,
                     'state': 1,
                     'dateTime': 1,
                     'patientId': 1,
@@ -85,7 +88,7 @@ const getForms = async (req, res) => {
                 let f = find(data.forms, d => d.type == type)
                 if (f && f.data) {
                     let form = f.data.en || f.data.uk || f.data
-                    if (form) return extend(form, { formType: type })
+                    if (form) return extend(form, { formType: type, id: f.id })
                 }
             }).filter(f => f)
 
@@ -136,10 +139,13 @@ const getForms = async (req, res) => {
 
             result = {
                 examination: {
+                    id: data.id,
                     patientId: data.patientId,
                     recordCount: data.recordCount,
                     state: data.state,
                     comment: data.comment,
+                    'Stage Comment': data['Stage Comment'],
+                    workflowTags: data.workflowTags,
                     date: moment(new Date(data.dateTime)).format("YYYY-MM-DD HH:mm:ss"),
                     physician
                 },
@@ -162,6 +168,59 @@ const getForms = async (req, res) => {
     }
 }
 
+const updateForm = async (req, res) => {
+
+    let pipeline = []
+
+    try {
+
+        let { patientId, type, form } = req.body.options
+        let { db } = req.body.cache.currentDataset
+
+        pipeline = [{
+            $match: {
+                patientId,
+                type
+            }
+        }]
+
+        let storedForm = await mongodb.aggregate({
+            db,
+            collection: `${db.name}.forms`,
+            pipeline
+        })
+
+        storedForm = storedForm[0]
+
+        if (!storedForm) {
+            res.send({
+                error: `${type} for ${patientId} not found`,
+                requestBody: req.body
+            })
+        }
+
+        storedForm.data.en = form
+
+        let result = await mongodb.replaceOne({
+            db,
+            collection: `${db.name}.forms`,
+            filter: {
+                patientId,
+                type
+            },
+            data: storedForm
+        })
+
+        res.send(result)
+
+    } catch (e) {
+        res.send({
+            error: e.toString(),
+            requestBody: req.body,
+            pipeline
+        })
+    }
+}
 
 
 const getSegmentation = async (req, res) => {
@@ -223,43 +282,37 @@ const getRecords = async (req, res) => {
 
         }
 
-        let pipeline = [
-          {
-            $match:
-              {
-                "Examination ID": options.id,
-              },
-          },
-          {
-            $lookup:
-              {
-                from: "segmentations",
-                localField: "segmentation",
-                foreignField: "id",
-                as: "result",
-              },
-          },
-          {
-            $addFields:
-              {
-                segmentation: {
-                  $first: "$result",
+        let pipeline = [{
+                $match: {
+                    "Examination ID": options.id,
                 },
-              },
-          },
-          {
-            $addFields:
-              {
-                segmentation: "$segmentation.data",
-              },
-          },
-          {
-            $project:
-              {
-                _id: 0,
-                result: 0,
-              },
-          },
+            },
+            {
+                $lookup: {
+                    from: "segmentations",
+                    localField: "segmentation",
+                    foreignField: "id",
+                    as: "result",
+                },
+            },
+            {
+                $addFields: {
+                    segmentation: {
+                        $first: "$result",
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    segmentation: "$segmentation.data",
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    result: 0,
+                },
+            },
         ]
         // options.excludeFilter
         //     .concat(options.valueFilter)
@@ -295,42 +348,42 @@ const getRecords = async (req, res) => {
 
 const getTags = async (req, res) => {
     try {
-    
-       let { db } = req.body.cache.currentDataset
+
+        let { db } = req.body.cache.currentDataset
 
         options = {
             db,
             collection: `settings.tags`,
-            pipeline: [   
-                {
-                    $match:{
+            pipeline: [{
+                    $match: {
                         classification: "Diagnosis"
                     }
                 },
                 {
-                    $project:{ _id: 0 }
+                    $project: { _id: 0 }
                 }
-            ] 
+            ]
         }
-        
+
         const result = await mongodb.aggregate(options)
         res.send(result)
 
     } catch (e) {
-        
+
         res.send({
-            command: "getTags", 
+            command: "getTags",
             error: e.toString(),
             requestBody: req.body
         })
-    
-    }   
+
+    }
 
 }
 
 module.exports = {
     getMetadata,
     getForms,
+    updateForm,
     getSegmentation,
     getRecords,
     getTags

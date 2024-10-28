@@ -20,6 +20,8 @@ const getRecordData = async (req, res) => {
             req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
         )
 
+        console.log("options", options)
+        
         options.eventHub = req.eventHub
 
         let { user, recordId } = options

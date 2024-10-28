@@ -17,6 +17,24 @@ router.post("/hhe/reject-examinations/", hhe.rejectExaminations)
 
 
 ////////////////////////////////////////////////////////////////////////////
+
+const hheNwf = require("./src/hhe-nwf")
+
+// router.post("/hhe/get-dataset-list/", hhe.getDatasetList)
+// router.post("/hhe/nwf/get-grants/", hhe.getGrants)
+router.post("/hhe/nwf/get-tasks/", [ DBCache, hheNwf.getTasks ])
+router.post("/hhe/nwf/update-tasks/", [ DBCache, hheNwf.updateTasks ])
+router.post("/hhe/nwf/get-stat/", [ DBCache, hheNwf.getStat ])
+router.post("/hhe/nwf/get-sync-stat/", [ DBCache, hheNwf.getSyncStat ])
+router.post("/hhe/nwf/get-sync-examinations/", [ DBCache, hheNwf.getSyncExaminations ])
+router.post("/hhe/nwf/get-organizations/", [ DBCache, hheNwf.getOrganizations ])
+router.post("/hhe/nwf/accept-examinations/", [ DBCache, hheNwf.acceptExaminations ])
+router.post("/hhe/nwf/reject-examinations/", [ DBCache, hheNwf.rejectExaminations ])
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
 const hhr = require("./src/hhr")
 
 router.post("/hhr/get-dataset-list/", hhr.getDatasetList)
@@ -26,6 +44,15 @@ router.post("/hhr/get-events/", hhr.getEvents)
 router.post("/hhr/get-team/", hhr.getTeam)
 router.post("/hhr/get-forms/", hhr.getForms)
 router.post("/hhr/get-available-values/", hhr.getAvailableValues)
+
+////////////////////////////////////////////////////////////////////////////
+const hhrNwf = require("./src/hhr-nwf")
+
+router.post("/hhr/nwf/get-stat/", [ DBCache, hhrNwf.getStat ])
+router.post("/hhr/nwf/get-events/", [ DBCache, hhrNwf.getEvents ])
+router.post("/hhr/nwf/get-team/", [ DBCache, hhrNwf.getTeam ])
+router.post("/hhr/nwf/get-forms/", [ DBCache, hhrNwf.getForms ])
+router.post("/hhr/nwf/get-available-values/", [ DBCache, hhrNwf.getAvailableValues ])
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -38,6 +65,17 @@ router.post("/hhs/get-events/", hhs.getEvents)
 router.post("/hhs/get-team/", hhs.getTeam)
 router.post("/hhs/get-forms/", hhs.getForms)
 router.post("/hhs/get-available-values/", hhs.getAvailableValues)
+
+
+////////////////////////////////////////////////////////////////////////////
+const hhsNwf = require("./src/hhs-nwf")
+
+router.post("/hhs/nwf/get-stat/", [ DBCache, hhsNwf.getStat ])
+router.post("/hhs/nwf/get-events/", [ DBCache, hhsNwf.getEvents ])
+router.post("/hhs/nwf/get-team/", [ DBCache, hhsNwf.getTeam ])
+router.post("/hhs/nwf/get-forms/", [ DBCache, hhsNwf.getForms ])
+router.post("/hhs/nwf/get-available-values/", [ DBCache, hhsNwf.getAvailableValues ])
+
 
 
 
@@ -180,7 +218,64 @@ router.post("/pr/save-consistency/", pr.setConsistency)
 router.post("/pr/add-tags-dia/", pr.addTagsDia)
 router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)
 
+/////////////////////////////////////////////////////////////////////////////////////
 
+const prNwf = require("./src/pr-nwf")
+
+router.post("/pr/nwf/get-events/", [DBCache, prNwf.getRecords])
+router.post("/pr/nwf/get-tag-list/", [DBCache, prNwf.getTagList])
+router.post("/pr/nwf/add-tags/", [DBCache, prNwf.addTags])
+router.post("/pr/nwf/remove-tag/", [DBCache, prNwf.removeLastTag])
+router.get("/pr/nwf/get-field-list/", [DBCache, prNwf.getFieldList])
+router.post("/pr/nwf/get-field-list/", [DBCache, prNwf.getFieldList])
+
+
+
+// router.post("/pr/get-exams/", pr.getExams)
+// router.post("/pr/select-exams/", pr.selectExams)
+// router.post("/pr/add-task/", pr.addToTask)
+// router.post("/pr/import/", pr.addToTask)
+// router.post("/pr/segment/", pr.getSegmentation)
+// router.post("/pr/export/", pr.exportSelection)
+// router.get("/pr/export/:id", pr.exportFile)
+// router.get("/pr/export/", pr.exportFile)
+// router.get("/pr/get-field-list/", pr.getFieldList)
+// router.post("/pr/get-field-list/", pr.getFieldList)
+// router.post("/pr/save-consistency/", pr.setConsistency)
+// router.post("/pr/add-tags-dia/", pr.addTagsDia)
+// router.post("/pr/remove-tag-dia/", pr.removeLastTagDia)
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+
+const adeDiaDashboard = require("./src/ade-diagnosis-dashboard")
+
+router.post("/ade-diagnosis-dashboard/get-events/", [DBCache, adeDiaDashboard.getRecords])
+router.post("/ade-diagnosis-dashboard/get-exams/", [DBCache, adeDiaDashboard.getExams])
+router.post("/ade-diagnosis-dashboard/select-exams/", [DBCache, adeDiaDashboard.selectExams])
+
+
+router.post("/ade-diagnosis-dashboard/get-tag-list/", [DBCache, adeDiaDashboard.getTagList])
+router.post("/ade-diagnosis-dashboard/add-tags/", [DBCache, adeDiaDashboard.addTags])
+router.post("/ade-diagnosis-dashboard/remove-tag/", [DBCache, adeDiaDashboard.removeLastTag])
+
+router.post("/ade-diagnosis-dashboard/update-diagnosis/", [DBCache, adeDiaDashboard.updateDiagnosis])
+
+router.post("/ade-diagnosis-dashboard/save-consistency/", [DBCache, adeDiaDashboard.setConsistency])
+
+router.post("/ade-diagnosis-dashboard/add-tags-dia/", [DBCache, adeDiaDashboard.addTagsDia])
+router.post("/ade-diagnosis-dashboard/remove-tag-dia/", [DBCache, adeDiaDashboard.removeLastTagDia])
+
+
+// router.post("/ade-diagnosis-dashboard/update-diagnosis/", [DBCache, adeDiaDashboard.updateDiagnosisTags])
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
 const adeTaskDashboard = require("./src/ade-task-dashboard") 
 const adeGrants = require("./src/ade-grants") 
 const adeLabeling = require("./src/ade-labeling") 
@@ -212,6 +307,8 @@ router.post("/ade-patient-view/get-records/", [DBCache, adePatientView.getRecord
 router.post("/ade-patient-view/segment/", [DBCache, adePatientView.getSegmentation])
 router.post("/ade-patient-view/get-metadata/", [DBCache, adePatientView.getMetadata])
 router.post("/ade-patient-view/get-forms/", [DBCache, adePatientView.getForms])
+router.post("/ade-patient-view/update-form/", [DBCache, adePatientView.updateForm])
+
 router.post("/ade-patient-view/get-tags/", [DBCache, adePatientView.getTags])
 
 

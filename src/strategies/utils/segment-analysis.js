@@ -855,22 +855,22 @@ const getTotals = sa => {
 
 const getSystoleDiastoleBars = sa => {
 
-    let segments = select(sa, "systole", "diastole").map(d => {
+    let segments = select(sa, "systole", "diastole", "unsegmentable").map(d => {
         d.duration = Number.parseFloat((d.end - d.start).toFixed(4))
         return d
     })
 
     if (segments.length == 0) return {}
 
-    while (first(segments).type != "systole") {
-        segments.shift()
-    }
+    // while (first(segments).type != "systole") {
+    //     segments.shift()
+    // }
 
-    segments = chunk(segments, 2)
+    segments = splitByPattern(segments, ["systole", "diastole"]) //chunk(segments, 2)
 
-    if (last(segments).length < 2) {
-        segments.pop()
-    }
+    // if (last(segments).length < 2) {
+    //     segments.pop()
+    // }
 
 
     let systole = segments.map(d => d[0].duration)
@@ -1020,10 +1020,23 @@ const getSystoleDiastoleScatterPlot = sa => {
 
     let values = []
 
-    if (!sa.systole) return {}
+    let segments = select(sa, "systole", "diastole", "unsegmentable").map(d => {
+        d.duration = Number.parseFloat((d.end - d.start).toFixed(4))
+        return d
+    })
 
-    let systole = sa.systole.map(d => d.duration)
-    let diastole = sa.diastole.map(d => d.duration)
+    if (segments.length == 0) return {}
+
+    segments = splitByPattern(segments, ["systole", "diastole"])
+    
+    let systole = segments.map(d => d[0].duration)
+    let diastole = segments.map(d => d[1].duration)
+    
+
+    // if (!sa.systole) return {}
+
+    // let systole = sa.systole.map(d => d.duration)
+    // let diastole = sa.diastole.map(d => d.duration)
 
 
     for (let i = 0; i < systole.length; i++) {

@@ -68,7 +68,8 @@ const commitSubmitedTasks = async (user, taskController) => {
                 // "task.Basic_Finalization.status": "done",
                 // "task.Basic_Finalization.updatedAt": new Date(),
                 "actual_task": "none",
-                "actual_status": "none"
+                "actual_status": "none",
+                "lock": false
             }
         })
 
@@ -98,9 +99,9 @@ module.exports = async (user, taskController) => {
             head: true,
 
             type: "submit",
-            "metadata.actual_task": "Basic_Relabeling_2nd",
-            "metadata.task.Basic_Relabeling_2nd.status": "submit",
-            "metadata.task.Basic_Relabeling_2nd.initiator": user.altname,
+            // "metadata.actual_task": "Basic_Relabeling_2nd",
+            // "metadata.task.Basic_Relabeling_2nd.status": "submit",
+            "metadata.task.Basic_Finalization.initiator": user.altname,
             "metadata.task.Basic_Finalization.status": "open",
 
             branch: {
@@ -129,9 +130,13 @@ module.exports = async (user, taskController) => {
                 head: true,
 
                 type: "submit",
-                "metadata.actual_task": "Basic_Labeling_2nd",
-                "metadata.task.Basic_Labeling_2nd.status": "submit",
+                // "metadata.actual_task": "Basic_Labeling_2nd",
+                // "metadata.task.Basic_Finalization.status": "submit",
                 "metadata.task.Basic_Finalization.status": "open",
+                "metadata.task.Basic_Finalization.initiator": {
+                    $exists: false
+                },
+            
 
                 branch: {
                     $exists: false

@@ -51,10 +51,11 @@ const commitSubmitedTasks = async (user, taskController) => {
             await brancher.commit({
                 source: version,
                 metadata: {
-                    "task.Manual_merging.status": "done",
-                    "task.Manual_merging.updatedAt": new Date(),
+                    // "task.Manual_merging.status": "done",
+                    // "task.Manual_merging.updatedAt": new Date(),
                     "actual_task": "none",
-                    "actual_status": "none"
+                    "actual_status": "none",
+                    lock: false
                 }
             })
 

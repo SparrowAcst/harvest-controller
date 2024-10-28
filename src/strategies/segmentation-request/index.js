@@ -11,6 +11,8 @@ module.exports = {
 	
 	Basic_Finalization: Basic_Labeling,
 
+	CMO_Editing: Basic_Labeling,
+
 	Cross_Validation_2nd: require("./Cross_Validation_2nd"),
 	Manual_merging: require("./Manual_merging"),
 	Cross_Verification: require("./Cross_Verification"),

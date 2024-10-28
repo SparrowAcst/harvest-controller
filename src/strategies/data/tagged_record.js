@@ -52,6 +52,7 @@ const get = async context => {
 
     let { recordId, db, user, segmentCollection } = context
 
+    console.log("TAGGED RECORD STRATEGY GET:", recordId, db, user, segmentCollection)
     let result = await mongodb.aggregate({
         db,
         collection: `${db.name}.${db.labelingCollection}`,

@@ -10,7 +10,7 @@ const createTaskController = require("../../utils/task-controller")
 const mongodb = require("../../mongodb")
 
 
-const settings = require("../settings").segmentator
+let settings = require("../settings")
 
 
 const resolveSegmentation = async (options, segmentation) => {
@@ -61,7 +61,7 @@ const openRequest = async options => {
 
         if (
             moment(existed.updatedAt)
-            .add(...settings.requestExpiration)
+            .add(...settings().segmentator.requestExpiration)
             .isSameOrBefore(moment(new Date()))
         ) {
             console.log(`>> Basic_Labeling: force close request ${existed.id} (${existed.user})`)

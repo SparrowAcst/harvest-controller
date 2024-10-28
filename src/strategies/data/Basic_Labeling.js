@@ -83,7 +83,7 @@ module.exports = params => ({
 
         let { data, source, user, recordId } = context
         context.dataId = [recordId]
-
+        console.log("BASIC ", context)
         const controller = createTaskController(context)
         const brancher = await controller.getBrancher(context)
         await brancher.save({
@@ -174,6 +174,7 @@ module.exports = params => ({
             }, (params.accept) ? {
                 [`task.${params.accept}.id`]: uuid(),
                 [`task.${params.accept}.status`]: "open",
+                [`task.${params.accept}.initiator`]: (params.hasInitiator) ? source.metadata.task[source.metadata.actual_task].initiator : undefined,
                 [`task.${params.accept}.updatedAt`]: new Date(),
                 [`task.${params.accept}.reason`]: getReason("accept", params.accept, { user }),
             } : {})
