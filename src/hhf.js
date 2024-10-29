@@ -483,7 +483,9 @@ const syncAssets = async (req, res) => {
                 a.name = a.name.replace("undefined", "jpg")
             }
             return a
-        }).filter( f => f.url)
+        })
+
+        assets.files = assets.files.filter( f => f.url)
 
         let upd = []
         for (let f of assets.files) {
