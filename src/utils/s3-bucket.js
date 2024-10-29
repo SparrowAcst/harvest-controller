@@ -41,7 +41,7 @@ const { Upload } = require("@aws-sdk/lib-storage")
 
 // TODO transfer into settings
 
-const settings = require("../../../sync-data/.config/key/s3/s3.settings.json")
+const settings = require("../../.config/ade-clinic").s3
 const bucket = settings.bucket.default
 console.log("S3 bucket:", bucket)
 
@@ -77,8 +77,9 @@ const list = async path => {
         names = nanomatch(names, path)
         return items.filter(d => names.includes(d.Key))
     } catch (e) {
-        console.error("s3-bucket.list:", e.toString(), e.stack)
-        throw e
+        // console.error("s3-bucket.list:", e.toString(), e.stack)
+        // throw e
+        return []
     }
 }
 
@@ -111,7 +112,7 @@ const metadata = async target => {
             Metadata
         }
     } catch (e) {
-        console.error("s3-bucket.metadata:", e.toString(), e.stack)
+        // console.error("s3-bucket.metadata:", e.toString(), e.stack)
         // throw e
     }
 }
