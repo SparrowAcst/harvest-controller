@@ -34,9 +34,24 @@ const getGrants = async (req, res) => {
     }
 }
 
+const getEmployes = async (req, res) => {
+    try {
+
+        let userProfiles = req.body.cache.userProfiles
+        res.send(userProfiles)
+
+    } catch (e) {
+        res.send({
+            error: e.toString(),
+            requestBody: req.body
+        })
+    }
+}
+
 
 
 module.exports = {
     getDatasetList,
     getGrants,
+    getEmployes
 }

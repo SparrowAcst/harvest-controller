@@ -357,6 +357,8 @@ module.exports = {
 
         router.post("/ade-grants/get-dataset-list/", [DBCache, adeGrants.getDatasetList])
         router.post("/ade-grants/get-grants/", [DBCache, adeGrants.getGrants])
+        router.post("/ade-grants/get-employes/", [DBCache, adeGrants.getEmployes])
+
         router.post("/ade-task-dashboard/get-active-task/", [DBCache, adeTaskDashboard.getActiveTask])
         router.post("/ade-task-dashboard/assign-task/", [DBCache, adeTaskDashboard.executeAssignTasks])
         router.post("/ade-task-dashboard/get-employee-stat/", [DBCache, adeTaskDashboard.getEmployeeStat])
