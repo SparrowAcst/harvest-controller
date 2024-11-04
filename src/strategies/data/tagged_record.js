@@ -14,8 +14,7 @@ const buildSegmentationRequest = data => {
 
     if (!data) return {}
 
-    let segmentationData = (data.segmentation) ?
-        {
+    let segmentationData = (data.segmentation) ? {
             user: data.user.altname,
             readonly: false,
             segmentation: data.segmentation
@@ -121,20 +120,22 @@ const get = async context => {
 
             result.segmentationAnalysis = segmentationAnalysis.getSegmentationAnalysis(result.segmentation)
 
-            let request = segmentationRequestCache.getRequest({ dataId: result.id })
-            
-            if (!request) {
-                request = buildSegmentationRequest(extend(result, {
-                    db,
-                    user,
-                    segmentCollection: segmentCollection || db.labelingCollection
-                }))
-                request = segmentationRequestCache.set({ dataId: result.dataId }, request)
-            }
-
-            result.segmentationRequest = request.hash
 
         }
+
+
+      let request = segmentationRequestCache.getRequest({ dataId: result.id })
+            
+        if (!request) {
+            request = buildSegmentationRequest(extend(result, {
+                db,
+                user,
+                segmentCollection: segmentCollection || db.labelingCollection
+            }))
+            request = segmentationRequestCache.set({ dataId: result.dataId }, request)
+        }
+        
+        result.segmentationRequest = request.hash
 
         return {
             dataId: recordId,
@@ -186,14 +187,14 @@ const updateRequest = async options => {
             segmentation: responseData.segmentation
         }
     })
-    
+
 }
 
 const getSegmentation = async context => {
 
     let { recordId, db, user, segmentCollection } = context
     let request = segmentationRequestCache.getRequest({ dataId: recordId })
-    if(!request) return {}
+    if (!request) return {}
 
     let segmentation = request.responseData.segmentation || request.requestData.data[0].segmentation
     let analysis
