@@ -59,7 +59,14 @@ module.exports = {
 
                     let currentDataset = find(CACHE.datasets, d => d.name == currentDatasetName)
 
+                    console.log("currentDataset", currentDatasetName, currentDataset)
+
                     currentDataset = (currentDataset && currentDataset.settings) ? currentDataset.settings : undefined
+                    
+                    if(!currentDataset){
+                       currentDataset = find(CACHE.datasets, d => d.name == "ADE-TEST")
+                    }
+                    
                     currentDataset.name = currentDatasetName
                     return currentDataset
                 }
@@ -393,9 +400,13 @@ module.exports = {
 
         const segmentationRequest = require("./src/segmentation-request")
 
+        await segmentationRequest.restoreCache()
+
         router.post("/segmentation/open-request/", [DBCache, segmentationRequest.openRequest])
         router.get("/segmentation/:requestId/close/", segmentationRequest.closeRequest)
-        router.post("/segmentation/:requestId/close/", segmentationRequest.closeRequest)
+        router.post("/segmentation/:requestId/close/", segmentationRequest.closeRequestStub)
+        router.post("/segmentation/close-labeling/:requestId/:user/", segmentationRequest.closeRequest)
+        router.get("/segmentation/close-labeling/:requestId/:user/", segmentationRequest.closeRequest)
 
         router.get("/segmentation/", segmentationRequest.getSegmentationData)
         router.get("/segmentation/:requestId", segmentationRequest.getSegmentationData)
@@ -417,6 +428,12 @@ module.exports = {
 
         router.get("/ade-admin/schedule/settings", adeAdmin.getStrategiesSettings)
         router.post("/ade-admin/schedule/settings", adeAdmin.setStrategiesSettings)
+
+        router.get("/ade-admin/seg-cache/store/", segmentationRequest.storeCache)
+        router.get("/ade-admin/seg-cache/stats/", segmentationRequest.getCacheStats)
+        router.get("/ade-admin/seg-cache/keys/", segmentationRequest.getCacheKeys)
+        
+        
 
         return router
     }

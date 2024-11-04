@@ -1,63 +1,28 @@
 const {extend} = require("lodash")
 const LongTerm = require("../utils/long-term-queue")
 const mongodb = require("../mongodb")
-const requestStrategies = require("../strategies/segmentation-request")
+const uuid = require("uuid").v4
+const STRATEGY = require("../strategies/data")
+const segmentationRequestCache = require("../utils/segmentation-request-cache")
 
 
 
 const closeSegmentationRequestOperation = async settings => {
 
-    console.log(`LONG-TERM: closeSegmentationRequest: started`)
-
-    let { requestId, configDB } = settings
+    let { requestId, user, configDB } = settings
     
-    let request = await mongodb.aggregate({
-        db: configDB,
-        collection: `settings.segmentation-requests`,
-        pipeline: [{
-                $match: {
-                    id: requestId
-                }
-            },
-            {
-                $project: { _id: 0 }
-            }
-        ]
-    })
+    if(!user) return
 
-    if(request.length == 0) return
+    let request = segmentationRequestCache.get(requestId)
 
-    request = request[0]
-    request.strategy = request.strategy || "test"
+    if(!request) return
     
-    settings.request = request
-
-
-    let { db } = request
-
-    // await mongodb.deleteOne({
-    //     db: configDB,
-    //     collection: `${configDB.name}.segmentation-requests`,
-    //     filter: {
-    //         id: requestId
-    //     }
-    // })
-
-    await mongodb.updateOne({
-            db: configDB,
-            collection: `settings.segmentation-requests`,
-            filter:{
-                id: requestId
-            },
-            data:{
-                closed: true,
-                closedAt: new Date()
-            }
-        })
-
+    if(request.user != user) return
     
-    let handler = (requestStrategies[request.strategy]) 
-    	? requestStrategies[request.strategy].closeRequest 
+    segmentationRequestCache.del(requestId)
+
+    let handler = (STRATEGY[request.strategy]) 
+    	? STRATEGY[request.strategy].closeRequest 
     	: undefined
     
     
@@ -65,16 +30,22 @@ const closeSegmentationRequestOperation = async settings => {
     	handler(settings)	
     }
 
-    console.log(`LONG-TERM: closeSegmentationRequest: done`)
-
 }
 
 
 const closeSegmentationRequest = (settings = {}) => {
-    console.log("CALL closeSegmentationRequest")
+    
+    const metadata = {
+            id: uuid(),
+            type: 'closeSegmentationRequest',
+            requestId: settings.requestId,
+            user: settings.user
+        }    
+
     LongTerm.execute( async () => {
-        await closeSegmentationRequestOperation(settings)     
-    })
+        await closeSegmentationRequestOperation(settings)
+        return metadata     
+    }, metadata)
 }
 
 

@@ -1,11 +1,11 @@
-const {extend, sortBy, uniq, flattenDeep, find, last, findIndex} = require("lodash")
+const {extend, sortBy, uniq, flattenDeep, find, last} = require("lodash")
 const moment = require("moment")
 const uuid = require("uuid").v4
 const path = require("path")
 const { loadYaml } = require("./utils/file-system")
 
 const mongodb = require("./mongodb")
-const STRATEGY = require("./strategies/data")
+const requestStrategy = require("./strategies/segmentation-request")
 
 const config = loadYaml(path.join(__dirname, "../../sync-data/.config/db/mongodb.conf.yml"))
 
@@ -13,7 +13,6 @@ const globalDB= {
     url: config.db.url,
     name: config.db.name
 }
-const CACHE = require("./utils/segmentation-request-cache")
 
 
 const { closeSegmentationRequest } = require("./long-term/close-segmentation-request")
@@ -24,35 +23,20 @@ const { updateSegmentationRequest } = require("./long-term/update-segmentation-r
 const openRequest =  async (req, res) => {
 	try {
 
-		let { strategy, user, version } = req.body.options 
-		const { currentDataset } = req.body.cache
-		strategy = strategy || "test"
-
-
-		let existedRequest = CACHE.get({dataId: version.dataId})
-		
-		if(existedRequest){
-			
-			res.status(200).send({
-					id: existedRequest.id,
-					hash: existedRequest.hash,
-					user: existedRequest.user,
-					updatedAt: existedRequest.updatedAt
-				})
-
-			return
-		
-		}
-
 		let options = req.body.options
-		      options = extend({}, options, req.body.cache.currentDataset)
-		      options.strategy = options.strategy || "test"
-		      options.configDB = globalDB
+        options = extend({}, options, req.body.cache.currentDataset)
+        options.strategy = options.strategy || "test"
+        options.configDB = globalDB
 
-        if( STRATEGY[options.strategy] && STRATEGY[options.strategy].openRequest){
+        if( requestStrategy[options.strategy] && requestStrategy[options.strategy].openRequest ){
         	let request 
-        	request = await STRATEGY[options.strategy].openRequest(options)
-        	res.status(200).send(request)
+        	request = await requestStrategy[options.strategy].openRequest(options)
+        	res.status(200).send({
+				id: request.id,
+				user: request.user,
+				opened: request.opened,
+				updatedAt: request.updatedAt
+			})
 		} else {
 			throw new Error(`No openRequest for ${options.strategy}`)
 		}
@@ -71,11 +55,9 @@ const openRequest =  async (req, res) => {
 const closeRequest =  async (req, res) => {
 
 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
-		let user = req.query.user || req.params.user || (req.body && req.body.user)
 		
 		let options = {
 			requestId,
-			user,
 			configDB: globalDB
 		}	
 		
@@ -89,19 +71,31 @@ const closeRequest =  async (req, res) => {
 
 }	
 
-const closeRequestStub =  (req, res) => {
-	res.send(200)
-}
 
 const getSegmentationData =  async (req, res) => {
 	try {
-		
 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
-		
-		let result = CACHE.get(requestId)
+		let result = await mongodb.aggregate({
+			db: globalDB,
+			collection: `settings.segmentation-requests`,
+			pipeline:[
+				{
+					$match: {
+						id: requestId
+					}
+				},
+				{
+					$project: {
+						_id: 0
+					}
+				}
+			]
+		})
 
-		if(result){
-			res.status(200).send(result.requestData)
+		// console.log(`${globalDB.name}.segmentation-requests`, result)
+
+		if(result.length > 0){
+			res.status(200).send(result[0].requestData)
 		} else {
 			res.status(404).send(`Request ${requestId} not found`)
 		}
@@ -117,17 +111,30 @@ const getSegmentationData =  async (req, res) => {
 	
 	}
 }
-
 
 const getSegmentationDataRaw =  async (req, res) => {
 	try {
-		
 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
-		
-		let result = CACHE.get(requestId)
+		let result = await mongodb.aggregate({
+			db: globalDB,
+			collection: `settings.segmentation-requests`,
+			pipeline:[
+				{
+					$match: {
+						id: requestId
+					}
+				},
+				{
+					$project: {
+						_id: 0
+					}
+				}
+			]
+		})
 
-		if(result){
-			res.status(200).send(result)
+		if(result.length > 0){
+			delete result[0].db
+			res.status(200).send(result[0])
 		} else {
 			res.status(404).send(`Request ${requestId} not found`)
 		}
@@ -143,6 +150,7 @@ const getSegmentationDataRaw =  async (req, res) => {
 	
 	}
 }
+
 
 
 const updateSegmentationData =  async (req, res) => {
@@ -166,89 +174,47 @@ const updateSegmentationData =  async (req, res) => {
 }	
 
 
-const storeCache = async (req, res) => {
-	
-	let commands = [{ 
-		deleteOne : {
-      		"filter" : {}   
-     }}] 
-	
-	commands = commands.concat(
-		CACHE
-			.keys()
-			.map( key => CACHE.get(key) )
-			.map(d => ({
-				replaceOne:{
-					filter: {"hash": d.hash},
-					replacement: d,
-					upsert: true
-				}	
-			}))
-	)
-	
-	await mongodb.bulkWrite({
-		db: globalDB,
-		collection: "settings.segmentation_request_cache",
-		commands
-	})				
 
-	res.send({
-		message: `Segmentation request cache: store ${commands.length-1} items into settings.segmentation_request_cache` 
-	})
-
-} 
-
-
-const getCacheStats = (req, res) => {
-	res.send(CACHE.getStats())
-}
-
-
-const getCacheKeys = (req, res) => {
-	let result = CACHE.keys().map(key => {
-		let data = CACHE.get(key)
-		return {
-			hash: data.hash,
-			user: data.user,
-			updatedAt: data.updatedAt
-		}
-	}) 
-
-	res.send(result)
-}
-
-const restoreCache = async () => {
-	
+// const updateSegmentationData =  async (req, res) => {
+// 	try {
 		
-	let data = await mongodb.aggregate({
-		db: globalDB,
-		collection: "settings.segmentation_request_cache",
-		pipeline: [{
-			$project:{
-				_id: 0
-			}
-		}]
-	})
+// 		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
+// 		let data = req.body
+		
+// 		await mongodb.updateOne({
+// 			db: globalDB,
+// 			collection: `settings.segmentation-requests`,
+// 			filter:{
+// 				id: requestId
+// 			},
+// 			data:{
+// 				responseData: data,
+// 				updatedAt: new Date()
+// 			}
+// 		})
 
-	data.forEach( d => {
-		CACHE.set(d.hash, d)
-	})				
-
-	console.log(`Segmentation request cache: restore ${data.length} items from settings.segmentation_request_cache` )
-	console.log(CACHE.getStats())
+// 		res.status(200).send()
 	
-} 
+// 	} catch (e) {
+	
+// 		delete req.body.cache
+		
+// 		res.status(503).send({ 
+// 			error: `${e.toString()}\n${e.stack}`,
+// 			requestBody: req.body
+// 		})
+	
+// 	}
+// }
+
+
+
 
 	
 module.exports = {
 	openRequest,
 	closeRequest,
-	closeRequestStub,
 	getSegmentationData,
 	getSegmentationDataRaw,
-	updateSegmentationData,
-	restoreCache,
-	storeCache,
-	getCacheStats,
-	getCacheKeys
+	updateSegmentationData
 }

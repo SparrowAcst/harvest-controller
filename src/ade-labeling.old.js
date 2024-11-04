@@ -20,17 +20,19 @@ const getRecordData = async (req, res) => {
             req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
         )
 
+        console.log("options", options)
+        
         options.eventHub = req.eventHub
 
         let { user, recordId } = options
 
-        // await LongTerm.endLongTermOperation({
-        //     section: "update-segmentation-request",
-        //     test: task =>   {
-        //         return task.metadata.user == ((user.altname) ? user.altname : user) &&
-        //                     task.metadata.dataId == recordId
-        //     }                
-        // })
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   {
+                return task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+            }                
+        })
 
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].get : dataStrategy.Default.get
@@ -67,11 +69,11 @@ const saveRecordData = async (req, res) => {
 
         let { user, recordId } = options
         
-        // await LongTerm.endLongTermOperation({
-        //     section: "update-segmentation-request",
-        //     test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
-        //                     task.metadata.dataId == recordId
-        // })
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
 
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].save : undefined
@@ -112,11 +114,11 @@ const rejectRecordData = async (req, res) => {
 
         let { user, recordId } = options
         
-        // await LongTerm.endLongTermOperation({
-        //     section: "update-segmentation-request",
-        //     test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
-        //                     task.metadata.dataId == recordId
-        // })
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
 
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].reject : undefined
@@ -163,11 +165,11 @@ const submitRecordData = async (req, res) => {
 
         let { user, recordId } = options
         
-        // await LongTerm.endLongTermOperation({
-        //     section: "update-segmentation-request",
-        //     test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
-        //                     task.metadata.dataId == recordId
-        // })
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
 
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].submit : undefined
@@ -206,11 +208,11 @@ const rollbackRecordData = async (req, res) => {
 
         let { user, recordId } = options
         
-        // await LongTerm.endLongTermOperation({
-        //     section: "update-segmentation-request",
-        //     test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
-        //                     task.metadata.dataId == recordId
-        // })
+        await LongTerm.endLongTermOperation({
+            section: "update-segmentation-request",
+            test: task =>   task.metadata.user == ((user.altname) ? user.altname : user) &&
+                            task.metadata.dataId == recordId
+        })
 
 
         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].rollback : undefined

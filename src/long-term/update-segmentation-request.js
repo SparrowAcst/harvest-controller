@@ -1,8 +1,10 @@
 const { extend } = require("lodash")
 const LongTerm = require("../utils/long-term-queue")
 const mongodb = require("../mongodb")
-const requestStrategies = require("../strategies/segmentation-request")
+const uuid = require("uuid").v4
+const STRATEGY = require("../strategies/data")
 const jsondiffpatch = require("jsondiffpatch")
+const segmentationRequestCache = require("../utils/segmentation-request-cache")
 
 const checker = jsondiffpatch.create({
     objectHash: (d, index) => {
@@ -12,65 +14,32 @@ const checker = jsondiffpatch.create({
 
 const updateSegmentationRequestOperation = async settings => {
     try {
-        console.log(`LONG-TERM: updateSegmentationRequest: started`)
-
+        
         let { requestId, configDB, data } = settings
 
-
-        let request = await mongodb.aggregate({
-            db: configDB,
-            collection: `settings.segmentation-requests`,
-            pipeline: [{
-                    $match: {
-                        id: requestId
-                    }
-                },
-                {
-                    $project: { _id: 0 }
-                }
-            ]
-        })
-
-
-        if (request.length == 0) return
-
-        request = request[0]
+        let request = segmentationRequestCache.get(requestId)
 
         request.responseData = request.responseData || { segmentation: null }
 
         if (!checker.diff(request.responseData.segmentation, data.segmentation)) {
-            console.log(`LONG-TERM: updateSegmentationRequest: no changes`)
             return
         }
 
-
-        LongTerm.pool.startTask("update-segmentation-request", requestId, {
-            user: request.user,
-            dataId: request.dataId
-        })
-
+        // LongTerm.pool.startTask("update-segmentation-request", requestId, {
+        //     user: request.user,
+        //     dataId: request.dataId
+        // })
 
         request.responseData = data
         request.updatedAt = new Date()
-
-        let { db } = request
-
-        await mongodb.replaceOne({
-            db: configDB,
-            collection: `settings.segmentation-requests`,
-            filter: {
-                id: requestId
-            },
-            data: request
-        })
-
+        
+        segmentationRequestCache.set(requestId, request)
 
         request.strategy = request.strategy || "test"
-
         settings.request = request
 
-        let handler = (requestStrategies[request.strategy]) ?
-            requestStrategies[request.strategy].updateRequest :
+        let handler = (STRATEGY[request.strategy]) ?
+            STRATEGY[request.strategy].updateRequest :
             undefined
 
 
@@ -78,12 +47,7 @@ const updateSegmentationRequestOperation = async settings => {
             await handler(settings)
         }
 
-        LongTerm.pool.stopTask("update-segmentation-request", requestId)
-
-
-        console.log(`LONG-TERM: updateSegmentationRequest: done`)
     } catch (e) {
-        console.log(`LONG-TERM: updateSegmentationRequest:`)
         console.log(e.toString(), e.stack)
 
     }
@@ -91,10 +55,20 @@ const updateSegmentationRequestOperation = async settings => {
 
 
 const updateSegmentationRequest = (settings = {}) => {
-    console.log("CALL updateSegmentationRequest")
+    const id = uuid()
+    const metadata = {
+            id,
+            type: 'updateSegmentationRequest',
+            requestId: settings.requestId
+        }    
     LongTerm.execute(async () => {
+        try {
         await updateSegmentationRequestOperation(settings)
-    })
+        return metadata
+        } catch (e) {
+           throw e 
+        }
+    }, metadata)
 }
 
 

@@ -89,7 +89,7 @@ const getEvents = async (req, res) => {
 	        pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
 	    })
 
-	    options.pipeline = options.excludeFilter
+	    options.pipeline = (options.excludeFilter || [])
 						.concat(options.valueFilter)
 						.concat(options.eventData.filter)
 						.concat([
@@ -199,7 +199,7 @@ const getStat = async (req, res) => {
 		const stat = await mongodb.aggregate({
 			db,
 			collection: `${db.name}.${db.labelingCollection}`,
-			pipeline: options.excludeFilter
+			pipeline: (options.excludeFilter || [])
 						.concat(options.valueFilter)
 						.concat(options.eventData.filter)
 						.concat(

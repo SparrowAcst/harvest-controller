@@ -26,9 +26,15 @@ const initiate = () => {
         console.log(`LONG TERM QUEUE stoped at ${new Date()}`)
     })
 
-    queue.on("resolve", data => {})
+    queue.on("resolve", data => {
+        console.log("LONG TERM QUEUE RESOLVE", data)
+        console.log(`LONG TERM QUEUE size: ${queue.size}`)
+    })
 
-    queue.on("reject", error => {})
+    queue.on("reject", error => {
+        console.log("LONG TERM QUEUE ---REJECT---", error)
+        console.log(`LONG TERM QUEUE size: ${queue.size}`)
+    })
 
     queue.start()
 }
@@ -149,10 +155,12 @@ const endLongTermOperation = (options = {}) => new Promise((resolve, reject) => 
 
 module.exports = {
 
-    execute: task => {
+    execute: (task, metadata) => {
         try {
             if (!queue) initiate()
             queue.enqueue(task)
+            console.log("LONG TERM QUEUE enqueue:", metadata)
+            console.log(`LONG TERM QUEUE size: ${queue.size}`)
         } catch (e) {
             console.log(e.toString(), e.stack)
         }
