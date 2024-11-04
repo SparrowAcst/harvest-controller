@@ -211,50 +211,114 @@ const getSegmentation = async context => {
 }
 
 
-const save = async context => {
+// const save = async context => {
 
+//     try {
+
+//         let { db, record, user, session, dataset, tags } = context
+
+//         record.tags = record.tags.map(t => {
+//             t.createdAt = new Date(t.createdAt)
+//             return t
+//         })
+
+//         tags = (tags || []).map(t => ({
+//             tag: t,
+//             createdAt: new Date(),
+//             createdBy: {
+//                 email: user.email,
+//                 namedAs: user.altname,
+//                 photo: user.photo
+//             }
+//         }))
+
+//         record.tags = record.tags.concat(tags)
+
+
+//         const prev = await mongodb.aggregate({
+//             db,
+//             collection: `${db.name}.${db.labelingCollection}`,
+//             pipeline: [{
+//                     $match: { id: record.id }
+//                 },
+//                 {
+//                     $project: { _id: 0 }
+//                 }
+
+//             ]
+//         })
+
+//         record.segmentation = prev[0].segmentation
+//         record["updated at"] = new Date()
+
+//         const result = await mongodb.replaceOne({
+//             db,
+//             collection: `${db.name}.${db.labelingCollection}`,
+//             filter: {
+//                 id: record.id
+//             },
+//             data: record
+//         })
+
+//         const event = {
+//             id: uuid(),
+//             dataset: dataset,
+//             collection: db.labelingCollection,
+//             recordingId: record.id,
+//             examinationId: record["Examination ID"],
+//             path: record.path,
+//             diff: Diff.diff(prev, record),
+//             formattedDiff: Diff.format(Diff.diff(prev[0], record)),
+//             user: user,
+//             session: session.id,
+//             startedAt: session.startedAt,
+//             stoppedAt: session.stoppedAt
+//         }
+
+//         await mongodb.replaceOne({
+//             db,
+//             collection: `${db.name}.changelog-recordings`,
+//             filter: {
+//                 // id: event.id
+//                 session: event.session
+//             },
+
+//             data: event
+//         })
+
+//         return result
+
+//     } catch (e) {
+//         return `${e.toString()} ${e.stack}`
+//     }
+
+// }
+
+const save = async context => {
     try {
 
-        let { db, record, user, session, dataset, tags } = context
-
-        record.tags = record.tags.map(t => {
-            t.createdAt = new Date(t.createdAt)
-            return t
-        })
-
-        tags = (tags || []).map(t => ({
-            tag: t,
-            createdAt: new Date(),
-            createdBy: {
-                email: user.email,
-                namedAs: user.altname,
-                photo: user.photo
-            }
-        }))
-
-        record.tags = record.tags.concat(tags)
-
-
+        let { db, record, user, session, dataset } = context
+        
         const prev = await mongodb.aggregate({
             db,
             collection: `${db.name}.${db.labelingCollection}`,
-            pipeline: [{
+            pipeline: [   
+                {
                     $match: { id: record.id }
                 },
                 {
-                    $project: { _id: 0 }
+                    $project:{ _id: 0 }
                 }
-
+                        
             ]
         })
 
         record.segmentation = prev[0].segmentation
-        record["updated at"] = new Date()
 
         const result = await mongodb.replaceOne({
             db,
             collection: `${db.name}.${db.labelingCollection}`,
-            filter: {
+            filter:{
                 id: record.id
             },
             data: record
@@ -263,7 +327,7 @@ const save = async context => {
         const event = {
             id: uuid(),
             dataset: dataset,
-            collection: db.labelingCollection,
+            collection: db.labelingCollection, 
             recordingId: record.id,
             examinationId: record["Examination ID"],
             path: record.path,
@@ -278,20 +342,20 @@ const save = async context => {
         await mongodb.replaceOne({
             db,
             collection: `${db.name}.changelog-recordings`,
-            filter: {
-                // id: event.id
+            filter:{
                 session: event.session
             },
-
+            
             data: event
         })
 
         return result
 
     } catch (e) {
-        return `${e.toString()} ${e.stack}`
+        return { 
+            error: `linear_workflow data strategy error: ${e.toString()} ${e.stack}`
+        }
     }
-
 }
 
 const submit = async context => {
