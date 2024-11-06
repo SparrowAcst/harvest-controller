@@ -59,7 +59,7 @@ module.exports = {
 
                     let currentDataset = find(CACHE.datasets, d => d.name == currentDatasetName)
 
-                    console.log("currentDataset", currentDatasetName, currentDataset)
+                    // console.log("currentDataset", currentDatasetName, currentDataset)
 
                     currentDataset = (currentDataset && currentDataset.settings) ? currentDataset.settings : undefined
                     
@@ -413,6 +413,11 @@ module.exports = {
         router.get("/segmentation/", segmentationRequest.getSegmentationData)
         router.get("/segmentation/:requestId", segmentationRequest.getSegmentationData)
 
+        router.get("/segmentation/test/", segmentationRequest.getSegmentationDataDirect)
+        router.get("/segmentation/test/:requestId", segmentationRequest.getSegmentationDataDirect)
+
+
+
         router.get("/segmentation/:requestId/raw", segmentationRequest.getSegmentationDataRaw)
 
         router.post("/segmentation/", segmentationRequest.updateSegmentationData)
@@ -434,6 +439,8 @@ module.exports = {
         router.get("/ade-admin/seg-cache/store/", segmentationRequest.storeCache)
         router.get("/ade-admin/seg-cache/stats/", segmentationRequest.getCacheStats)
         router.get("/ade-admin/seg-cache/keys/", segmentationRequest.getCacheKeys)
+        router.get("/ade-admin/seg-cache/keys/:user", segmentationRequest.getCacheKeys)
+        router.get("/ade-admin/seg-cache/keys/remove/:key", segmentationRequest.removeCacheKey)
         
         
 

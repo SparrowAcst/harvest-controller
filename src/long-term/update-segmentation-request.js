@@ -19,6 +19,8 @@ const updateSegmentationRequestOperation = async settings => {
 
         let request = segmentationRequestCache.get(requestId)
 
+        if(!request) return
+            
         request.responseData = request.responseData || { segmentation: null }
 
         if (!checker.diff(request.responseData.segmentation, data.segmentation)) {

@@ -3,7 +3,7 @@ const nodeCache = require("node-cache")
 const md5 = require("js-md5")
 const { isObject } = require("lodash")
 
-const CACHE = new nodeCache()
+const CACHE = new nodeCache({stdTTL: 2*60*60, checkperiod: 5*60 }) // Time to Life = 2*60*60 = 2 hours, Check Period: 5*60 = 5 min
 
 const hash = data => (isObject(data)) ? md5(JSON.stringify([
     data.dataId,

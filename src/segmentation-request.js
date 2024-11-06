@@ -144,6 +144,33 @@ const getSegmentationDataRaw =  async (req, res) => {
 	}
 }
 
+const RESPONSES = require("./segmentation-request-test")
+
+const getSegmentationDataDirect =  async (req, res) => {
+	try {
+		let requestId = req.query.requestId || req.params.requestId || (req.body && req.body.requestId)
+
+		let result = RESPONSES[requestId]
+
+		if(result){
+			res.status(200).send(result)
+		} else {
+			res.status(404).send(`Request ${requestId} not found`)
+		}
+		
+	} catch (e) {
+	
+		delete req.body.cache
+	
+		res.status(503).send({ 
+			error: `${e.toString()}\n${e.stack}`,
+			requestBody: req.body
+		})
+	
+	}
+}
+
+
 
 const updateSegmentationData =  async (req, res) => {
 
@@ -205,6 +232,9 @@ const getCacheStats = (req, res) => {
 
 
 const getCacheKeys = (req, res) => {
+	
+	let user = req.params.user
+
 	let result = CACHE.keys().map(key => {
 		let data = CACHE.get(key)
 		return {
@@ -213,9 +243,32 @@ const getCacheKeys = (req, res) => {
 			updatedAt: data.updatedAt
 		}
 	}) 
+	
+	if( user ){
+		let re = new RegExp(user)
+		result = result.filter(d => re.test(d.user))
+	}
+	
+	res.send({
+		total: result.length,
+		requests: result
+	})
 
-	res.send(result)
 }
+
+const removeCacheKey = (req, res) => {
+	
+	let key = req.params.key
+	try {
+		CACHE.del(key)
+		res.send("ok")
+	} catch (e) {
+		res.status(503).send(`${e.toString()} ${e.stack}`)
+	}
+
+}
+
+
 
 const restoreCache = async () => {
 	
@@ -250,5 +303,8 @@ module.exports = {
 	restoreCache,
 	storeCache,
 	getCacheStats,
-	getCacheKeys
+	getCacheKeys,
+	removeCacheKey,
+
+	getSegmentationDataDirect
 }
