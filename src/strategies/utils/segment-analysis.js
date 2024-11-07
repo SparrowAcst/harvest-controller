@@ -17,7 +17,8 @@ const {
     extend,
     groupBy,
     uniqBy,
-    chunk
+    chunk,
+    remove
 
 } = require("lodash")
 
@@ -97,19 +98,20 @@ const parseV1 = segmentation => {
 const parseV2 = segmentation => {
 
     let segments = []
-    keys(segmentation).forEach(key => {
 
-        if (key == "v2" || !isArray(segmentation[key])) return
-
-        segments = segments.concat(segmentation[key].map(s => ({
-            type: key,
-            start: Number.parseFloat(s[0]),
-            end: Number.parseFloat(s[1]),
-            lf: Number.parseFloat(s[2]),
-            hf: Number.parseFloat(s[3]),
-        })))
-    })
-
+    keys(segmentation)
+        .filter( key => isArray(segmentation[key]))
+        .forEach(key => {
+            // console.log(key, segmentation[key].length)
+            segments = segments.concat(segmentation[key].map(s => ({
+                type: key,
+                start: Number.parseFloat(s[0]),
+                end: Number.parseFloat(s[1]),
+                lf: Number.parseFloat(s[2]),
+                hf: Number.parseFloat(s[3]),
+            })))
+        })
+    
     return segments
 
 }
@@ -608,6 +610,7 @@ const getMultiSegmentationChart = (segmentations, nonConsistencyIntervals) => {
 const select = (sa, ...types) => {
 
     let segments = sa.segmentation.segments
+    // console.log(segments)
     let selector = (types && isArray(types) && types.length > 0) ? (s => types.includes(s.type)) : (s => s)
     segments = sortBy(segments, s => s.start).filter(selector)
     return segments
@@ -786,6 +789,9 @@ const getSystoleDiastole = sa => {
     }
     
     if( select(sa,"S1").length > 0 && select(sa,"S2").length > 0){
+        // console.log("sa", sa)
+        
+        remove(sa.segmentation.segments, s => ["systole", "diastole"].includes(s.type))
 
         const sysPattern = ["S1", "S2"]
         const diaPattern = ["S2", "S1"]
@@ -804,9 +810,15 @@ const getSystoleDiastole = sa => {
             end: d[1].start
         }))
 
-        sa.segmentation.segments = sa.segmentation.segments.concat(sysSegments).concat(diaSegments)
+        if(sysSegments.length > 0 && diaSegments.length > 0){
+            sa.segmentation.segments = sa.segmentation.segments.concat(sysSegments).concat(diaSegments)
+            return getSystoleDiastole(sa)
 
-        return getSystoleDiastole(sa)
+        } else {
+            sa.systole = []
+            sa.diastole = []
+            return sa            
+        }
 
     } else {
 

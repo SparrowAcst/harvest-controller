@@ -117,7 +117,7 @@ const get = async context => {
 
         result.segmentation = await resolveSegmentation(options)
 
-        console.log("SEGMENTATION", result.segmentation)
+        // console.log("SEGMENTATION", result.segmentation)
 
         if (result.segmentation) {
 
