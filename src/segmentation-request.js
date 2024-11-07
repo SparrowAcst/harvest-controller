@@ -250,6 +250,7 @@ const getCacheKeys = (req, res) => {
 	}
 	
 	res.send({
+		dateTime: new Date(),
 		total: result.length,
 		requests: result
 	})
