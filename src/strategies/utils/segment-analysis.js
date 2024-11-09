@@ -1065,9 +1065,12 @@ const getSystoleDiastoleScatterPlot = sa => {
     miny = miny - 0.1 * (maxy - miny)
     maxy = maxy + 0.25 * (maxy - miny)
 
+    
+    let max_ = (maxy < 0.75) ? 0.75 : maxy
+    max_ = max_ + 0.10 * max_
 
     let min_ = Number.parseFloat(min([minx, miny]).toFixed(4))
-    let max_ = Number.parseFloat(max([maxx, maxy]).toFixed(4))
+    max_ = Number.parseFloat(max_.toFixed(4))
 
     min_ = 0
 
@@ -1337,10 +1340,11 @@ const getPoincareChart = sa => {
 
     let min_ = min(data)
     let max_ = max(data)
+    max_ = (max_< 1.400) ? 1.400 : max_
 
     min_ = min_ - 0.5 * (max_ - min_)
-    max_ = Number.parseFloat((max_ + 0.5 * (max_ - min_)).toFixed(4))
-
+    
+    max_ = Number.parseFloat((max_ + 0.10 * max_ ).toFixed(4))
     min_ = 0
 
     return {
