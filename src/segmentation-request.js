@@ -14,6 +14,10 @@ const globalDB= {
     name: config.db.name
 }
 const CACHE = require("./utils/segmentation-request-cache")
+const serverTerminator = require("../../config/server-terminator")
+
+
+
 
 
 const { closeSegmentationRequest } = require("./long-term/close-segmentation-request")
@@ -193,10 +197,10 @@ const updateSegmentationData =  async (req, res) => {
 }	
 
 
-const storeCache = async (req, res) => {
+const storeCache = async () => {
 	
 	let commands = [{ 
-		deleteOne : {
+		deleteMany : {
       		"filter" : {}   
      }}] 
 	
@@ -218,10 +222,8 @@ const storeCache = async (req, res) => {
 		collection: "settings.segmentation_request_cache",
 		commands
 	})				
-
-	res.send({
-		message: `Segmentation request cache: store ${commands.length-1} items into settings.segmentation_request_cache` 
-	})
+	
+	console.log( `Segmentation request cache: store ${commands.length-1} items into settings.segmentation_request_cache` )
 
 } 
 
@@ -273,7 +275,6 @@ const removeCacheKey = (req, res) => {
 
 const restoreCache = async () => {
 	
-		
 	let data = await mongodb.aggregate({
 		db: globalDB,
 		collection: "settings.segmentation_request_cache",
@@ -292,6 +293,13 @@ const restoreCache = async () => {
 	console.log(CACHE.getStats())
 	
 } 
+
+
+serverTerminator.addListener( async () => {
+	await storeCache()
+})
+
+
 
 	
 module.exports = {
