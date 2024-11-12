@@ -32,7 +32,7 @@ const init = async collections => {
         if (COLLECTIONS[cacheProperty].calculate && isFunction(COLLECTIONS[cacheProperty].calculate )){
             CACHE[cacheProperty] = COLLECTIONS[cacheProperty].calculate
             console.log(`Set calculable ${cacheProperty} as ${CACHE[cacheProperty].toString()}`)
-            res.push(`Set calculable ${cacheProperty} as ${CACHE[cacheProperty].toString()}`)
+            res.push(`Set calculable ${cacheProperty}`) // as ${CACHE[cacheProperty].toString()}`)
             continue
         }
 
@@ -64,8 +64,8 @@ const init = async collections => {
 
 const handler = async (req, res, next) => {
 
-
-    if (req.url == "/admin/cache-update/") {
+    // console.log(req.url, /\/ade-admin\/cache-update\//.test(req.url) )
+    if ( /\/ade-admin\/cache-update\//.test(req.url) ) {
         const stat = await init()
         res.status(200).send(stat)
         return
