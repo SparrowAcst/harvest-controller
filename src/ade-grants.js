@@ -7,7 +7,7 @@ const getDatasetList = async (req, res) => {
 
     try {
 
-        res.send(req.body.cache.datasets.map(d => d.name))
+        res.send(req.body.cache.datasets.filter(d => !d.lock).map(d => d.name))
 
     } catch (e) {
         res.send({

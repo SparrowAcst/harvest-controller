@@ -7,6 +7,7 @@ module.exports = {
         const md5 = require("js-md5")
 
 
+
         const DBCache = await preloadedCache.init({
 
             datasets: {
@@ -48,6 +49,16 @@ module.exports = {
                 collection: "settings.metadata"
             },
 
+            currentDatasetName: {
+                calculate: req => {
+                    return (req.body && req.body.options && (req.body.options.currentDataset || req.body.options.dataset)) ?
+                        (req.body.options.currentDataset || req.body.options.dataset) :
+                        (req.body && req.body.currentDataset || req.body.dataset) ?
+                        (req.body.currentDataset || req.body.dataset) :
+                        "ADE-TEST"
+                }
+            },
+            
             currentDataset: {
                 calculate: (req, CACHE) => {
                     
@@ -91,19 +102,20 @@ module.exports = {
 
 
         ////////////////////////////////////////////////////////////////////////////
+        const lockCurrentDataset = require("./src/lock-current-dataset")
 
         const hheNwf = require("./src/hhe-nwf")
 
         // router.post("/hhe/get-dataset-list/", hhe.getDatasetList)
         // router.post("/hhe/nwf/get-grants/", hhe.getGrants)
-        router.post("/hhe/nwf/get-tasks/", [DBCache, hheNwf.getTasks])
-        router.post("/hhe/nwf/update-tasks/", [DBCache, hheNwf.updateTasks])
-        router.post("/hhe/nwf/get-stat/", [DBCache, hheNwf.getStat])
-        router.post("/hhe/nwf/get-sync-stat/", [DBCache, hheNwf.getSyncStat])
-        router.post("/hhe/nwf/get-sync-examinations/", [DBCache, hheNwf.getSyncExaminations])
-        router.post("/hhe/nwf/get-organizations/", [DBCache, hheNwf.getOrganizations])
-        router.post("/hhe/nwf/accept-examinations/", [DBCache, hheNwf.acceptExaminations])
-        router.post("/hhe/nwf/reject-examinations/", [DBCache, hheNwf.rejectExaminations])
+        router.post("/hhe/nwf/get-tasks/", [DBCache, lockCurrentDataset,  hheNwf.getTasks])
+        router.post("/hhe/nwf/update-tasks/", [DBCache, lockCurrentDataset,  hheNwf.updateTasks])
+        router.post("/hhe/nwf/get-stat/", [DBCache, lockCurrentDataset,  hheNwf.getStat])
+        router.post("/hhe/nwf/get-sync-stat/", [DBCache, lockCurrentDataset,  hheNwf.getSyncStat])
+        router.post("/hhe/nwf/get-sync-examinations/", [DBCache, lockCurrentDataset,  hheNwf.getSyncExaminations])
+        router.post("/hhe/nwf/get-organizations/", [DBCache, lockCurrentDataset,  hheNwf.getOrganizations])
+        router.post("/hhe/nwf/accept-examinations/", [DBCache, lockCurrentDataset,  hheNwf.acceptExaminations])
+        router.post("/hhe/nwf/reject-examinations/", [DBCache, lockCurrentDataset,  hheNwf.rejectExaminations])
 
 
 
@@ -122,11 +134,11 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////
         const hhrNwf = require("./src/hhr-nwf")
 
-        router.post("/hhr/nwf/get-stat/", [DBCache, hhrNwf.getStat])
-        router.post("/hhr/nwf/get-events/", [DBCache, hhrNwf.getEvents])
-        router.post("/hhr/nwf/get-team/", [DBCache, hhrNwf.getTeam])
-        router.post("/hhr/nwf/get-forms/", [DBCache, hhrNwf.getForms])
-        router.post("/hhr/nwf/get-available-values/", [DBCache, hhrNwf.getAvailableValues])
+        router.post("/hhr/nwf/get-stat/", [DBCache, lockCurrentDataset,  hhrNwf.getStat])
+        router.post("/hhr/nwf/get-events/", [DBCache, lockCurrentDataset,  hhrNwf.getEvents])
+        router.post("/hhr/nwf/get-team/", [DBCache, lockCurrentDataset,  hhrNwf.getTeam])
+        router.post("/hhr/nwf/get-forms/", [DBCache, lockCurrentDataset,  hhrNwf.getForms])
+        router.post("/hhr/nwf/get-available-values/", [DBCache, lockCurrentDataset,  hhrNwf.getAvailableValues])
 
 
         ////////////////////////////////////////////////////////////////////////////
@@ -144,11 +156,11 @@ module.exports = {
         ////////////////////////////////////////////////////////////////////////////
         const hhsNwf = require("./src/hhs-nwf")
 
-        router.post("/hhs/nwf/get-stat/", [DBCache, hhsNwf.getStat])
-        router.post("/hhs/nwf/get-events/", [DBCache, hhsNwf.getEvents])
-        router.post("/hhs/nwf/get-team/", [DBCache, hhsNwf.getTeam])
-        router.post("/hhs/nwf/get-forms/", [DBCache, hhsNwf.getForms])
-        router.post("/hhs/nwf/get-available-values/", [DBCache, hhsNwf.getAvailableValues])
+        router.post("/hhs/nwf/get-stat/", [DBCache, lockCurrentDataset,  hhsNwf.getStat])
+        router.post("/hhs/nwf/get-events/", [DBCache, lockCurrentDataset,  hhsNwf.getEvents])
+        router.post("/hhs/nwf/get-team/", [DBCache, lockCurrentDataset,  hhsNwf.getTeam])
+        router.post("/hhs/nwf/get-forms/", [DBCache, lockCurrentDataset,  hhsNwf.getForms])
+        router.post("/hhs/nwf/get-available-values/", [DBCache, lockCurrentDataset,  hhsNwf.getAvailableValues])
 
 
 
@@ -271,7 +283,7 @@ module.exports = {
         router.post("/pr/select-exams/", pr.selectExams)
 
 
-        router.post("/pr/get-tag-list/", [DBCache, pr.getTagList])
+        router.post("/pr/get-tag-list/", [DBCache, lockCurrentDataset,  pr.getTagList])
         router.post("/pr/add-tags/", pr.addTags)
         router.post("/pr/remove-tag/", pr.removeLastTag)
 
@@ -296,12 +308,12 @@ module.exports = {
 
         const prNwf = require("./src/pr-nwf")
 
-        router.post("/pr/nwf/get-events/", [DBCache, prNwf.getRecords])
-        router.post("/pr/nwf/get-tag-list/", [DBCache, prNwf.getTagList])
-        router.post("/pr/nwf/add-tags/", [DBCache, prNwf.addTags])
-        router.post("/pr/nwf/remove-tag/", [DBCache, prNwf.removeLastTag])
-        router.get("/pr/nwf/get-field-list/", [DBCache, prNwf.getFieldList])
-        router.post("/pr/nwf/get-field-list/", [DBCache, prNwf.getFieldList])
+        router.post("/pr/nwf/get-events/", [DBCache, lockCurrentDataset,  prNwf.getRecords])
+        router.post("/pr/nwf/get-tag-list/", [DBCache, lockCurrentDataset,  prNwf.getTagList])
+        router.post("/pr/nwf/add-tags/", [DBCache, lockCurrentDataset,  prNwf.addTags])
+        router.post("/pr/nwf/remove-tag/", [DBCache, lockCurrentDataset,  prNwf.removeLastTag])
+        router.get("/pr/nwf/get-field-list/", [DBCache, lockCurrentDataset,  prNwf.getFieldList])
+        router.post("/pr/nwf/get-field-list/", [DBCache, lockCurrentDataset,  prNwf.getFieldList])
 
 
 
@@ -325,24 +337,24 @@ module.exports = {
 
         const adeDiaDashboard = require("./src/ade-diagnosis-dashboard")
 
-        router.post("/ade-diagnosis-dashboard/get-events/", [DBCache, adeDiaDashboard.getRecords])
-        router.post("/ade-diagnosis-dashboard/get-exams/", [DBCache, adeDiaDashboard.getExams])
-        router.post("/ade-diagnosis-dashboard/select-exams/", [DBCache, adeDiaDashboard.selectExams])
+        router.post("/ade-diagnosis-dashboard/get-events/", [DBCache, lockCurrentDataset,  adeDiaDashboard.getRecords])
+        router.post("/ade-diagnosis-dashboard/get-exams/", [DBCache, lockCurrentDataset,  adeDiaDashboard.getExams])
+        router.post("/ade-diagnosis-dashboard/select-exams/", [DBCache, lockCurrentDataset,  adeDiaDashboard.selectExams])
 
 
-        router.post("/ade-diagnosis-dashboard/get-tag-list/", [DBCache, adeDiaDashboard.getTagList])
-        router.post("/ade-diagnosis-dashboard/add-tags/", [DBCache, adeDiaDashboard.addTags])
-        router.post("/ade-diagnosis-dashboard/remove-tag/", [DBCache, adeDiaDashboard.removeLastTag])
+        router.post("/ade-diagnosis-dashboard/get-tag-list/", [DBCache, lockCurrentDataset,  adeDiaDashboard.getTagList])
+        router.post("/ade-diagnosis-dashboard/add-tags/", [DBCache, lockCurrentDataset,  adeDiaDashboard.addTags])
+        router.post("/ade-diagnosis-dashboard/remove-tag/", [DBCache, lockCurrentDataset,  adeDiaDashboard.removeLastTag])
 
-        router.post("/ade-diagnosis-dashboard/update-diagnosis/", [DBCache, adeDiaDashboard.updateDiagnosis])
+        router.post("/ade-diagnosis-dashboard/update-diagnosis/", [DBCache, lockCurrentDataset,  adeDiaDashboard.updateDiagnosis])
 
-        router.post("/ade-diagnosis-dashboard/save-consistency/", [DBCache, adeDiaDashboard.setConsistency])
+        router.post("/ade-diagnosis-dashboard/save-consistency/", [DBCache, lockCurrentDataset,  adeDiaDashboard.setConsistency])
 
-        router.post("/ade-diagnosis-dashboard/add-tags-dia/", [DBCache, adeDiaDashboard.addTagsDia])
-        router.post("/ade-diagnosis-dashboard/remove-tag-dia/", [DBCache, adeDiaDashboard.removeLastTagDia])
+        router.post("/ade-diagnosis-dashboard/add-tags-dia/", [DBCache, lockCurrentDataset,  adeDiaDashboard.addTagsDia])
+        router.post("/ade-diagnosis-dashboard/remove-tag-dia/", [DBCache, lockCurrentDataset,  adeDiaDashboard.removeLastTagDia])
 
 
-        // router.post("/ade-diagnosis-dashboard/update-diagnosis/", [DBCache, adeDiaDashboard.updateDiagnosisTags])
+        // router.post("/ade-diagnosis-dashboard/update-diagnosis/", [DBCache, lockCurrentDataset,  adeDiaDashboard.updateDiagnosisTags])
 
 
 
@@ -355,45 +367,45 @@ module.exports = {
         const adeLabeling = require("./src/ade-labeling")
         const adePatientView = require("./src/ade-patient-view")
 
-        router.post("/ade-grants/get-dataset-list/", [DBCache, adeGrants.getDatasetList])
-        router.post("/ade-grants/get-grants/", [DBCache, adeGrants.getGrants])
-        router.post("/ade-grants/get-employes/", [DBCache, adeGrants.getEmployes])
+        router.post("/ade-grants/get-dataset-list/", [DBCache, lockCurrentDataset,  adeGrants.getDatasetList])
+        router.post("/ade-grants/get-grants/", [DBCache, lockCurrentDataset,  adeGrants.getGrants])
+        router.post("/ade-grants/get-employes/", [DBCache, lockCurrentDataset,  adeGrants.getEmployes])
 
-        router.post("/ade-task-dashboard/get-active-task/", [DBCache, adeTaskDashboard.getActiveTask])
-        router.post("/ade-task-dashboard/assign-task/", [DBCache, adeTaskDashboard.executeAssignTasks])
-        router.post("/ade-task-dashboard/get-employee-stat/", [DBCache, adeTaskDashboard.getEmployeeStat])
-        router.post("/ade-task-dashboard/force-update/", [DBCache, adeTaskDashboard.forceUpdateCache])
-        router.post("/ade-task-dashboard/get-longterm/", [DBCache, adeTaskDashboard.getLongTermTask])
+        router.post("/ade-task-dashboard/get-active-task/", [DBCache, lockCurrentDataset,  adeTaskDashboard.getActiveTask])
+        router.post("/ade-task-dashboard/assign-task/", [DBCache, lockCurrentDataset,  adeTaskDashboard.executeAssignTasks])
+        router.post("/ade-task-dashboard/get-employee-stat/", [DBCache, lockCurrentDataset,  adeTaskDashboard.getEmployeeStat])
+        router.post("/ade-task-dashboard/force-update/", [DBCache, lockCurrentDataset,  adeTaskDashboard.forceUpdateCache])
+        router.post("/ade-task-dashboard/get-longterm/", [DBCache, lockCurrentDataset,  adeTaskDashboard.getLongTermTask])
 
-        router.post("/ade-labeling/get-record/", [DBCache, adeLabeling.getRecordData])
-        router.post("/ade-labeling/save-record/", [DBCache, adeLabeling.saveRecordData])
-        router.post("/ade-labeling/reject-record/", [DBCache, adeLabeling.rejectRecordData])
-        router.post("/ade-labeling/submit-record/", [DBCache, adeLabeling.submitRecordData])
-        router.post("/ade-labeling/rollback-record/", [DBCache, adeLabeling.rollbackRecordData])
-        router.post("/ade-labeling/get-version-chart/", [DBCache, adeLabeling.getVersionChart])
-        router.post("/ade-labeling/get-metadata/", [DBCache, adeLabeling.getMetadata])
-        router.post("/ade-labeling/get-forms/", [DBCache, adeLabeling.getForms])
-        router.post("/ade-labeling/changelog/", [DBCache, adeLabeling.getChangelog])
-        router.post("/ade-labeling/get-records/", [DBCache, adeLabeling.getRecords])
-        router.post("/ade-labeling/segment/", [DBCache, adeLabeling.getSegmentation])
-        router.post("/ade-labeling/get-longterm/", [DBCache, adeLabeling.getLongTermTask])
+        router.post("/ade-labeling/get-record/", [DBCache, lockCurrentDataset,  adeLabeling.getRecordData])
+        router.post("/ade-labeling/save-record/", [DBCache, lockCurrentDataset,  adeLabeling.saveRecordData])
+        router.post("/ade-labeling/reject-record/", [DBCache, lockCurrentDataset,  adeLabeling.rejectRecordData])
+        router.post("/ade-labeling/submit-record/", [DBCache, lockCurrentDataset,  adeLabeling.submitRecordData])
+        router.post("/ade-labeling/rollback-record/", [DBCache, lockCurrentDataset,  adeLabeling.rollbackRecordData])
+        router.post("/ade-labeling/get-version-chart/", [DBCache, lockCurrentDataset,  adeLabeling.getVersionChart])
+        router.post("/ade-labeling/get-metadata/", [DBCache, lockCurrentDataset,  adeLabeling.getMetadata])
+        router.post("/ade-labeling/get-forms/", [DBCache, lockCurrentDataset,  adeLabeling.getForms])
+        router.post("/ade-labeling/changelog/", [DBCache, lockCurrentDataset,  adeLabeling.getChangelog])
+        router.post("/ade-labeling/get-records/", [DBCache, lockCurrentDataset,  adeLabeling.getRecords])
+        router.post("/ade-labeling/segment/", [DBCache, lockCurrentDataset,  adeLabeling.getSegmentation])
+        router.post("/ade-labeling/get-longterm/", [DBCache, lockCurrentDataset,  adeLabeling.getLongTermTask])
 
 
-        router.post("/ade-patient-view/get-records/", [DBCache, adePatientView.getRecords])
-        router.post("/ade-patient-view/segment/", [DBCache, adePatientView.getSegmentation])
-        router.post("/ade-patient-view/get-metadata/", [DBCache, adePatientView.getMetadata])
-        router.post("/ade-patient-view/get-forms/", [DBCache, adePatientView.getForms])
-        router.post("/ade-patient-view/update-form/", [DBCache, adePatientView.updateForm])
+        router.post("/ade-patient-view/get-records/", [DBCache, lockCurrentDataset,  adePatientView.getRecords])
+        router.post("/ade-patient-view/segment/", [DBCache, lockCurrentDataset,  adePatientView.getSegmentation])
+        router.post("/ade-patient-view/get-metadata/", [DBCache, lockCurrentDataset,  adePatientView.getMetadata])
+        router.post("/ade-patient-view/get-forms/", [DBCache, lockCurrentDataset,  adePatientView.getForms])
+        router.post("/ade-patient-view/update-form/", [DBCache, lockCurrentDataset,  adePatientView.updateForm])
 
-        router.post("/ade-patient-view/get-tags/", [DBCache, adePatientView.getTags])
+        router.post("/ade-patient-view/get-tags/", [DBCache, lockCurrentDataset,  adePatientView.getTags])
 
 
 
         const adeClinicDataManagement = require("./src/clinic-data-management")
-        router.post("/cdm/get-dataset-list/", adeClinicDataManagement.getDatasetList)
-        router.post("/cdm/get-grants/", adeClinicDataManagement.getGrants)
-        router.post("/cdm/get-exams/", adeClinicDataManagement.getExams)
-        router.post("/cdm/get-state-chart/", adeClinicDataManagement.getStateChart)
+        router.post("/cdm/get-exams/", [DBCache, lockCurrentDataset,  adeClinicDataManagement.getExams])
+        router.post("/cdm/get-state-chart/", [DBCache, lockCurrentDataset,  adeClinicDataManagement.getStateChart])
+        router.post("/cdm/accept-examinations/", [DBCache, lockCurrentDataset,  adeClinicDataManagement.acceptExaminations])
+        router.post("/cdm/reject-examinations/", [DBCache, lockCurrentDataset,  adeClinicDataManagement.rejectExaminations])
 
 
         const userGrants = require("./src/user-grants")
@@ -404,7 +416,7 @@ module.exports = {
 
         await segmentationRequest.restoreCache()
 
-        router.post("/segmentation/open-request/", [DBCache, segmentationRequest.openRequest])
+        router.post("/segmentation/open-request/", [DBCache, lockCurrentDataset,  segmentationRequest.openRequest])
         router.get("/segmentation/:requestId/close/", segmentationRequest.closeRequest)
         router.post("/segmentation/:requestId/close/", segmentationRequest.closeRequestStub)
         router.post("/segmentation/close-labeling/:requestId/:user/", segmentationRequest.closeRequest)
@@ -429,9 +441,9 @@ module.exports = {
         router.get("/ade-admin/cache-update/", DBCache)
         router.get("/ade-admin/schedule/users/reset-priority/:user", adeAdmin.resetEmployeePriority)
         router.get("/ade-admin/schedule/users/change-priority/:user/:mode/:delta", adeAdmin.changeEmployeePriority)
-        router.get("/ade-admin/schedule/users", [DBCache, adeAdmin.listEmployee])
-        router.get("/ade-admin/schedule/users/:users", [DBCache, adeAdmin.listEmployee])
-        router.post("/ade-admin/schedule/update", [DBCache, adeAdmin.updateEmployeeSchedule])
+        router.get("/ade-admin/schedule/users", [DBCache, lockCurrentDataset,  adeAdmin.listEmployee])
+        router.get("/ade-admin/schedule/users/:users", [DBCache, lockCurrentDataset,  adeAdmin.listEmployee])
+        router.post("/ade-admin/schedule/update", [DBCache, lockCurrentDataset,  adeAdmin.updateEmployeeSchedule])
 
         router.get("/ade-admin/schedule/settings", adeAdmin.getStrategiesSettings)
         router.post("/ade-admin/schedule/settings", adeAdmin.setStrategiesSettings)
@@ -442,6 +454,11 @@ module.exports = {
         router.get("/ade-admin/seg-cache/keys/:user", segmentationRequest.getCacheKeys)
         router.get("/ade-admin/seg-cache/keys/remove/:key", segmentationRequest.removeCacheKey)
         
+
+        let requestErrorLog = require("./src/request-error-log")
+        router.post("/ade-admin/error", requestErrorLog.saveRequestError)
+
+
         
 
         return router

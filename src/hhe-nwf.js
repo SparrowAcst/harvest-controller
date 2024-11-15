@@ -329,6 +329,110 @@ const getOrganizations = async (req, res) => {
 
 
 
+// const getStat = async (req, res) => {
+//     try {
+
+//         let { userFilter, me, eventData, excludeFilter } = req.body.options
+//         const { db } = req.body.cache.currentDataset
+
+//         let pipeline = [{
+//             '$facet': {
+//                 'total': [{
+//                     '$count': 'count'
+//                 }],
+//                 'examinations': [{
+//                     '$group': {
+//                         '_id': {
+//                             'Examination ID': '$Examination ID'
+//                         },
+//                         'ids': {
+//                             '$addToSet': {}
+//                         }
+//                     }
+//                 }, {
+//                     '$project': {
+//                         'count': {
+//                             '$size': '$ids'
+//                         },
+//                         '_id': 0
+//                     }
+//                 }],
+//                 'stat': [{
+//                     '$group': {
+//                         '_id': {
+//                             'TODO': '$TODO'
+//                         },
+//                         'count': {
+//                             '$count': {}
+//                         }
+//                     }
+//                 }, {
+//                     '$project': {
+//                         'TODO': '$_id.TODO',
+//                         'count': 1,
+//                         '_id': 0
+//                     }
+//                 }]
+//             }
+//         }, {
+//             '$project': {
+//                 'total': {
+//                     '$first': '$total'
+//                 },
+//                 'stat': 1,
+//                 'examinations': {
+//                     '$size': '$examinations'
+//                 }
+//             }
+//         }, {
+//             '$project': {
+//                 'total': '$total.count',
+//                 'stat': 1,
+//                 'examinations': 1
+//             }
+//         }]
+
+//         userFilter = (me) ?
+//             [{
+//                 '$match': {
+//                     '$or': [{
+//                         'updated by': me
+//                     }, {
+//                         '1st expert': me
+//                     }, {
+//                         '2nd expert': me
+//                     }, {
+//                         'CMO': me
+//                     }]
+//                 }
+//             }] :
+//             []
+
+        
+//         pipeline = (excludeFilter || [])
+//                 .concat(eventData.filter)
+//                 .concat(userFilter)
+//                 .concat(pipeline)     
+
+//         const result = await mongodb.aggregate({
+//           db,
+//           collection: `${db.name}.${db.labelingCollection}`,
+//           pipeline 
+//         })
+
+//         res.send({
+//             result: result[0],
+//             pipeline
+//         })
+
+//     } catch (e) {
+//         res.send({
+//             error: e.toString(),
+//             requestBody: req.body
+//         })
+//     }
+// }
+
 const getStat = async (req, res) => {
     try {
 
@@ -428,7 +532,6 @@ const getStat = async (req, res) => {
     }
 }
 
-
 const getSyncStat = async (req, res) => {
     try {
 
@@ -493,19 +596,22 @@ const getSyncStat = async (req, res) => {
             }
         }]
 
+        pipeline = preparePipeline
+                .concat(syncFilter)
+                .concat(pipeline)
+
         let result = await mongodb.aggregate({
           db, 
           collection: `${db.name}.${db.examinationCollection}`,
-            pipeline: preparePipeline
-                .concat(syncFilter)
-                .concat(pipeline)
+          pipeline
 
         })
 
         result = {
             total: result.map(d => d.count).reduce((s, d) => s + d, 0),
             stat: result,
-            options: req.body.options
+            options: req.body.options,
+            pipeline
         }
 
         res.send(result)

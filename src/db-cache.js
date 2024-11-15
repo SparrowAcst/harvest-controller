@@ -21,20 +21,14 @@ const init = async () => {
     DATASET_CACHE = await mongodb.aggregate({
         db,
         collection: `settings.dataset`,
-        pipeline: [{
-                $match: {
-                    closed: {
-                        $exists: false
-                    }
-                }
-            },
+        pipeline: [
             {
                 $project: { _id: 0 }
             }
         ]
     })
 
-    console.log(`load ${DATASET_CACHE.length} datasets setting`)
+    console.log(`load ${DATASET_CACHE} datasets setting`)
 
     USER_CACHE = await mongodb.aggregate({
         db,
@@ -106,7 +100,12 @@ const handler = async (req, res, next) => {
         (req.body.currentDataset  || req.body.dataset):
         "ADE-TEST"
 
-    let currentDataset = find(DATASET_CACHE, d => d.name == currentDatasetName)
+    let currentDataset = find(DATASET_CACHE.filter(d => !d.lock), d => d.name == currentDatasetName)
+
+    if(!currentDataset){
+        res.status(403).(`No access to dataset "${currentDatasetName}"`)
+        return
+    }
 
     currentDataset = (currentDataset && currentDataset.settings) ? currentDataset.settings : undefined
     currentDataset.name = currentDatasetName
