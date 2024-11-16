@@ -56,7 +56,7 @@ const getRecords = async (req, res) => {
 
         let count = await mongodb.aggregate({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             pipeline:   []
                         .concat(options.valueFilter)
                         .concat(options.eventData.filter)
@@ -74,7 +74,7 @@ const getRecords = async (req, res) => {
 
         let data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             pipeline:   []
                         .concat(options.valueFilter || [])
                         .concat(options.eventData.filter || [])
@@ -137,11 +137,11 @@ const getExams = async (req, res) => {
         ]
 
 
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", `${db.name}.examinations`)
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", `${db.name}.examinations`)
 
         let count = await mongodb.aggregate({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             pipeline:   []
                         .concat(options.valueFilter)
                         .concat(options.eventData.filter)
@@ -161,7 +161,7 @@ const getExams = async (req, res) => {
             {
                 $lookup:
                   {
-                    from: "labels",
+                    from: db.labelingCollection,
                     localField: "patientId",
                     foreignField: "Examination ID",
                     as: "result",
@@ -217,7 +217,7 @@ const getExams = async (req, res) => {
 
         let data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             pipeline  
         })
 
@@ -253,13 +253,13 @@ const selectExams = async (req, res) => {
 
         let data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             pipeline: options.pipeline.concat([{$project: { id: "$_id"}}])    
         })
 
         // fetch _id of examinations? that consistenced to criteria
 
-        console.log(data)
+        // console.log(data)
 
         res.send({
             options,
@@ -285,7 +285,7 @@ const removeLastTag = async (req, res) => {
     
         let records = await mongodb.aggregate({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             pipeline:   [
                 { 
                     $match: {
@@ -343,7 +343,7 @@ const removeLastTag = async (req, res) => {
 
         const result = await mongodb.bulkWrite({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             commands
         })
 
@@ -376,7 +376,7 @@ const addTags = async (req, res) => {
         
         let records = await mongodb.aggregate({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             pipeline:   [
                 { 
                     $match: {
@@ -399,7 +399,7 @@ const addTags = async (req, res) => {
                 return t
             })
             r.tags = sortBy(r.tags, d => d.createdAt)
-            console.log(last(r.tags).tag, first(options.tags).tag)
+            // console.log(last(r.tags).tag, first(options.tags).tag)
             if(last(r.tags).tag == first(options.tags).tag) {
                 r.tags.pop()
             }   
@@ -420,7 +420,7 @@ const addTags = async (req, res) => {
 
         const result = await mongodb.bulkWrite({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             commands
         })
 
@@ -463,7 +463,7 @@ const addTagsDia = async (req, res) => {
         
         let records = await mongodb.aggregate({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             pipeline:   [
                 { 
                     $match: {
@@ -508,7 +508,7 @@ const addTagsDia = async (req, res) => {
          
         const result = await mongodb.bulkWrite({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             commands
         })
 
@@ -532,7 +532,7 @@ const removeLastTagDia = async (req, res) => {
 
         let records = await mongodb.aggregate({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             pipeline:   [
                 { 
                     $match: {
@@ -590,7 +590,7 @@ const removeLastTagDia = async (req, res) => {
 
         const result = await mongodb.bulkWrite({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             commands
         })
 
@@ -608,7 +608,7 @@ const removeLastTagDia = async (req, res) => {
 const setConsistency = async (req, res) => {
     try {
         
-        const { db } = req.body.cache.currentDataset
+        const { db } = req.dbCache.currentDataset
         let { selection, consistency } = req.body
 
         const commands = selection.map( r => ({
@@ -622,7 +622,7 @@ const setConsistency = async (req, res) => {
 
         const result = await mongodb.bulkWrite({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             commands
         })
 
@@ -646,28 +646,30 @@ const getForms = async (req, res) => {
 
         let data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.examinations`,
+            collection: `${db.name}.${db.examinationCollection}`,
             pipeline: [{
                 '$match': {
                     'patientId': options.patientId
                 }
             }, {
                 '$lookup': {
-                    'from': "forms",
+                    'from': db.formCollection,
                     'localField': 'id',
                     'foreignField': 'examinationId',
                     'as': 'forms'
                 }
-            }, {
+            }, 
+            // {
+            //     '$lookup': {
+            //         'from': "actors",
+            //         'localField': 'actorId',
+            //         'foreignField': 'id',
+            //         'as': 'physician'
+            //     }
+            // }, 
+            {
                 '$lookup': {
-                    'from': "actors",
-                    'localField': 'actorId',
-                    'foreignField': 'id',
-                    'as': 'physician'
-                }
-            }, {
-                '$lookup': {
-                    'from': "labels",
+                    'from': db.labelingCollection,
                     'localField': 'id',
                     'foreignField': 'Examination ID',
                     'as': 'records'
@@ -679,9 +681,10 @@ const getForms = async (req, res) => {
                     'comment': 1,
                     'state': 1,
                     'dateTime': 1,
+                    'protocol': 1,
                     'patientId': 1,
                     'forms': 1,
-                    'physician': 1,
+                    // 'physician': 1,
                     'recordCount': {
                         '$size': '$records'
                     }
@@ -711,24 +714,25 @@ const getForms = async (req, res) => {
             if (patientForm) {
                 if (patientForm.diagnosisTags) {
                     if (patientForm.diagnosisTags.tags) {
-                        let tags = await mongodb.aggregate({
-                            db,
-                            collection: `settings.tags`,
-                            pipeline: [{
-                                    $match: {
-                                        id: {
-                                            $in: patientForm.diagnosisTags.tags
-                                        }
-                                    }
-                                },
-                                {
-                                    $project: {
-                                        _id: 0,
-                                        name: 1
-                                    }
-                                }
-                            ]
-                        })
+                        let tags = req.dbCache.diagnosisTags
+                        // await mongodb.aggregate({
+                        //     db,
+                        //     collection: `settings.tags`,
+                        //     pipeline: [{
+                        //             $match: {
+                        //                 id: {
+                        //                     $in: patientForm.diagnosisTags.tags
+                        //                 }
+                        //             }
+                        //         },
+                        //         {
+                        //             $project: {
+                        //                 _id: 0,
+                        //                 name: 1
+                        //             }
+                        //         }
+                        //     ]
+                        // })
 
                         patientForm.diagnosisTags.tags = tags.map(t => last(t.name.split("/")))
 
@@ -739,16 +743,16 @@ const getForms = async (req, res) => {
             }
 
 
-            let physician
-            if (data.physician) {
-                physician = data.physician[0]
-                physician = (physician) ? {
-                    name: `${physician.firstName} ${physician.lastName}`,
-                    email: physician.email
-                } : { name: "", email: "" }
-            } else {
-                physician = { name: "", email: "" }
-            }
+            // let physician
+            // if (data.physician) {
+            //     physician = data.physician[0]
+            //     physician = (physician) ? {
+            //         name: `${physician.firstName} ${physician.lastName}`,
+            //         email: physician.email
+            //     } : { name: "", email: "" }
+            // } else {
+            //     physician = { name: "", email: "" }
+            // }
 
 
             result = {
@@ -757,8 +761,9 @@ const getForms = async (req, res) => {
                     recordCount: data.recordCount,
                     state: data.state,
                     comment: data.comment,
+                    protocol,
                     date: moment(new Date(data.dateTime)).format("YYYY-MM-DD HH:mm:ss"),
-                    physician
+                    // physician
                 },
                 patient: find(forms, f => f.formType == "patient"),
                 ekg: find(forms, f => f.formType == "ekg"),
@@ -833,330 +838,3 @@ module.exports = {
     updateDiagnosis
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const getForms = async (req, res) => {
-//     try {
-
-//         let options = req.body.options
-//         let { db } = req.body.cache.currentDataset
-
-//         let data = await mongodb.aggregate({
-//             db,
-//             collection: `${db.name}.examinations`,
-//             pipeline: [{
-//                 '$match': {
-//                     'patientId': options.patientId
-//                 }
-//             }, {
-//                 '$lookup': {
-//                     'from': "forms",
-//                     'localField': 'id',
-//                     'foreignField': 'examinationId',
-//                     'as': 'forms'
-//                 }
-//             }, {
-//                 '$lookup': {
-//                     'from': "actors",
-//                     'localField': 'actorId',
-//                     'foreignField': 'id',
-//                     'as': 'physician'
-//                 }
-//             }, {
-//                 '$lookup': {
-//                     'from': "labels",
-//                     'localField': 'id',
-//                     'foreignField': 'Examination ID',
-//                     'as': 'records'
-//                 }
-//             }, {
-//                 '$project': {
-//                     '_id': 0,
-//                     'type': 1,
-//                     'comment': 1,
-//                     'state': 1,
-//                     'dateTime': 1,
-//                     'patientId': 1,
-//                     'forms': 1,
-//                     'physician': 1,
-//                     'recordCount': {
-//                         '$size': '$records'
-//                     }
-//                 }
-//             }, {
-//                 '$project': {
-//                     'records': 0
-//                 }
-//             }]
-//         })
-
-//         data = data[0]
-
-//         if (data) {
-
-//             let formType = ["patient", "echo", "ekg", "attachements"]
-//             let forms = formType.map(type => {
-//                 let f = find(data.forms, d => d.type == type)
-//                 if (f && f.data) {
-//                     let form = f.data.en || f.data.uk || f.data
-//                     if (form) return extend(form, { formType: type })
-//                 }
-//             }).filter(f => f)
-
-//             let patientForm = find(forms, f => f.formType == "patient")
-
-//             if (patientForm) {
-//                 if (patientForm.diagnosisTags) {
-//                     if (patientForm.diagnosisTags.tags) {
-//                         let tags = await mongodb.aggregate({
-//                             db,
-//                             collection: `settings.tags`,
-//                             pipeline: [{
-//                                     $match: {
-//                                         id: {
-//                                             $in: patientForm.diagnosisTags.tags
-//                                         }
-//                                     }
-//                                 },
-//                                 {
-//                                     $project: {
-//                                         _id: 0,
-//                                         name: 1
-//                                     }
-//                                 }
-//                             ]
-//                         })
-
-//                         patientForm.diagnosisTags.tags = tags.map(t => last(t.name.split("/")))
-
-//                     } else {
-//                         patientForm.diagnosisTags.tags = []
-//                     }
-//                 }
-//             }
-
-
-//             let physician
-//             if (data.physician) {
-//                 physician = data.physician[0]
-//                 physician = (physician) ? {
-//                     name: `${physician.firstName} ${physician.lastName}`,
-//                     email: physician.email
-//                 } : { name: "", email: "" }
-//             } else {
-//                 physician = { name: "", email: "" }
-//             }
-
-
-//             result = {
-//                 examination: {
-//                     patientId: data.patientId,
-//                     recordCount: data.recordCount,
-//                     state: data.state,
-//                     comment: data.comment,
-//                     date: moment(new Date(data.dateTime)).format("YYYY-MM-DD HH:mm:ss"),
-//                     physician
-//                 },
-//                 patient: find(forms, f => f.formType == "patient"),
-//                 ekg: find(forms, f => f.formType == "ekg"),
-//                 echo: find(forms, f => f.formType == "echo"),
-//                 attachements: find(forms, f => f.formType == "attachements"),
-//             }
-//         } else {
-//             result = {}
-//         }
-
-//         res.send(result)
-
-//     } catch (e) {
-//         res.send({
-//             error: e.toString(),
-//             requestBody: req.body
-//         })
-//     }
-// }
-
-
-
-// const getSegmentation = async (req, res) => {
-//     try {
-
-//         let { options } = req.body
-
-//         options = extend(
-//             options,
-//             req.body.cache.currentDataset, { userProfiles: req.body.cache.userProfiles }
-//         )
-
-//         let handler = (dataStrategy[options.strategy]) ? dataStrategy[options.strategy].getSegmentation : undefined
-//         let result
-//         if (handler) {
-//             result = await handler(options)
-//         } else {
-//             result = {}
-//         }
-
-//         res.send(result)
-
-//     } catch (e) {
-
-//         res.send({
-//             error: `${e.toString()}\n${e.stack}`,
-//             requestBody: req.body
-//         })
-//     }
-// }
-
-
-
-// const getRecords = async (req, res) => {
-//     try {
-
-//         let options = req.body.options
-//         let { db } = req.body.cache.currentDataset
-
-//         const resolveSegmentation = async segmentation => {
-
-
-//             if (!segmentation) return
-
-//             if (isUUID(segmentation)) {
-//                 let d = await mongodb.aggregate({
-//                     db,
-//                     collection: `${db.name}.segmentations`,
-//                     pipeline: [{
-//                         $match: {
-//                             id: segmentation
-//                         }
-//                     }]
-//                 })
-
-//                 return (d[0]) ? d[0].data : undefined
-
-//             }
-
-//         }
-
-//         let pipeline = [
-//           {
-//             $match:
-//               {
-//                 "Examination ID": options.id,
-//               },
-//           },
-//           {
-//             $lookup:
-//               {
-//                 from: "segmentations",
-//                 localField: "segmentation",
-//                 foreignField: "id",
-//                 as: "result",
-//               },
-//           },
-//           {
-//             $addFields:
-//               {
-//                 segmentation: {
-//                   $first: "$result",
-//                 },
-//               },
-//           },
-//           {
-//             $addFields:
-//               {
-//                 segmentation: "$segmentation.data",
-//               },
-//           },
-//           {
-//             $project:
-//               {
-//                 _id: 0,
-//                 result: 0,
-//               },
-//           },
-//         ]
-//         // options.excludeFilter
-//         //     .concat(options.valueFilter)
-//         //     .concat([{
-//         //         '$project': {
-//         //             '_id': 0
-//         //         }
-//         //     }])
-
-//         const data = await mongodb.aggregate({
-//             db,
-//             collection: `${db.name}.labels`,
-//             pipeline
-//         })
-
-//         // for(let d of data){
-//         //     d.segmentation = await resolveSegmentation(d.segmentation)
-//         // }
-
-//         res.send({
-//             options,
-//             collection: data
-//         })
-
-//     } catch (e) {
-//         res.send({
-//             error: e.toString(),
-//             requestBody: req.body
-//         })
-//     }
-
-// }
-
-// const getTags = async (req, res) => {
-//     try {
-    
-//        let { db } = req.body.cache.currentDataset
-
-//         options = {
-//             db,
-//             collection: `settings.tags`,
-//             pipeline: [   
-//                 {
-//                     $match:{
-//                         classification: "Diagnosis"
-//                     }
-//                 },
-//                 {
-//                     $project:{ _id: 0 }
-//                 }
-//             ] 
-//         }
-        
-//         const result = await mongodb.aggregate(options)
-//         res.send(result)
-
-//     } catch (e) {
-        
-//         res.send({
-//             command: "getTags", 
-//             error: e.toString(),
-//             requestBody: req.body
-//         })
-    
-//     }   
-
-// }
-
-// module.exports = {
-//     getMetadata,
-//     getForms,
-//     getSegmentation,
-//     getRecords,
-//     getTags
-// }

@@ -14,6 +14,14 @@ module.exports = {
                 collection: "settings.dataset",
             },
 
+            diagnosisTags: {
+                collection: "settings.tags",
+            },
+
+            workflowTags: {
+                collection: "settings.workflow_tags",
+            },
+            
             userProfiles: {
                 collection: "settings.app-grant",
                 pipeline: [{
@@ -335,7 +343,7 @@ module.exports = {
 
         ////////////////////////////////////////////////////////////////////////////////////
 
-        const adeDiaDashboard = require("./src/ade-diagnosis-dashboard")
+        const adeDiaDashboard = require("./src/ade-diagnosis-dashboard.old")
 
         router.post("/ade-diagnosis-dashboard/get-events/", [DBCache, lockCurrentDataset,  adeDiaDashboard.getRecords])
         router.post("/ade-diagnosis-dashboard/get-exams/", [DBCache, lockCurrentDataset,  adeDiaDashboard.getExams])
@@ -365,7 +373,7 @@ module.exports = {
         const adeTaskDashboard = require("./src/ade-task-dashboard")
         const adeGrants = require("./src/ade-grants")
         const adeLabeling = require("./src/ade-labeling")
-        const adePatientView = require("./src/ade-patient-view")
+        const adePatientView = require("./src/ade-patient-view.old")
 
         router.post("/ade-grants/get-dataset-list/", [DBCache, lockCurrentDataset,  adeGrants.getDatasetList])
         router.post("/ade-grants/get-grants/", [DBCache, lockCurrentDataset,  adeGrants.getGrants])

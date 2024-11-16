@@ -25,33 +25,33 @@ const getForms = async (req, res) => {
     try {
 
         let options = req.body.options
-        let { db } = req.body.cache.currentDataset
+        let { db } = req.dbCache.currentDataset
 
-        let data = await mongodb.aggregate({
-            db,
-            collection: `${db.name}.examinations`,
-            pipeline: [{
+
+        let pipeline = [{
                 '$match': {
                     'patientId': options.patientId
                 }
             }, {
                 '$lookup': {
-                    'from': "forms",
+                    'from': db.formCollection,
                     'localField': 'id',
                     'foreignField': 'examinationId',
                     'as': 'forms'
                 }
-            }, {
+            }, 
+            // {
+            //     '$lookup': {
+            //         'from': db.userCollection,
+            //         'localField': 'actorId',
+            //         'foreignField': 'id',
+            //         'as': 'physician'
+            //     }
+            // }, 
+            {
                 '$lookup': {
-                    'from': "actors",
-                    'localField': 'actorId',
-                    'foreignField': 'id',
-                    'as': 'physician'
-                }
-            }, {
-                '$lookup': {
-                    'from': "labels",
-                    'localField': 'id',
+                    'from': db.labelingCollection,
+                    'localField': 'patientId',
                     'foreignField': 'Examination ID',
                     'as': 'records'
                 }
@@ -61,13 +61,14 @@ const getForms = async (req, res) => {
                     'id': 1,
                     'type': 1,
                     'comment': 1,
+                    'protocol': 1,
                     'Stage Comment': 1,
                     'workflowTags': 1,
                     'state': 1,
                     'dateTime': 1,
                     'patientId': 1,
                     'forms': 1,
-                    'physician': 1,
+                    // 'physician': 1,
                     'recordCount': {
                         '$size': '$records'
                     }
@@ -77,6 +78,14 @@ const getForms = async (req, res) => {
                     'records': 0
                 }
             }]
+
+        console.log(`${db.name}.${db.examinationCollection}`)
+        console.log(JSON.stringify(pipeline))    
+
+        let data = await mongodb.aggregate({
+            db,
+            collection: `${db.name}.${db.examinationCollection}`,
+            pipeline
         })
 
         data = data[0]
@@ -97,24 +106,26 @@ const getForms = async (req, res) => {
             if (patientForm) {
                 if (patientForm.diagnosisTags) {
                     if (patientForm.diagnosisTags.tags) {
-                        let tags = await mongodb.aggregate({
-                            db,
-                            collection: `settings.tags`,
-                            pipeline: [{
-                                    $match: {
-                                        id: {
-                                            $in: patientForm.diagnosisTags.tags
-                                        }
-                                    }
-                                },
-                                {
-                                    $project: {
-                                        _id: 0,
-                                        name: 1
-                                    }
-                                }
-                            ]
-                        })
+                        let tags = req.dbCache.diagnosisTags
+
+                        // await mongodb.aggregate({
+                        //     db,
+                        //     collection: `settings.tags`,
+                        //     pipeline: [{
+                        //             $match: {
+                        //                 id: {
+                        //                     $in: patientForm.diagnosisTags.tags
+                        //                 }
+                        //             }
+                        //         },
+                        //         {
+                        //             $project: {
+                        //                 _id: 0,
+                        //                 name: 1
+                        //             }
+                        //         }
+                        //     ]
+                        // })
 
                         patientForm.diagnosisTags.tags = tags.map(t => last(t.name.split("/")))
 
@@ -125,16 +136,16 @@ const getForms = async (req, res) => {
             }
 
 
-            let physician
-            if (data.physician) {
-                physician = data.physician[0]
-                physician = (physician) ? {
-                    name: `${physician.firstName} ${physician.lastName}`,
-                    email: physician.email
-                } : { name: "", email: "" }
-            } else {
-                physician = { name: "", email: "" }
-            }
+            // let physician
+            // if (data.physician) {
+            //     physician = data.physician[0]
+            //     physician = (physician) ? {
+            //         name: `${physician.firstName} ${physician.lastName}`,
+            //         email: physician.email
+            //     } : { name: "", email: "" }
+            // } else {
+            //     physician = { name: "", email: "" }
+            // }
 
 
             result = {
@@ -143,11 +154,12 @@ const getForms = async (req, res) => {
                     patientId: data.patientId,
                     recordCount: data.recordCount,
                     state: data.state,
+                    protocol: data.protocol,
                     comment: data.comment,
                     'Stage Comment': data['Stage Comment'],
                     workflowTags: data.workflowTags,
                     date: moment(new Date(data.dateTime)).format("YYYY-MM-DD HH:mm:ss"),
-                    physician
+                    // physician
                 },
                 patient: find(forms, f => f.formType == "patient"),
                 ekg: find(forms, f => f.formType == "ekg"),
@@ -287,30 +299,30 @@ const getRecords = async (req, res) => {
                     "Examination ID": options.id,
                 },
             },
-            {
-                $lookup: {
-                    from: "segmentations",
-                    localField: "segmentation",
-                    foreignField: "id",
-                    as: "result",
-                },
-            },
-            {
-                $addFields: {
-                    segmentation: {
-                        $first: "$result",
-                    },
-                },
-            },
-            {
-                $addFields: {
-                    segmentation: "$segmentation.data",
-                },
-            },
+            // {
+            //     $lookup: {
+            //         from: "segmentations",
+            //         localField: "segmentation",
+            //         foreignField: "id",
+            //         as: "result",
+            //     },
+            // },
+            // {
+            //     $addFields: {
+            //         segmentation: {
+            //             $first: "$result",
+            //         },
+            //     },
+            // },
+            // {
+            //     $addFields: {
+            //         segmentation: "$segmentation.data",
+            //     },
+            // },
             {
                 $project: {
                     _id: 0,
-                    result: 0,
+                    // result: 0,
                 },
             },
         ]
@@ -324,7 +336,7 @@ const getRecords = async (req, res) => {
 
         const data = await mongodb.aggregate({
             db,
-            collection: `${db.name}.labels`,
+            collection: `${db.name}.${db.labelingCollection}`,
             pipeline
         })
 
@@ -334,6 +346,7 @@ const getRecords = async (req, res) => {
 
         res.send({
             options,
+            pipeline,
             collection: data
         })
 
