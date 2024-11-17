@@ -94,7 +94,7 @@ const closeRequest =  async (req, res) => {
 }	
 
 const closeRequestStub =  (req, res) => {
-	res.send(200)
+	res.status(200).send()
 }
 
 const getSegmentationData =  async (req, res) => {

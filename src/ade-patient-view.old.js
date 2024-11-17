@@ -79,8 +79,8 @@ const getForms = async (req, res) => {
                 }
             }]
 
-        console.log(`${db.name}.${db.examinationCollection}`)
-        console.log(JSON.stringify(pipeline))    
+        // console.log(`${db.name}.${db.examinationCollection}`)
+        // console.log(JSON.stringify(pipeline))    
 
         let data = await mongodb.aggregate({
             db,
@@ -198,7 +198,7 @@ const updateForm = async (req, res) => {
 
         let storedForm = await mongodb.aggregate({
             db,
-            collection: `${db.name}.forms`,
+            collection: `${db.name}.${db.formCollection}`,
             pipeline
         })
 
@@ -215,7 +215,7 @@ const updateForm = async (req, res) => {
 
         let result = await mongodb.replaceOne({
             db,
-            collection: `${db.name}.forms`,
+            collection: `${db.name}.${db.formCollection}`,
             filter: {
                 patientId,
                 type

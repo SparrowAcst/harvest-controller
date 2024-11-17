@@ -794,12 +794,12 @@ const updateDiagnosis = async (req, res) => {
         let { db } = req.body.cache.currentDataset
 
         
-        // console.log("updateDiagnosisTags", options.form.id, options.form.diagnosis)
+        // console.log("updateDiagnosisTags", form.id, form.diagnosis)
 
 
         let result = await mongodb.updateOne({
             db,
-            collection: `${db.name}.forms`,
+            collection: `${db.name}.${db.formCollection}`,
             filter: { 
                 id: form.id 
             },
