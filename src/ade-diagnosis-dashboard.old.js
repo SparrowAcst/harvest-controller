@@ -157,6 +157,16 @@ const getExams = async (req, res) => {
             pagePosition: `${options.eventData.skip+1} - ${Math.min(options.eventData.skip + options.eventData.limit, count)} from ${count}`
         })
 
+
+        const valueFilter = options.valueFilter || []
+
+        valueFilter.forEach( s => {
+            if(s.$lookup && s.$lookup.from == "forms"){
+                s.$lookup.from = db.formCollection
+            }
+        })
+
+
         const statPipeline = [
             {
                 $lookup:
@@ -189,7 +199,7 @@ const getExams = async (req, res) => {
         ]
 
         const pipeline = []
-                        .concat(options.valueFilter || [])
+                        .concat(valueFilter)
                         .concat(options.eventData.filter || [])
                         .concat([
                           {
