@@ -198,8 +198,13 @@ const getSegmentation = async context => {
     let request = segmentationRequestCache.getRequest({ dataId: recordId })
     if(!request) return {}
 
-    let segmentation = request.responseData.segmentation || request.requestData.data[0].segmentation
+    let segmentation = 
+            (request.responseData) ? request.responseData.segmentation : undefined  
+            || 
+            (request.requestData.data[0]) ? request.requestData.data[0].segmentation : undefined  
+    
     let analysis
+    
     if (segmentation) {
         analysis = segmentationAnalysis.getSegmentationAnalysis(segmentation)
     }
