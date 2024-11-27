@@ -806,6 +806,8 @@ const updateTasks = async (req, res) => {
         let { options, selection, assignator } = req.body
         const { db, name: currentDatasetName } = req.body.cache.currentDataset
 
+        // console.log(db, `${db.name}.${db.labelingCollection}`)
+
         let records = await mongodb.aggregate({
             db,
             collection: `${db.name}.${db.labelingCollection}`,
@@ -821,6 +823,8 @@ const updateTasks = async (req, res) => {
                 }
             }]
         })
+
+        // console.log(records)
 
         records = records.map(r => {
 
@@ -849,6 +853,7 @@ const updateTasks = async (req, res) => {
             }
         }))
 
+        // console.log(commands)
         const result = await mongodb.bulkWrite({
             db,
             collection: `${db.name}.${db.labelingCollection}`,
@@ -879,10 +884,12 @@ const updateTasks = async (req, res) => {
             }
         })
 
+        // console.log(events)
+
         await mongodb.bulkWrite({
             db,
             collection: `${db.name}.workflow-events`,
-            events
+            commands: events
         })
 
 
