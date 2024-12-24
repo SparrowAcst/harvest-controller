@@ -81,7 +81,13 @@ const getTasks1 = async (req, res) => {
             }] :
             []
 
-
+        // console.log(JSON.stringify(
+        //     (excludeFilter || [])
+        //         .concat(eventData.filter || [])
+        //         .concat(userFilter)
+        //         .concat(paginationPipeline)
+        // , null, " "))    
+            
         let data = await mongodb.aggregate({
             db,
             collection: `${db.name}.${db.labelingCollection}`,
@@ -256,7 +262,7 @@ const getTasks1 = async (req, res) => {
             }
         ]
 
-        // console.log(JSON.stringify(mainPipeline, null, ' '))
+        // console.log(`${db.name}.${db.examinationCollection}\n`, JSON.stringify(mainPipeline, null, ' '))
 
 
         ////////////////////////////////////////////////////////////////////////

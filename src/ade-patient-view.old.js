@@ -40,14 +40,14 @@ const getForms = async (req, res) => {
                     'as': 'forms'
                 }
             }, 
-            // {
-            //     '$lookup': {
-            //         'from': db.userCollection,
-            //         'localField': 'actorId',
-            //         'foreignField': 'id',
-            //         'as': 'physician'
-            //     }
-            // }, 
+            {
+                '$lookup': {
+                    'from': db.userCollection,
+                    'localField': 'actorId',
+                    'foreignField': 'id',
+                    'as': 'physician'
+                }
+            }, 
             {
                 '$lookup': {
                     'from': db.labelingCollection,
@@ -68,7 +68,7 @@ const getForms = async (req, res) => {
                     'dateTime': 1,
                     'patientId': 1,
                     'forms': 1,
-                    // 'physician': 1,
+                    'physician': 1,
                     'recordCount': {
                         '$size': '$records'
                     }
@@ -136,16 +136,21 @@ const getForms = async (req, res) => {
             }
 
 
-            // let physician
-            // if (data.physician) {
-            //     physician = data.physician[0]
-            //     physician = (physician) ? {
-            //         name: `${physician.firstName} ${physician.lastName}`,
-            //         email: physician.email
-            //     } : { name: "", email: "" }
-            // } else {
-            //     physician = { name: "", email: "" }
-            // }
+            let physician
+            if (data.physician) {
+                physician = data.physician[0]
+                physician = (physician) ? {
+                    name: `${physician.firstName} ${physician.lastName}`,
+                    role: (physician.userRole) ? physician.userRole || 'unknown' : 'unknown'
+                    // email: physician.email
+                } : { name: "", email: "" }
+            } else {
+                physician = { 
+                    name: "", 
+                    role: 'unknown',
+                    //email: "" 
+                }
+            }
 
 
             result = {
@@ -159,7 +164,7 @@ const getForms = async (req, res) => {
                     'Stage Comment': data['Stage Comment'],
                     workflowTags: data.workflowTags,
                     date: moment(new Date(data.dateTime)).format("YYYY-MM-DD HH:mm:ss"),
-                    // physician
+                    physician
                 },
                 patient: find(forms, f => f.formType == "patient"),
                 ekg: find(forms, f => f.formType == "ekg"),
