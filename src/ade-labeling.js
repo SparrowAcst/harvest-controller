@@ -1,5 +1,5 @@
 const mongodb = require("./mongodb")
-const { extend, find } = require("lodash")
+const { extend, find, last } = require("lodash")
 const moment = require("moment")
 const createTaskController = require("./utils/task-controller")
 
